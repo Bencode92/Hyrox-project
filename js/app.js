@@ -1,4 +1,4 @@
-/* HyroxForge — App Controller v3 (coach validated) */
+/* HyroxForge — App Controller v3.1 (focus run/row/ski) */
 const App = {
   currentTab: 'dashboard',
   init() {
@@ -106,7 +106,7 @@ const App = {
   toast(msg,type) { const c=document.getElementById('toastContainer'); const t=document.createElement('div'); t.className='toast toast-'+(type||'info'); t.textContent=msg; c.appendChild(t); setTimeout(()=>t.remove(),3000); },
 };
 
-/* Log Form */
+/* Log Form — focus Run / Row / Ski uniquement */
 const LogForm = {
   type: 'run', location: 'outdoor',
   init() { this.updateRPE(5); this.updatePain(0); this.updateFormForType(); },
@@ -117,11 +117,11 @@ const LogForm = {
     else { dl.textContent='Distance (m)'; lt.parentElement.classList.add('hidden'); this.location='gym'; }
     const sel=document.getElementById('logSessionType');
     const opts = {
-      run: ['z2','tempo','intervals_short','intervals_long','long_run','fartlek','combo_hyrox','test'],
+      run: ['z2','tempo','intervals_short','intervals_long','long_run','fartlek','test'],
       row: ['technique','power','endurance','racePace','test'],
       ski: ['technique','power','endurance','racePace','test']
     };
-    const labels = { z2:'Zone 2', tempo:'Tempo', intervals_short:'Fractionné court', intervals_long:'Fractionné long', long_run:'Sortie longue', fartlek:'Fartlek', combo_hyrox:'Combo Hyrox 🔥', technique:'Technique', power:'Puissance', endurance:'Endurance', racePace:'Race Pace 🏁', test:'Test' };
+    const labels = { z2:'Zone 2', tempo:'Tempo', intervals_short:'Fractionné court', intervals_long:'Fractionné long', long_run:'Sortie longue', fartlek:'Fartlek', technique:'Technique', power:'Puissance', endurance:'Endurance', racePace:'Race Pace 🏁', test:'Test' };
     sel.innerHTML = opts[this.type].map(o => '<option value="'+o+'">'+(labels[o]||o)+'</option>').join('');
     sel.onchange = () => { this.updateSessionTypeUI(); this.showSuggestion(); };
     this.updateSessionTypeUI();
