@@ -9,6 +9,21 @@ const App = {
     document.getElementById('settingsGoalSpeed').value = s.goalSpeed;
     document.getElementById('settingsCompDate').value = s.compDate || '';
     document.getElementById('settingsWeight').value = s.weight || '';
+    // Show onboarding if no sessions
+    if (Storage.getSessions().length === 0) {
+      document.getElementById('onboarding').classList.remove('hidden');
+    }
+  },
+  startFirstTest() {
+    document.getElementById('onboarding').classList.add('hidden');
+    this.switchTab('log');
+    LogForm.setType('run');
+    document.getElementById('logSessionType').value = 'test';
+    LogForm.updateSessionTypeUI();
+    this.toast('Enregistre ton test Run 1km !', 'info');
+  },
+  skipOnboarding() {
+    document.getElementById('onboarding').classList.add('hidden');
   },
   switchTab(tab) {
     this.currentTab = tab;
@@ -26,17 +41,17 @@ const App = {
     const trendEl = document.getElementById('scoreTrend');
     if (history.length >= 2) {
       const prev = history[history.length - 2].global, diff = score.global - prev;
-      if (diff > 0) { trendEl.className = 'score-trend trend-up'; trendEl.textContent = '+' + diff + ' pts cette semaine'; }
-      else if (diff < 0) { trendEl.className = 'score-trend trend-down'; trendEl.textContent = diff + ' pts cette semaine'; }
+      if (diff > 0) { trendEl.className = 'score-trend trend-up'; trendEl.textContent = '+' + diff + ' pts'; }
+      else if (diff < 0) { trendEl.className = 'score-trend trend-down'; trendEl.textContent = diff + ' pts'; }
       else { trendEl.className = 'score-trend trend-stable'; trendEl.textContent = 'Stable'; }
     } else { trendEl.textContent = ''; }
     const p = score.pillars;
     document.getElementById('runScore').innerHTML = p.run.weighted + '<small>/' + p.run.max + '</small>';
     document.getElementById('rowScore').innerHTML = p.row.weighted + '<small>/' + p.row.max + '</small>';
     document.getElementById('skiScore').innerHTML = p.ski.weighted + '<small>/' + p.ski.max + '</small>';
-    document.getElementById('runDetail').textContent = p.run.speedKmh ? p.run.speedKmh.toFixed(1) + ' km/h' : 'Pas de données';
-    document.getElementById('rowDetail').textContent = p.row.pace ? Scoring.formatPace(p.row.pace) + '/1000m' : 'Pas de données';
-    document.getElementById('skiDetail').textContent = p.ski.pace ? Scoring.formatPace(p.ski.pace) + '/1000m' : 'Pas de données';
+    document.getElementById('runDetail').textContent = p.run.speedKmh ? p.run.speedKmh.toFixed(1) + ' km/h' : 'Pas de donn\u00e9es';
+    document.getElementById('rowDetail').textContent = p.row.pace ? Scoring.formatPace(p.row.pace) + '/1000m' : 'Pas de donn\u00e9es';
+    document.getElementById('skiDetail').textContent = p.ski.pace ? Scoring.formatPace(p.ski.pace) + '/1000m' : 'Pas de donn\u00e9es';
     const weekSessions = Storage.getSessionsThisWeek();
     document.getElementById('weekSessions').textContent = weekSessions.length;
     document.getElementById('weekDistance').textContent = weekSessions.reduce((a, s) => a + (s.distance || 0), 0).toFixed(1);
@@ -48,7 +63,7 @@ const App = {
   renderSessionList(filter) {
     const container = document.getElementById('sessionList');
     const sessions = filter === 'all' ? Storage.getSessions() : Storage.getSessionsByType(filter);
-    if (sessions.length === 0) { container.innerHTML = '<div class="empty-state">Aucune séance enregistrée</div>'; return; }
+    if (sessions.length === 0) { container.innerHTML = '<div class="empty-state">Aucune s\u00e9ance enregistr\u00e9e</div>'; return; }
     container.innerHTML = sessions.slice(0, 50).map(s => {
       const score = Scoring.scoreSession(s), delta = Scoring.computeDelta(s);
       const date = new Date(s.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
@@ -58,16 +73,16 @@ const App = {
       const speedStr = s.speedKmh ? s.speedKmh.toFixed(1) + ' km/h' : '';
       let deltaHtml = '';
       if (delta) { const cls = delta.improved ? 'delta-up' : 'delta-down'; const sign = delta.improved ? '' : '+'; deltaHtml = '<span class="session-delta ' + cls + '">' + sign + delta.seconds.toFixed(0) + 's</span>'; }
-      return '<div class="session-item" data-id="' + s.id + '"><div class="session-type-badge badge-' + s.type + '">' + Scoring.getTypeEmoji(s.type) + '</div><div class="session-info"><div class="session-main"><span class="session-title">' + stLabel + '</span><span class="session-score">' + (score ?? '\u2014') + '</span></div><div class="session-meta">' + date + ' \u00b7 ' + (s.distance ? s.distance + 'km' : '') + ' \u00b7 ' + paceStr + unit + ' ' + (speedStr ? '\u00b7 ' + speedStr : '') + ' \u00b7 RPE ' + s.rpe + (s.vest ? ' \u00b7 \ud83e\uddf6' + s.vestKg + 'kg' : '') + ' ' + deltaHtml + '</div></div></div>';
+      return '<div class="session-item"><div class="session-type-badge badge-' + s.type + '">' + Scoring.getTypeEmoji(s.type) + '</div><div class="session-info"><div class="session-main"><span class="session-title">' + stLabel + '</span><span class="session-score">' + (score != null ? score : '\u2014') + '</span></div><div class="session-meta">' + date + ' \u00b7 ' + (s.distance ? s.distance + 'km' : '') + ' \u00b7 ' + paceStr + unit + ' ' + (speedStr ? '\u00b7 ' + speedStr : '') + ' \u00b7 RPE ' + s.rpe + (s.vest ? ' \u00b7 \ud83e\uddf6' + s.vestKg + 'kg' : '') + ' ' + deltaHtml + '</div></div></div>';
     }).join('');
   },
   openSettings() { document.getElementById('settingsModal').classList.remove('hidden'); },
   closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); },
   saveSettings() {
     const settings = { workerUrl: document.getElementById('settingsWorkerUrl').value.trim(), goalSpeed: parseFloat(document.getElementById('settingsGoalSpeed').value) || 15, compDate: document.getElementById('settingsCompDate').value, weight: parseFloat(document.getElementById('settingsWeight').value) || 75 };
-    Storage.saveSettings(settings); this.closeSettings(); this.toast('Paramètres sauvegardés', 'success');
+    Storage.saveSettings(settings); this.closeSettings(); this.toast('Param\u00e8tres sauvegard\u00e9s', 'success');
   },
-  resetData() { if (confirm('Supprimer toutes les données ?')) { Storage.resetAll(); this.refreshDashboard(); this.toast('Données réinitialisées', 'info'); this.closeSettings(); } },
+  resetData() { if (confirm('Supprimer toutes les donn\u00e9es ?')) { Storage.resetAll(); this.refreshDashboard(); this.toast('Donn\u00e9es r\u00e9initialis\u00e9es', 'info'); this.closeSettings(); } },
   toast(message, type) { type = type || 'info'; const container = document.getElementById('toastContainer'); const toast = document.createElement('div'); toast.className = 'toast toast-' + type; toast.textContent = message; container.appendChild(toast); setTimeout(() => toast.remove(), 3000); },
 };
 
@@ -107,7 +122,7 @@ const LogForm = {
     const restSec = parseInt(document.getElementById('logRest').value) || null;
     if (!date) { App.toast('Choisis une date', 'error'); return; }
     if (!distanceRaw || distanceRaw <= 0) { App.toast('Indique la distance', 'error'); return; }
-    if (min === 0 && sec === 0) { App.toast('Indique la durée', 'error'); return; }
+    if (min === 0 && sec === 0) { App.toast('Indique la dur\u00e9e', 'error'); return; }
     const durationMin = min + sec / 60, durationSec = min * 60 + sec;
     let distance, pace, speedKmh;
     if (this.type === 'run') { distance = distanceRaw; pace = durationSec / distance; speedKmh = distance / (durationMin / 60); }
@@ -117,7 +132,7 @@ const LogForm = {
     const globalScore = Scoring.computeGlobal();
     Storage.addScoreSnapshot({ global: globalScore.global, run: globalScore.breakdown.run, row: globalScore.breakdown.row, ski: globalScore.breakdown.ski });
     const score = Scoring.scoreSession(saved);
-    App.toast('Séance enregistrée ! Score: ' + score + '/100', 'success');
+    App.toast('S\u00e9ance enregistr\u00e9e ! Score: ' + score + '/100', 'success');
     AICoach.analyzeSession(saved);
     document.getElementById('logDistance').value = ''; document.getElementById('logMin').value = ''; document.getElementById('logSec').value = '';
     document.getElementById('logNotes').value = ''; document.getElementById('logVest').checked = false;

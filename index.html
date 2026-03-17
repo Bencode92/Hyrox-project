@@ -12,8 +12,42 @@
 <body>
   <div id="splash" class="splash">
     <div class="splash-logo">HYROX<span>FORGE</span></div>
-    <div class="splash-sub">Ton coach IA personnel</div>
+    <div class="splash-sub">Coach IA personnel</div>
   </div>
+
+  <!-- ONBOARDING (first visit) -->
+  <div id="onboarding" class="onboarding hidden">
+    <div class="onboarding-card">
+      <h2>Bienvenue sur <span>HyroxForge</span></h2>
+      <p>Pour calibrer ton coach IA, on a besoin de connaître ton niveau actuel. Fais ces 3 tests chronométrés (pas forcément le même jour) :</p>
+      <div class="onboarding-tests">
+        <div class="onboarding-test">
+          <span class="ot-emoji">🏃</span>
+          <div class="ot-info">
+            <div class="ot-name">Test Run — 1 km</div>
+            <div class="ot-desc">Cours 1 km le plus vite possible. Note ton temps.</div>
+          </div>
+        </div>
+        <div class="onboarding-test">
+          <span class="ot-emoji">🚣</span>
+          <div class="ot-info">
+            <div class="ot-name">Test Row — 1000 m</div>
+            <div class="ot-desc">Rameur 1000m à fond. Note ton temps.</div>
+          </div>
+        </div>
+        <div class="onboarding-test">
+          <span class="ot-emoji">⛷️</span>
+          <div class="ot-info">
+            <div class="ot-name">Test SkiErg — 1000 m</div>
+            <div class="ot-desc">SkiErg 1000m à fond. Note ton temps.</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="App.startFirstTest()" style="margin-bottom:10px">🎯 Enregistrer mon premier test</button>
+      <button class="btn-danger" onclick="App.skipOnboarding()" style="border:none;color:var(--text-muted);font-size:13px">Passer pour l'instant</button>
+    </div>
+  </div>
+
   <div id="app" class="app">
     <header class="header">
       <div class="header-left">
@@ -27,7 +61,6 @@
       </div>
     </header>
     <main class="main">
-      <!-- DASHBOARD -->
       <section id="view-dashboard" class="view active">
         <div class="score-hero">
           <div class="score-ring-container">
@@ -38,36 +71,19 @@
           <div class="score-trend" id="scoreTrend"></div>
         </div>
         <div class="pillar-cards">
-          <div class="pillar-card pillar-run" onclick="App.switchTab('history')">
-            <div class="pillar-icon">🏃</div><div class="pillar-name">Running</div>
-            <div class="pillar-score" id="runScore">--<small>/50</small></div>
-            <div class="pillar-detail" id="runDetail">--</div>
-          </div>
-          <div class="pillar-card pillar-row" onclick="App.switchTab('history')">
-            <div class="pillar-icon">🚣</div><div class="pillar-name">Rowing</div>
-            <div class="pillar-score" id="rowScore">--<small>/25</small></div>
-            <div class="pillar-detail" id="rowDetail">--</div>
-          </div>
-          <div class="pillar-card pillar-ski" onclick="App.switchTab('history')">
-            <div class="pillar-icon">⛷️</div><div class="pillar-name">SkiErg</div>
-            <div class="pillar-score" id="skiScore">--<small>/25</small></div>
-            <div class="pillar-detail" id="skiDetail">--</div>
-          </div>
+          <div class="pillar-card pillar-run" onclick="App.switchTab('history')"><div class="pillar-icon">🏃</div><div class="pillar-name">Running</div><div class="pillar-score" id="runScore">--<small>/50</small></div><div class="pillar-detail" id="runDetail">--</div></div>
+          <div class="pillar-card pillar-row" onclick="App.switchTab('history')"><div class="pillar-icon">🚣</div><div class="pillar-name">Rowing</div><div class="pillar-score" id="rowScore">--<small>/25</small></div><div class="pillar-detail" id="rowDetail">--</div></div>
+          <div class="pillar-card pillar-ski" onclick="App.switchTab('history')"><div class="pillar-icon">⛷️</div><div class="pillar-name">SkiErg</div><div class="pillar-score" id="skiScore">--<small>/25</small></div><div class="pillar-detail" id="skiDetail">--</div></div>
         </div>
         <div class="next-session-card" id="nextSessionCard">
-          <div class="nsc-header">
-            <div class="nsc-title">Prochaine séance</div>
+          <div class="nsc-header"><div class="nsc-title">Prochaine séance</div>
             <button class="btn-sm btn-accent" onclick="AICoach.generateNextSession()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3m6.36-.64l-2.12 2.12M21 12h-3m.64 6.36l-2.12-2.12M12 21v-3m-6.36.64l2.12-2.12M3 12h3m-.64-6.36l2.12 2.12"/></svg>
-              Générer via IA
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3m6.36-.64l-2.12 2.12M21 12h-3m.64 6.36l-2.12-2.12M12 21v-3m-6.36.64l2.12-2.12M3 12h3m-.64-6.36l2.12 2.12"/></svg> Générer via IA
             </button>
           </div>
           <div class="nsc-body" id="nextSessionBody"><div class="nsc-empty">Saisis ta première séance pour activer le coach IA</div></div>
         </div>
-        <div class="chart-card">
-          <div class="chart-title">Progression (4 dernières semaines)</div>
-          <div class="chart-container"><canvas id="progressChart"></canvas></div>
-        </div>
+        <div class="chart-card"><div class="chart-title">Progression (4 dernières semaines)</div><div class="chart-container"><canvas id="progressChart"></canvas></div></div>
         <div class="week-summary" id="weekSummary">
           <div class="ws-title">Cette semaine</div>
           <div class="ws-stats">
@@ -79,7 +95,6 @@
         </div>
       </section>
 
-      <!-- LOG SESSION -->
       <section id="view-log" class="view">
         <div class="view-header"><h2>Enregistrer une séance</h2></div>
         <div class="type-selector">
@@ -116,18 +131,14 @@
             <div class="form-group"><label>Repos (sec)</label><input type="number" id="logRest" class="form-input" min="0" placeholder="ex: 90"></div>
           </div>
           <div class="form-row"><div class="form-group"><label>Effort ressenti (RPE)</label>
-            <div class="rpe-selector" id="rpeSelector"><input type="range" id="logRPE" min="1" max="10" value="5" oninput="LogForm.updateRPE(this.value)">
-              <div class="rpe-display"><span class="rpe-value" id="rpeValue">5</span><span class="rpe-label" id="rpeLabel">Modéré</span></div>
-            </div>
+            <div class="rpe-selector"><input type="range" id="logRPE" min="1" max="10" value="5" oninput="LogForm.updateRPE(this.value)"><div class="rpe-display"><span class="rpe-value" id="rpeValue">5</span><span class="rpe-label" id="rpeLabel">Modéré</span></div></div>
           </div></div>
           <div class="form-row"><div class="form-group vest-group">
             <label class="checkbox-label"><input type="checkbox" id="logVest" onchange="LogForm.toggleVest()"><span>Gilet lesté</span></label>
             <div class="vest-weight hidden" id="vestWeight"><input type="number" id="logVestKg" class="form-input" min="1" max="20" step="0.5" placeholder="kg"><span class="unit">kg</span></div>
           </div></div>
           <div class="form-group"><label>Douleur tendon (0 = aucune)</label>
-            <div class="rpe-selector"><input type="range" id="logPain" min="0" max="10" value="0" oninput="LogForm.updatePain(this.value)">
-              <div class="rpe-display"><span class="rpe-value" id="painValue">0</span><span class="rpe-label" id="painLabel">Aucune</span></div>
-            </div>
+            <div class="rpe-selector"><input type="range" id="logPain" min="0" max="10" value="0" oninput="LogForm.updatePain(this.value)"><div class="rpe-display"><span class="rpe-value" id="painValue">0</span><span class="rpe-label" id="painLabel">Aucune</span></div></div>
           </div>
           <div class="form-group"><label>Notes (optionnel)</label><textarea id="logNotes" class="form-input" rows="2" placeholder="Conditions, sensations..."></textarea></div>
           <button class="btn-primary btn-save" onclick="LogForm.save()">Enregistrer la séance</button>
@@ -138,7 +149,6 @@
         </div>
       </section>
 
-      <!-- HISTORY -->
       <section id="view-history" class="view">
         <div class="view-header"><h2>Historique</h2>
           <div class="filter-tabs">
@@ -152,13 +162,12 @@
         <div class="session-list" id="sessionList"><div class="empty-state">Aucune séance enregistrée</div></div>
       </section>
 
-      <!-- AI COACH -->
       <section id="view-coach" class="view">
         <div class="view-header"><h2>Coach IA</h2></div>
         <div class="coach-chat" id="coachChat">
           <div class="coach-welcome">
             <div class="coach-avatar">🤖</div>
-            <div class="coach-msg">Salut ! Je suis ton coach HyroxForge. Je peux analyser ta progression, générer ta prochaine séance, ou répondre à tes questions d'entraînement. Qu'est-ce que tu veux faire ?</div>
+            <div class="coach-msg">Salut ! Je suis ton coach HyroxForge. Je peux analyser ta progression, générer ta prochaine séance, ou répondre à tes questions. Qu'est-ce que tu veux faire ?</div>
           </div>
           <div class="coach-actions">
             <button class="coach-action-btn" onclick="AICoach.ask('next_session')">Prochaine séance</button>
@@ -176,23 +185,18 @@
         </div>
       </section>
     </main>
-
     <nav class="bottom-nav">
       <button class="nav-btn active" data-tab="dashboard" onclick="App.switchTab('dashboard')">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        <span>Dashboard</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Dashboard</span>
       </button>
       <button class="nav-btn" data-tab="log" onclick="App.switchTab('log')">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        <span>Séance</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>Séance</span>
       </button>
       <button class="nav-btn" data-tab="history" onclick="App.switchTab('history')">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
-        <span>Historique</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg><span>Historique</span>
       </button>
       <button class="nav-btn" data-tab="coach" onclick="App.switchTab('coach')">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3m6.36-.64l-2.12 2.12M21 12h-3m.64 6.36l-2.12-2.12M12 21v-3m-6.36.64l2.12-2.12M3 12h3m-.64-6.36l2.12 2.12"/></svg>
-        <span>Coach IA</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3m6.36-.64l-2.12 2.12M21 12h-3m.64 6.36l-2.12-2.12M12 21v-3m-6.36.64l2.12-2.12M3 12h3m-.64-6.36l2.12 2.12"/></svg><span>Coach IA</span>
       </button>
     </nav>
   </div>
@@ -202,7 +206,7 @@
     <div class="modal-content">
       <div class="modal-header"><h3>Paramètres</h3><button class="btn-icon" onclick="App.closeSettings()">&times;</button></div>
       <div class="modal-body">
-        <div class="form-group"><label>URL du Cloudflare Worker</label><input type="url" id="settingsWorkerUrl" class="form-input" placeholder="https://your-worker.workers.dev"><small class="form-hint">Proxy vers l'API Claude (comme SlovakForge)</small></div>
+        <div class="form-group"><label>URL du Cloudflare Worker</label><input type="url" id="settingsWorkerUrl" class="form-input" placeholder="https://your-worker.workers.dev"><small class="form-hint">Proxy vers l'API Claude</small></div>
         <div class="form-group"><label>Objectif 10km (km/h)</label><input type="number" id="settingsGoalSpeed" class="form-input" value="15" min="10" max="20" step="0.5"></div>
         <div class="form-group"><label>Date de la compétition</label><input type="date" id="settingsCompDate" class="form-input"></div>
         <div class="form-group"><label>Poids (kg)</label><input type="number" id="settingsWeight" class="form-input" min="40" max="150" step="0.5"></div>
