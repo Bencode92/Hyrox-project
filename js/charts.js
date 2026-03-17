@@ -1,4 +1,4 @@
-/* HyroxForge — Charts (Chart.js) — Electric Blue */
+/* HyroxForge — Charts (Electric Blue) */
 const Charts = {
   instances: {},
   colors: { accent: '#00a8ff', accentDim: 'rgba(0,168,255,0.3)', teal: '#00d4aa', tealDim: 'rgba(0,212,170,0.3)', purple: '#8b5cf6', purpleDim: 'rgba(139,92,246,0.3)', amber: '#f0a030', text: '#8892a8', grid: 'rgba(0,168,255,0.06)' },
@@ -8,18 +8,21 @@ const Charts = {
     const canvas = document.getElementById('scoreRing');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    const size = 160;
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = 180 * dpr; canvas.height = 180 * dpr; ctx.scale(dpr, dpr);
-    const cx = 90, cy = 90, r = 75, lineWidth = 10;
+    canvas.width = size * dpr; canvas.height = size * dpr;
+    canvas.style.width = size + 'px'; canvas.style.height = size + 'px';
+    ctx.scale(dpr, dpr);
+    const cx = size/2, cy = size/2, r = 65, lineWidth = 8;
+    ctx.clearRect(0, 0, size, size);
+    /* bg ring */
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
     ctx.strokeStyle = 'rgba(0,168,255,0.1)'; ctx.lineWidth = lineWidth; ctx.stroke();
     if (score > 0) {
       const startAngle = -Math.PI / 2;
       const endAngle = startAngle + (2 * Math.PI * Math.min(score, 100) / 100);
       ctx.beginPath(); ctx.arc(cx, cy, r, startAngle, endAngle);
-      ctx.strokeStyle = '#00a8ff'; ctx.lineWidth = lineWidth; ctx.lineCap = 'round';
-      ctx.shadowColor = 'rgba(0,168,255,0.5)'; ctx.shadowBlur = 15;
-      ctx.stroke(); ctx.shadowBlur = 0;
+      ctx.strokeStyle = '#00a8ff'; ctx.lineWidth = lineWidth; ctx.lineCap = 'round'; ctx.stroke();
     }
   },
 
