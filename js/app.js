@@ -1,4 +1,4 @@
-/* HyroxForge — App v7 — Modifier tests + Lancer le plan */
+/* HyroxForge — App v8 — Date de début personnalisable + plan auto-update */
 const App = {
   currentTab: 'dashboard',
   planLaunched: false,
@@ -23,7 +23,6 @@ const App = {
     this.renderZones(); this.renderWeekPlan();
   },
 
-  /* ===== PRE-REMPLIR LES CHAMPS TEST ===== */
   populateTestFields() {
     const t = Training.getTestResults();
     if (!t) return;
@@ -41,7 +40,6 @@ const App = {
     document.getElementById('obSkiSec').value = skiSec;
   },
 
-  /* ===== SAUVEGARDER LES TESTS (onboarding) ===== */
   saveOnboarding() {
     const testType = document.querySelector('input[name="testType"]:checked');
     const type = testType ? testType.value : '1km';
@@ -58,44 +56,44 @@ const App = {
     document.getElementById('onboarding').classList.add('hidden');
     const label = type === 'demicooper' ? 'demi-Cooper' : 'test 1km \u00d7 0.95';
     this.toast('VMA: ' + data.run.vma + ' km/h (' + label + ')', 'success');
-    // Si le plan n'est pas encore lancé, montrer l'écran de lancement
     if (!this.planLaunched) {
       this.showLaunchScreen();
     } else {
-      // Modifier les tests sans relancer → regénérer le plan
       localStorage.removeItem('hf_weekplan');
       this.renderZones(); this.renderWeekPlan(); this.refreshDashboard();
       this.toast('Zones recalcul\u00e9es + plan mis \u00e0 jour', 'success');
     }
   },
 
-  /* ===== ÉCRAN DE LANCEMENT DU PLAN ===== */
+  /* ===== \u00c9CRAN DE LANCEMENT ===== */
   showLaunchScreen() {
     const zones = Training.getZonesSummary();
     if (!zones) return;
     const r = zones.run;
     const rowP = Training.fmtP(zones.row.testPace500);
     const skiP = Training.fmtP(zones.ski.testPace500);
-    const t = Training.getTestResults();
-    const today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const today = new Date().toISOString().split('T')[0];
 
     const el = document.getElementById('launchScreen');
     el.classList.remove('hidden');
     el.innerHTML = '<div class="onboarding-card" style="max-width:420px">' +
       '<h2 style="margin-bottom:12px">\ud83c\udfc1 Ton plan est <span>pr\u00eat</span></h2>' +
-      '<p style="color:var(--text-secondary);font-size:12px;margin-bottom:16px">V\u00e9rifie tes valeurs. Tu peux les modifier avant de lancer.</p>' +
+      '<p style="color:var(--text-secondary);font-size:12px;margin-bottom:16px">V\u00e9rifie tes valeurs et choisis ta date de d\u00e9but.</p>' +
 
       '<div style="display:grid;gap:6px;margin-bottom:16px;font-size:12px">' +
         '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--accent-dim);border-radius:8px"><span style="color:var(--accent)">\ud83c\udfc3 VMA</span><span style="font-weight:700">' + r.vma + ' km/h</span></div>' +
         '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:8px"><span>Z2</span><span>' + Training.fmtS(r.z2.min) + '-' + Training.fmtS(r.z2.max) + ' km/h</span></div>' +
         '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:8px"><span>Tempo</span><span>' + Training.fmtS(r.tempo.min) + '-' + Training.fmtS(r.tempo.max) + ' km/h</span></div>' +
-        '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:8px"><span>Frac court</span><span>' + Training.fmtS(r.iv_short.min) + '-' + Training.fmtS(r.iv_short.max) + ' km/h</span></div>' +
-        '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:8px"><span>\ud83d\udea3 Row</span><span>' + rowP + '/500m (test: ' + Training.fmtP(zones.row.test1000) + '/1000m)</span></div>' +
-        '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:8px"><span>\u26f7\ufe0f Ski</span><span>' + skiP + '/500m (test: ' + Training.fmtP(zones.ski.test1000) + '/1000m)</span></div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:8px"><span>\ud83d\udea3 Row</span><span>' + rowP + '/500m</span></div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:8px"><span>\u26f7\ufe0f Ski</span><span>' + skiP + '/500m</span></div>' +
+      '</div>' +
+
+      '<div style="margin-bottom:16px">' +
+        '<label style="font-size:12px;font-weight:500;color:var(--text-secondary);display:block;margin-bottom:5px">\ud83d\udcc5 Date de d\u00e9but du plan</label>' +
+        '<input type="date" id="launchDate" class="form-input" value="' + today + '" style="font-size:14px">' +
       '</div>' +
 
       '<div style="padding:10px 12px;background:var(--bg-input);border-radius:8px;margin-bottom:16px;font-size:11px;color:var(--text-secondary)">' +
-        '<div style="font-weight:600;color:var(--text-primary);margin-bottom:4px">\ud83d\udcc5 D\u00e9but: ' + today + '</div>' +
         '<div>\u2022 Sem 1-8 : 4 s\u00e9ances/sem max (tendon)</div>' +
         '<div>\u2022 Row : technique pure les 4 premi\u00e8res semaines</div>' +
         '<div>\u2022 D\u00e9charge automatique sem 4, 8, 12, 16, 20, 24</div>' +
@@ -109,23 +107,29 @@ const App = {
 
   /* ===== LANCER LE PLAN ===== */
   launchPlan() {
+    const dateInput = document.getElementById('launchDate');
+    const startDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
+    const startISO = new Date(startDate + 'T00:00:00').toISOString();
+
     this.planLaunched = true;
-    localStorage.setItem('hf_plan_launched', new Date().toISOString());
-    // Reset le compteur de semaines à aujourd'hui
+    localStorage.setItem('hf_plan_launched', startISO);
+
+    // Set la date de d\u00e9but des tests = date choisie
     const t = Training.getTestResults();
     if (t) {
-      t.run.date = new Date().toISOString();
-      t.row.date = new Date().toISOString();
-      t.ski.date = new Date().toISOString();
+      t.run.date = startISO;
+      t.row.date = startISO;
+      t.ski.date = startISO;
       localStorage.setItem('hf_tests', JSON.stringify(t));
     }
     localStorage.removeItem('hf_weekplan');
     document.getElementById('launchScreen').classList.add('hidden');
     this.renderZones(); this.renderWeekPlan(); this.refreshDashboard();
-    this.toast('\ud83d\ude80 Plan lanc\u00e9 ! Semaine 1 commence aujourd\'hui', 'success');
+
+    const dateStr = new Date(startDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+    this.toast('\ud83d\ude80 Plan lanc\u00e9 ! D\u00e9but: ' + dateStr, 'success');
   },
 
-  /* ===== MODIFIER LES TESTS (sans relancer) ===== */
   openEditTests() {
     document.getElementById('launchScreen').classList.add('hidden');
     this.populateTestFields();
@@ -140,12 +144,17 @@ const App = {
     const r = z.run, w = Training.getCurrentWeek();
     const maxSess = Training.getMaxSessionsPerWeek(w);
     const rowPhase = Training.getRowPhaseLabel(w);
+
+    // Date de lancement
+    const launchDate = localStorage.getItem('hf_plan_launched');
+    const launchStr = launchDate ? new Date(launchDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+
     const dl = Training.isDeloadWeek(w)
       ? '<div style="padding:5px 8px;background:rgba(240,160,48,.12);border-radius:6px;color:#f0a030;font-weight:600;font-size:11px">\u26a1 D\u00c9CHARGE sem '+(w+1)+'</div>'
-      : '<div style="padding:5px 8px;background:var(--bg-input);border-radius:6px;color:var(--text-muted);font-size:11px">Sem '+(w+1)+' \u2014 '+maxSess+' s\u00e9ances max</div>';
+      : '<div style="padding:5px 8px;background:var(--bg-input);border-radius:6px;color:var(--text-muted);font-size:11px">Sem '+(w+1)+' \u2014 '+maxSess+' s\u00e9ances max' + (launchStr ? ' \u2014 d\u00e9but ' + launchStr : '') + '</div>';
 
     const tests = Training.getTestResults();
-    const testInfo = tests ? '<div style="padding:5px 8px;background:var(--bg-input);border-radius:6px;font-size:10px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center"><span>\ud83c\udfc3 '+tests.run.speedKmh+' km/h \u00b7 \ud83d\udea3 '+Training.fmtP(z.row.testPace500)+'/500m \u00b7 \u26f7\ufe0f '+Training.fmtP(z.ski.testPace500)+'/500m</span><button onclick="App.openEditTests()" style="background:none;border:1px solid var(--accent-dim);color:var(--accent);font-size:10px;padding:2px 8px;border-radius:4px;cursor:pointer">\u270e Modifier</button></div>' : '';
+    const testInfo = tests ? '<div style="padding:5px 8px;background:var(--bg-input);border-radius:6px;font-size:10px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center"><span>\ud83c\udfc3 '+tests.run.speedKmh+' km/h \u00b7 \ud83d\udea3 '+Training.fmtP(z.row.testPace500)+'/500m \u00b7 \u26f7\ufe0f '+Training.fmtP(z.ski.testPace500)+'/500m</span><button onclick="App.openEditTests()" style="background:none;border:1px solid var(--accent-dim);color:var(--accent);font-size:10px;padding:2px 8px;border-radius:4px;cursor:pointer">\u270e</button></div>' : '';
 
     document.getElementById('zonesContent').innerHTML='<div style="display:grid;gap:4px;font-size:11px">'+dl+testInfo+
       '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--accent-dim);border-radius:6px"><span style="color:var(--accent)">\ud83c\udfc3 VMA</span><span style="font-weight:600">'+r.vma+' km/h</span></div>'+
@@ -165,12 +174,21 @@ const App = {
     let plan = Planner.getSavedPlan();
     if (!plan) { plan = Planner.generate(zones, week); Planner.savePlan(plan); }
     const today = new Date().getDay(), todayIdx = today===0?6:today-1;
+
+    // Marquer les s\u00e9ances d\u00e9j\u00e0 faites cette semaine
+    const doneSessions = Storage.getSessionsThisWeek();
+    const doneTypes = doneSessions.map(s => s.type + ':' + s.sessionType);
+
     document.getElementById('planDays').innerHTML = plan.map((d,i) => {
-      const isToday=i===todayIdx, emoji=d.slot==='rest'?'\ud83d\udca4':d.exerciseType==='run'?'\ud83c\udfc3':d.exerciseType==='row'?'\ud83d\udea3':'\u26f7\ufe0f';
-      const title=d.session?d.session.title:d.label, meta=d.session&&d.session.details?Object.values(d.session.details).slice(0,2).join(' \u00b7 '):(d.slot==='rest'?'R\u00e9cup':'');
-      const cls=(isToday?' today':'')+(d.done?' done':'')+(d.slot==='rest'?' rest':'');
+      const isToday=i===todayIdx;
+      const emoji=d.slot==='rest'?'\ud83d\udca4':d.exerciseType==='run'?'\ud83c\udfc3':d.exerciseType==='row'?'\ud83d\udea3':'\u26f7\ufe0f';
+      const title=d.session?d.session.title:d.label;
+      const meta=d.session&&d.session.details?Object.values(d.session.details).slice(0,2).join(' \u00b7 '):(d.slot==='rest'?'R\u00e9cup':'');
+      // V\u00e9rifier si cette s\u00e9ance a d\u00e9j\u00e0 \u00e9t\u00e9 faite
+      const isDone = d.session && doneTypes.some(dt => dt === d.exerciseType + ':' + d.sessionType);
+      const cls=(isToday?' today':'')+(isDone?' done':'')+(d.slot==='rest'?' rest':'');
       const oc=d.session?' onclick="App.openPlanSession('+i+')"':'';
-      return '<div class="plan-day'+cls+'"'+oc+'><div class="plan-day-name'+(isToday?' today-name':'')+'">'+d.day.slice(0,3)+'</div><div class="plan-day-badge">'+emoji+'</div><div class="plan-day-info"><div class="plan-day-title">'+title+'</div><div class="plan-day-meta">'+meta+'</div></div>'+(d.done?'<div class="plan-day-check">\u2713</div>':'')+'</div>';
+      return '<div class="plan-day'+cls+'"'+oc+'><div class="plan-day-name'+(isToday?' today-name':'')+'">'+d.day.slice(0,3)+'</div><div class="plan-day-badge">'+emoji+'</div><div class="plan-day-info"><div class="plan-day-title">'+title+'</div><div class="plan-day-meta">'+meta+'</div></div>'+(isDone?'<div class="plan-day-check">\u2713</div>':'')+'</div>';
     }).join('');
   },
 
@@ -276,6 +294,7 @@ const LogForm = {
     ['logDistance','logMin','logSec','logNotes'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('logVest').checked=false;document.getElementById('vestWeight').classList.add('hidden');
     document.getElementById('logRPE').value=5;this.updateRPE(5);document.getElementById('logPain').value=0;this.updatePain(0);
+    // Auto-update plan: regénérer pour mettre à jour les checks
     App.refreshDashboard();App.renderWeekPlan();
   },
 };
