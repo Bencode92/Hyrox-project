@@ -1,11 +1,10 @@
-/* HyroxForge — App v4.1 — Worker pré-connecté */
+/* HyroxForge — App v5 — Expert validated */
 const App = {
   currentTab: 'dashboard',
   init() {
     this.switchTab('dashboard'); this.refreshDashboard(); LogForm.init();
     document.getElementById('logDate').valueAsDate = new Date();
     const s = Storage.getSettings();
-    // Auto-remplir le worker URL si vide
     if (!s.workerUrl) { s.workerUrl = AICoach.PROXY; Storage.saveSettings(s); }
     document.getElementById('settingsWorkerUrl').value = s.workerUrl;
     document.getElementById('settingsGoalSpeed').value = s.goalSpeed;
@@ -16,12 +15,20 @@ const App = {
   },
 
   saveOnboarding() {
-    const rs = parseFloat(document.getElementById('obRunSpeed').value)||12;
-    const rw = Training.parseTime(document.getElementById('obRowMin').value, document.getElementById('obRowSec').value)||270;
-    const sk = Training.parseTime(document.getElementById('obSkiMin').value, document.getElementById('obSkiSec').value)||270;
-    const data = Training.saveTestResults(rs, rw, sk);
+    const testType = document.querySelector('input[name="testType"]:checked')?.value || '1km';
+    let runSpeed;
+    if (testType === 'demicooper') {
+      const dist = parseFloat(document.getElementById('obCooperDist').value) || 1200;
+      runSpeed = Training.demiCooperToVMA(dist);
+    } else {
+      runSpeed = parseFloat(document.getElementById('obRunSpeed').value) || 12;
+    }
+    const rw = Training.parseTime(document.getElementById('obRowMin').value, document.getElementById('obRowSec').value) || 270;
+    const sk = Training.parseTime(document.getElementById('obSkiMin').value, document.getElementById('obSkiSec').value) || 270;
+    const data = Training.saveTestResults(runSpeed, rw, sk, testType);
     document.getElementById('onboarding').classList.add('hidden');
-    this.toast('VMA: ' + data.run.vma + ' km/h (test ' + rs + ' × 0.95)', 'success');
+    const label = testType === 'demicooper' ? 'demi-Cooper' : 'test 1km × 0.95';
+    this.toast('VMA: ' + data.run.vma + ' km/h (' + label + ')', 'success');
     this.renderZones(); this.renderWeekPlan(); this.refreshDashboard();
   },
 
@@ -29,14 +36,18 @@ const App = {
     const z = Training.getZonesSummary();
     if (!z) { document.getElementById('zonesCard').style.display='none'; return; }
     document.getElementById('zonesCard').style.display='block';
-    const r=z.run, w=Training.getCurrentWeek();
-    const dl = Training.isDeloadWeek(w) ? '<div style="padding:5px 8px;background:var(--accent-amber-dim,rgba(240,160,48,.12));border-radius:6px;color:var(--accent-amber);font-weight:600;font-size:11px">⚡ DÉCHARGE sem '+(w+1)+'</div>' : '<div style="padding:5px 8px;background:var(--bg-input);border-radius:6px;color:var(--text-muted);font-size:11px">Sem '+(w+1)+'</div>';
+    const r = z.run, w = Training.getCurrentWeek();
+    const maxSess = Training.getMaxSessionsPerWeek(w);
+    const rowPhase = Training.getRowPhaseLabel(w);
+    const dl = Training.isDeloadWeek(w)
+      ? '<div style="padding:5px 8px;background:var(--accent-amber-dim,rgba(240,160,48,.12));border-radius:6px;color:var(--accent-amber);font-weight:600;font-size:11px">⚡ DÉCHARGE sem '+(w+1)+'</div>'
+      : '<div style="padding:5px 8px;background:var(--bg-input);border-radius:6px;color:var(--text-muted);font-size:11px">Sem '+(w+1)+' — '+maxSess+' séances max</div>';
     document.getElementById('zonesContent').innerHTML='<div style="display:grid;gap:4px;font-size:11px">'+dl+
       '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--accent-dim);border-radius:6px"><span style="color:var(--accent)">🏃 VMA</span><span style="font-weight:600">'+r.vma+' km/h</span></div>'+
       '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>Z2</span><span>'+Training.fmtS(r.z2.min)+'-'+Training.fmtS(r.z2.max)+' km/h</span></div>'+
       '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>Tempo</span><span>'+Training.fmtS(r.tempo.min)+'-'+Training.fmtS(r.tempo.max)+' km/h</span></div>'+
       '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>Frac court</span><span>'+Training.fmtS(r.iv_short.min)+'-'+Training.fmtS(r.iv_short.max)+' km/h</span></div>'+
-      '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>🚣 Row</span><span>'+Training.fmtP(z.row.testPace500)+'/500m</span></div>'+
+      '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>🚣 Row</span><span>'+Training.fmtP(z.row.testPace500)+'/500m — <em>'+rowPhase+'</em></span></div>'+
       '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>⛷️ Ski</span><span>'+Training.fmtP(z.ski.testPace500)+'/500m</span></div>'+
     '</div>';
   },
@@ -115,7 +126,6 @@ const App = {
 
   openSettings(){
     document.getElementById('settingsModal').classList.remove('hidden');
-    // Update AI status
     const el = document.getElementById('aiStatus');
     if (el) {
       const url = Storage.getSettings().workerUrl || AICoach.PROXY;
@@ -133,7 +143,7 @@ const App = {
   toast(m,t){const c=document.getElementById('toastContainer'),e=document.createElement('div');e.className='toast toast-'+(t||'info');e.textContent=m;c.appendChild(e);setTimeout(()=>e.remove(),3000);},
 };
 
-/* Log Form */
+/* Log Form — with new session types */
 const LogForm = {
   type:'run',location:'outdoor',
   init(){this.updateRPE(5);this.updatePain(0);this.updateFormForType();},
@@ -142,8 +152,12 @@ const LogForm = {
     const dl=document.getElementById('distanceLabel'),lt=document.getElementById('locationToggle');
     if(this.type==='run'){dl.textContent='Distance (km)';lt.parentElement.classList.remove('hidden');}else{dl.textContent='Distance (m)';lt.parentElement.classList.add('hidden');this.location='gym';}
     const sel=document.getElementById('logSessionType');
-    const opts={run:['z2','tempo','intervals_short','intervals_long','long_run','fartlek','test'],row:['technique','power','endurance','racePace','test'],ski:['technique','power','endurance','racePace','test']};
-    const lbl={z2:'Zone 2',tempo:'Tempo',intervals_short:'Frac court',intervals_long:'Frac long',long_run:'Sortie longue',fartlek:'Fartlek',technique:'Technique',power:'Puissance',endurance:'Endurance',racePace:'Race Pace 🏁',test:'Test'};
+    const opts={
+      run:['z2','tempo','intervals_short','intervals_long','long_run','fartlek','fartlek_hyrox','brick','test'],
+      row:['technique','endurance','racePace','power','test'],
+      ski:['technique','endurance','racePace','power','test']
+    };
+    const lbl={z2:'Zone 2',tempo:'Tempo',intervals_short:'Frac court',intervals_long:'Frac long',long_run:'Sortie longue',fartlek:'Fartlek',fartlek_hyrox:'Fartlek Hyrox 🔥',brick:'Brick Ergo+Run 🧱',technique:'Technique',power:'Puissance',endurance:'Endurance',racePace:'Race Pace 🏁',test:'Test'};
     sel.innerHTML=opts[this.type].map(o=>'<option value="'+o+'">'+(lbl[o]||o)+'</option>').join('');
     this.updateSessionTypeUI();
   },
