@@ -1,4 +1,4 @@
-/* HyroxForge — App v5 — Expert validated + GitHub sync */
+/* HyroxForge — App v6 — Modifier tests + Lancer le plan */
 const App = {
   currentTab: 'dashboard',
   init() {
@@ -10,8 +10,30 @@ const App = {
     document.getElementById('settingsGoalSpeed').value = s.goalSpeed;
     document.getElementById('settingsCompDate').value = s.compDate || '';
     document.getElementById('settingsWeight').value = s.weight || '';
-    if (!Training.hasTests()) document.getElementById('onboarding').classList.remove('hidden');
+    if (!Training.hasTests()) {
+      document.getElementById('onboarding').classList.remove('hidden');
+    } else {
+      this.populateTestFields();
+    }
     this.renderZones(); this.renderWeekPlan();
+  },
+
+  /* ===== PRE-REMPLIR LES CHAMPS TEST AVEC LES VALEURS ACTUELLES ===== */
+  populateTestFields() {
+    const t = Training.getTestResults();
+    if (!t) return;
+    document.getElementById('obRunSpeed').value = t.run.speedKmh || 12;
+    if (t.run.testType === 'demicooper' && document.getElementById('obCooperDist')) {
+      document.getElementById('obCooperDist').value = Math.round((t.run.vma || 12) * 100);
+    }
+    const rowMin = Math.floor((t.row.time1000 || 270) / 60);
+    const rowSec = Math.round((t.row.time1000 || 270) % 60);
+    document.getElementById('obRowMin').value = rowMin;
+    document.getElementById('obRowSec').value = rowSec;
+    const skiMin = Math.floor((t.ski.time1000 || 270) / 60);
+    const skiSec = Math.round((t.ski.time1000 || 270) % 60);
+    document.getElementById('obSkiMin').value = skiMin;
+    document.getElementById('obSkiSec').value = skiSec;
   },
 
   saveOnboarding() {
@@ -28,9 +50,17 @@ const App = {
     const sk = Training.parseTime(document.getElementById('obSkiMin').value, document.getElementById('obSkiSec').value) || 270;
     const data = Training.saveTestResults(runSpeed, rw, sk, type);
     document.getElementById('onboarding').classList.add('hidden');
+    // Regénérer le plan avec les nouvelles valeurs
+    localStorage.removeItem('hf_weekplan');
     const label = type === 'demicooper' ? 'demi-Cooper' : 'test 1km \u00d7 0.95';
     this.toast('VMA: ' + data.run.vma + ' km/h (' + label + ')', 'success');
     this.renderZones(); this.renderWeekPlan(); this.refreshDashboard();
+  },
+
+  /* ===== MODIFIER LES TESTS (depuis le dashboard — sans reset) ===== */
+  openEditTests() {
+    this.populateTestFields();
+    document.getElementById('onboarding').classList.remove('hidden');
   },
 
   renderZones() {
@@ -43,7 +73,11 @@ const App = {
     const dl = Training.isDeloadWeek(w)
       ? '<div style="padding:5px 8px;background:rgba(240,160,48,.12);border-radius:6px;color:#f0a030;font-weight:600;font-size:11px">\u26a1 D\u00c9CHARGE sem '+(w+1)+'</div>'
       : '<div style="padding:5px 8px;background:var(--bg-input);border-radius:6px;color:var(--text-muted);font-size:11px">Sem '+(w+1)+' \u2014 '+maxSess+' s\u00e9ances max</div>';
-    document.getElementById('zonesContent').innerHTML='<div style="display:grid;gap:4px;font-size:11px">'+dl+
+
+    const tests = Training.getTestResults();
+    const testInfo = tests ? '<div style="padding:5px 8px;background:var(--bg-input);border-radius:6px;font-size:10px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center"><span>\ud83c\udfc3 '+tests.run.speedKmh+' km/h \u00b7 \ud83d\udea3 '+Training.fmtP(z.row.testPace500)+'/500m \u00b7 \u26f7\ufe0f '+Training.fmtP(z.ski.testPace500)+'/500m</span><button onclick="App.openEditTests()" style="background:none;border:1px solid var(--accent-dim);color:var(--accent);font-size:10px;padding:2px 8px;border-radius:4px;cursor:pointer">\u270e Modifier</button></div>' : '';
+
+    document.getElementById('zonesContent').innerHTML='<div style="display:grid;gap:4px;font-size:11px">'+dl+testInfo+
       '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--accent-dim);border-radius:6px"><span style="color:var(--accent)">\ud83c\udfc3 VMA</span><span style="font-weight:600">'+r.vma+' km/h</span></div>'+
       '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>Z2</span><span>'+Training.fmtS(r.z2.min)+'-'+Training.fmtS(r.z2.max)+' km/h</span></div>'+
       '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>Tempo</span><span>'+Training.fmtS(r.tempo.min)+'-'+Training.fmtS(r.tempo.max)+' km/h</span></div>'+
@@ -72,6 +106,7 @@ const App = {
 
   regeneratePlan() {
     const z=Training.getZonesSummary(); if(!z)return;
+    localStorage.removeItem('hf_weekplan');
     Planner.savePlan(Planner.generate(z,Training.getCurrentWeek())); this.renderWeekPlan(); this.toast('Plan r\u00e9g\u00e9n\u00e9r\u00e9','info');
   },
   openPlanSession(idx) {
