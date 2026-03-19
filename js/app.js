@@ -1,6 +1,8 @@
-/* HyroxForge — App v6 — Modifier tests + Lancer le plan */
+/* HyroxForge — App v7 — Modifier tests + Lancer le plan */
 const App = {
   currentTab: 'dashboard',
+  planLaunched: false,
+
   init() {
     this.switchTab('dashboard'); this.refreshDashboard(); LogForm.init();
     document.getElementById('logDate').valueAsDate = new Date();
@@ -10,15 +12,18 @@ const App = {
     document.getElementById('settingsGoalSpeed').value = s.goalSpeed;
     document.getElementById('settingsCompDate').value = s.compDate || '';
     document.getElementById('settingsWeight').value = s.weight || '';
+    this.planLaunched = !!localStorage.getItem('hf_plan_launched');
     if (!Training.hasTests()) {
       document.getElementById('onboarding').classList.remove('hidden');
+    } else if (!this.planLaunched) {
+      this.showLaunchScreen();
     } else {
       this.populateTestFields();
     }
     this.renderZones(); this.renderWeekPlan();
   },
 
-  /* ===== PRE-REMPLIR LES CHAMPS TEST AVEC LES VALEURS ACTUELLES ===== */
+  /* ===== PRE-REMPLIR LES CHAMPS TEST ===== */
   populateTestFields() {
     const t = Training.getTestResults();
     if (!t) return;
@@ -36,6 +41,7 @@ const App = {
     document.getElementById('obSkiSec').value = skiSec;
   },
 
+  /* ===== SAUVEGARDER LES TESTS (onboarding) ===== */
   saveOnboarding() {
     const testType = document.querySelector('input[name="testType"]:checked');
     const type = testType ? testType.value : '1km';
@@ -50,15 +56,78 @@ const App = {
     const sk = Training.parseTime(document.getElementById('obSkiMin').value, document.getElementById('obSkiSec').value) || 270;
     const data = Training.saveTestResults(runSpeed, rw, sk, type);
     document.getElementById('onboarding').classList.add('hidden');
-    // Regénérer le plan avec les nouvelles valeurs
-    localStorage.removeItem('hf_weekplan');
     const label = type === 'demicooper' ? 'demi-Cooper' : 'test 1km \u00d7 0.95';
     this.toast('VMA: ' + data.run.vma + ' km/h (' + label + ')', 'success');
-    this.renderZones(); this.renderWeekPlan(); this.refreshDashboard();
+    // Si le plan n'est pas encore lancé, montrer l'écran de lancement
+    if (!this.planLaunched) {
+      this.showLaunchScreen();
+    } else {
+      // Modifier les tests sans relancer → regénérer le plan
+      localStorage.removeItem('hf_weekplan');
+      this.renderZones(); this.renderWeekPlan(); this.refreshDashboard();
+      this.toast('Zones recalcul\u00e9es + plan mis \u00e0 jour', 'success');
+    }
   },
 
-  /* ===== MODIFIER LES TESTS (depuis le dashboard — sans reset) ===== */
+  /* ===== ÉCRAN DE LANCEMENT DU PLAN ===== */
+  showLaunchScreen() {
+    const zones = Training.getZonesSummary();
+    if (!zones) return;
+    const r = zones.run;
+    const rowP = Training.fmtP(zones.row.testPace500);
+    const skiP = Training.fmtP(zones.ski.testPace500);
+    const t = Training.getTestResults();
+    const today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+    const el = document.getElementById('launchScreen');
+    el.classList.remove('hidden');
+    el.innerHTML = '<div class="onboarding-card" style="max-width:420px">' +
+      '<h2 style="margin-bottom:12px">\ud83c\udfc1 Ton plan est <span>pr\u00eat</span></h2>' +
+      '<p style="color:var(--text-secondary);font-size:12px;margin-bottom:16px">V\u00e9rifie tes valeurs. Tu peux les modifier avant de lancer.</p>' +
+
+      '<div style="display:grid;gap:6px;margin-bottom:16px;font-size:12px">' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--accent-dim);border-radius:8px"><span style="color:var(--accent)">\ud83c\udfc3 VMA</span><span style="font-weight:700">' + r.vma + ' km/h</span></div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:8px"><span>Z2</span><span>' + Training.fmtS(r.z2.min) + '-' + Training.fmtS(r.z2.max) + ' km/h</span></div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:8px"><span>Tempo</span><span>' + Training.fmtS(r.tempo.min) + '-' + Training.fmtS(r.tempo.max) + ' km/h</span></div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:8px"><span>Frac court</span><span>' + Training.fmtS(r.iv_short.min) + '-' + Training.fmtS(r.iv_short.max) + ' km/h</span></div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:8px"><span>\ud83d\udea3 Row</span><span>' + rowP + '/500m (test: ' + Training.fmtP(zones.row.test1000) + '/1000m)</span></div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:8px"><span>\u26f7\ufe0f Ski</span><span>' + skiP + '/500m (test: ' + Training.fmtP(zones.ski.test1000) + '/1000m)</span></div>' +
+      '</div>' +
+
+      '<div style="padding:10px 12px;background:var(--bg-input);border-radius:8px;margin-bottom:16px;font-size:11px;color:var(--text-secondary)">' +
+        '<div style="font-weight:600;color:var(--text-primary);margin-bottom:4px">\ud83d\udcc5 D\u00e9but: ' + today + '</div>' +
+        '<div>\u2022 Sem 1-8 : 4 s\u00e9ances/sem max (tendon)</div>' +
+        '<div>\u2022 Row : technique pure les 4 premi\u00e8res semaines</div>' +
+        '<div>\u2022 D\u00e9charge automatique sem 4, 8, 12, 16, 20, 24</div>' +
+        '<div>\u2022 Adaptation en temps r\u00e9el selon tes RPE</div>' +
+      '</div>' +
+
+      '<button class="btn-primary" onclick="App.launchPlan()" style="font-size:16px;padding:16px">\ud83d\ude80 Lancer le plan</button>' +
+      '<button onclick="App.openEditTests()" style="width:100%;margin-top:8px;padding:10px;background:none;border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-secondary);font-size:13px;cursor:pointer">\u270e Modifier mes valeurs</button>' +
+    '</div>';
+  },
+
+  /* ===== LANCER LE PLAN ===== */
+  launchPlan() {
+    this.planLaunched = true;
+    localStorage.setItem('hf_plan_launched', new Date().toISOString());
+    // Reset le compteur de semaines à aujourd'hui
+    const t = Training.getTestResults();
+    if (t) {
+      t.run.date = new Date().toISOString();
+      t.row.date = new Date().toISOString();
+      t.ski.date = new Date().toISOString();
+      localStorage.setItem('hf_tests', JSON.stringify(t));
+    }
+    localStorage.removeItem('hf_weekplan');
+    document.getElementById('launchScreen').classList.add('hidden');
+    this.renderZones(); this.renderWeekPlan(); this.refreshDashboard();
+    this.toast('\ud83d\ude80 Plan lanc\u00e9 ! Semaine 1 commence aujourd\'hui', 'success');
+  },
+
+  /* ===== MODIFIER LES TESTS (sans relancer) ===== */
   openEditTests() {
+    document.getElementById('launchScreen').classList.add('hidden');
     this.populateTestFields();
     document.getElementById('onboarding').classList.remove('hidden');
   },
@@ -66,6 +135,7 @@ const App = {
   renderZones() {
     const z = Training.getZonesSummary();
     if (!z) { document.getElementById('zonesCard').style.display = 'none'; return; }
+    if (!this.planLaunched) { document.getElementById('zonesCard').style.display = 'none'; return; }
     document.getElementById('zonesCard').style.display = 'block';
     const r = z.run, w = Training.getCurrentWeek();
     const maxSess = Training.getMaxSessionsPerWeek(w);
@@ -89,7 +159,7 @@ const App = {
 
   renderWeekPlan() {
     const zones = Training.getZonesSummary();
-    if (!zones) { document.getElementById('planCard').style.display='none'; return; }
+    if (!zones || !this.planLaunched) { document.getElementById('planCard').style.display='none'; return; }
     document.getElementById('planCard').style.display='block';
     const week = Training.getCurrentWeek();
     let plan = Planner.getSavedPlan();
@@ -160,7 +230,7 @@ const App = {
   },
   closeSettings(){document.getElementById('settingsModal').classList.add('hidden');},
   saveSettings(){Storage.saveSettings({workerUrl:document.getElementById('settingsWorkerUrl').value.trim(),goalSpeed:parseFloat(document.getElementById('settingsGoalSpeed').value)||15,compDate:document.getElementById('settingsCompDate').value,weight:parseFloat(document.getElementById('settingsWeight').value)||75});this.closeSettings();this.toast('Sauvegard\u00e9','success');},
-  resetData(){if(confirm('Supprimer toutes les donn\u00e9es ?')){Storage.resetAll();location.reload();}},
+  resetData(){if(confirm('Supprimer toutes les donn\u00e9es ?')){Storage.resetAll();localStorage.removeItem('hf_plan_launched');location.reload();}},
   toast(m,t){const c=document.getElementById('toastContainer'),e=document.createElement('div');e.className='toast toast-'+(t||'info');e.textContent=m;c.appendChild(e);setTimeout(()=>e.remove(),3000);},
 };
 
