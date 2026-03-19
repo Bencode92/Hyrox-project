@@ -170,37 +170,199 @@ const App = {
     const zones = Training.getZonesSummary();
     if (!zones || !this.planLaunched) { document.getElementById('planCard').style.display='none'; return; }
     document.getElementById('planCard').style.display='block';
-    const week = Training.getCurrentWeek();
+
+    const pos = Planner.getPlanPosition();
+    const weekNum = pos.week;
     let plan = Planner.getSavedPlan();
-    if (!plan) { plan = Planner.generate(zones, week); Planner.savePlan(plan); }
-    const today = new Date().getDay(), todayIdx = today===0?6:today-1;
+    if (!plan) { plan = Planner.generate(zones, weekNum); Planner.savePlan(plan); }
 
-    // Marquer les s\u00e9ances d\u00e9j\u00e0 faites cette semaine
-    const doneSessions = Storage.getSessionsThisWeek();
-    const doneTypes = doneSessions.map(s => s.type + ':' + s.sessionType);
+    // Re-check done status against actual sessions
+    const doneSessions = Planner.getSessionsThisPlanWeek();
+    plan.forEach((d, i) => {
+      if (d.session) {
+        d.done = Planner.isSessionDone(d.exerciseType, d.sessionType, doneSessions, i);
+        d.skipped = Planner.isSkipped(weekNum, i);
+      }
+    });
 
-    document.getElementById('planDays').innerHTML = plan.map((d,i) => {
-      const isToday=i===todayIdx;
-      const emoji=d.slot==='rest'?'\ud83d\udca4':d.exerciseType==='run'?'\ud83c\udfc3':d.exerciseType==='row'?'\ud83d\udea3':'\u26f7\ufe0f';
-      const title=d.session?d.session.title:d.label;
-      const meta=d.session&&d.session.details?Object.values(d.session.details).slice(0,2).join(' \u00b7 '):(d.slot==='rest'?'R\u00e9cup':'');
-      // V\u00e9rifier si cette s\u00e9ance a d\u00e9j\u00e0 \u00e9t\u00e9 faite
-      const isDone = d.session && doneTypes.some(dt => dt === d.exerciseType + ':' + d.sessionType);
-      const cls=(isToday?' today':'')+(isDone?' done':'')+(d.slot==='rest'?' rest':'');
-      const oc=d.session?' onclick="App.openPlanSession('+i+')"':'';
-      return '<div class="plan-day'+cls+'"'+oc+'><div class="plan-day-name'+(isToday?' today-name':'')+'">'+d.day.slice(0,3)+'</div><div class="plan-day-badge">'+emoji+'</div><div class="plan-day-info"><div class="plan-day-title">'+title+'</div><div class="plan-day-meta">'+meta+'</div></div>'+(isDone?'<div class="plan-day-check">\u2713</div>':'')+'</div>';
+    const deload = Training.isDeloadWeek(weekNum);
+    const maxSess = Training.getMaxSessionsPerWeek(weekNum);
+    const doneCount = plan.filter(d => d.done).length;
+    const totalSess = plan.filter(d => d.slot !== 'rest').length;
+    const progressPct = totalSess > 0 ? Math.round(doneCount / totalSess * 100) : 0;
+
+    // Week badge
+    const deloadBadge = deload ? ' <span class="plan-deload-badge">\u26a1 D\u00c9CHARGE</span>' : '';
+    document.querySelector('#planCard .plan-title span').innerHTML =
+      'Semaine ' + (weekNum + 1) + deloadBadge +
+      '<span class="plan-progress-text">' + doneCount + '/' + totalSess + '</span>';
+
+    // Progress bar
+    let progressBar = document.getElementById('planProgress');
+    if (!progressBar) {
+      progressBar = document.createElement('div');
+      progressBar.id = 'planProgress';
+      progressBar.className = 'plan-progress-bar';
+      document.querySelector('#planCard .plan-title').after(progressBar);
+    }
+    progressBar.innerHTML = '<div class="plan-progress-fill" style="width:' + progressPct + '%"></div>';
+
+    document.getElementById('planDays').innerHTML = plan.map((d, i) => {
+      const isToday = i === pos.dayInWeek;
+      const isPast = i < pos.dayInWeek;
+      const isFuture = i > pos.dayInWeek;
+
+      const emoji = d.slot === 'rest' ? '\ud83d\udca4' : d.exerciseType === 'run' ? '\ud83c\udfc3' : d.exerciseType === 'row' ? '\ud83d\udea3' : '\u26f7\ufe0f';
+      const title = d.session ? d.session.title : d.label;
+      const meta = d.session && d.session.details ? Object.values(d.session.details).slice(0, 2).join(' \u00b7 ') : (d.slot === 'rest' ? 'R\u00e9cup' : '');
+
+      // Status icon and class
+      let statusIcon = '', statusClass = '';
+      if (d.slot === 'rest') {
+        statusClass = ' rest';
+      } else if (d.done) {
+        statusIcon = '<div class="plan-status plan-status-done">\u2713</div>';
+        statusClass = ' done';
+      } else if (d.skipped) {
+        statusIcon = '<div class="plan-status plan-status-skip">\u2717</div>';
+        statusClass = ' skipped';
+      } else if (isToday) {
+        statusIcon = '<div class="plan-status plan-status-today">\ud83d\udccd</div>';
+        statusClass = ' today';
+      } else if (isFuture) {
+        statusIcon = '<div class="plan-status plan-status-pending">\u23f3</div>';
+        statusClass = ' pending';
+      } else if (isPast) {
+        statusIcon = '<div class="plan-status plan-status-missed">!</div>';
+        statusClass = ' missed';
+      }
+
+      // AI modified badge
+      const aiTag = d.aiModified ? '<span class="plan-ai-tag">\ud83e\udd16</span>' : '';
+
+      // Skip button (only for non-rest, non-done, non-skipped, today or past)
+      let skipBtn = '';
+      if (d.slot !== 'rest' && !d.done && !d.skipped && (isToday || isPast)) {
+        skipBtn = '<button class="plan-skip-btn" onclick="event.stopPropagation();App.skipSession(' + i + ')" title="Pas pu">\u2717</button>';
+      }
+      // Undo skip button
+      if (d.skipped) {
+        skipBtn = '<button class="plan-skip-btn plan-undo-skip" onclick="event.stopPropagation();App.undoSkip(' + i + ')" title="Annuler skip">\u21a9</button>';
+      }
+
+      const clickable = d.session ? ' onclick="App.openPlanSession(' + i + ')"' : '';
+
+      return '<div class="plan-day' + statusClass + '"' + clickable + '>' +
+        '<div class="plan-day-left">' +
+          '<div class="plan-day-name' + (isToday ? ' today-name' : '') + '">' + d.day.slice(0, 3) + '<span class="plan-day-date">' + (d.dateLabel || '') + '</span></div>' +
+          '<div class="plan-day-badge">' + emoji + '</div>' +
+        '</div>' +
+        '<div class="plan-day-info">' +
+          '<div class="plan-day-title">' + title + aiTag + '</div>' +
+          '<div class="plan-day-meta">' + meta + '</div>' +
+        '</div>' +
+        statusIcon + skipBtn +
+      '</div>';
     }).join('');
   },
 
-  regeneratePlan() {
-    const z=Training.getZonesSummary(); if(!z)return;
-    localStorage.removeItem('hf_weekplan');
-    Planner.savePlan(Planner.generate(z,Training.getCurrentWeek())); this.renderWeekPlan(); this.toast('Plan r\u00e9g\u00e9n\u00e9r\u00e9','info');
+  skipSession(slotIndex) {
+    const pos = Planner.getPlanPosition();
+    Planner.addSkip(pos.week, slotIndex);
+    this.renderWeekPlan();
+    this.toast('S\u00e9ance marqu\u00e9e skip', 'info');
+    AICoach.adaptPlanAfterSkip(slotIndex);
   },
+
+  undoSkip(slotIndex) {
+    const pos = Planner.getPlanPosition();
+    Planner.removeSkip(pos.week, slotIndex);
+    this.renderWeekPlan();
+    this.toast('Skip annul\u00e9', 'info');
+  },
+
   openPlanSession(idx) {
-    const plan=Planner.getSavedPlan(); if(!plan||!plan[idx]||!plan[idx].session)return;
-    const d=plan[idx]; this.switchTab('log'); LogForm.setType(d.exerciseType);
-    setTimeout(()=>{document.getElementById('logSessionType').value=d.sessionType;LogForm.updateSessionTypeUI();LogForm.showSuggestion();},100);
+    const plan = Planner.getSavedPlan();
+    if (!plan || !plan[idx] || !plan[idx].session) return;
+    const d = plan[idx];
+    this.showSessionDetail(d, idx);
+  },
+
+  showSessionDetail(planDay, idx) {
+    const s = planDay.session;
+    if (!s) return;
+
+    const emoji = planDay.exerciseType === 'run' ? '\ud83c\udfc3' : planDay.exerciseType === 'row' ? '\ud83d\udea3' : '\u26f7\ufe0f';
+    const typeName = Scoring.getTypeName(planDay.exerciseType);
+    const sessionLabel = Scoring.getSessionTypeLabel(planDay.sessionType);
+
+    let detailsHtml = '';
+    if (s.details) {
+      detailsHtml = '<div class="sd-details">';
+      for (const [k, v] of Object.entries(s.details)) {
+        detailsHtml += '<div class="sd-detail-row"><span class="sd-detail-key">' +
+          k.replace(/_/g, ' ').replace(/^./, c => c.toUpperCase()) +
+          '</span><span class="sd-detail-val">' + v + '</span></div>';
+      }
+      detailsHtml += '</div>';
+    }
+
+    const modal = document.getElementById('sessionDetailModal') || this.createSessionDetailModal();
+    modal.querySelector('.sd-body').innerHTML =
+      '<div class="sd-header-info">' +
+        '<div class="sd-emoji">' + emoji + '</div>' +
+        '<div><div class="sd-type">' + typeName + ' \u2014 ' + sessionLabel + '</div>' +
+          '<div class="sd-day">' + planDay.day + ' ' + (planDay.dateLabel || '') + '</div></div>' +
+      '</div>' +
+      (s.warmup ? '<div class="sd-section"><div class="sd-section-label">\ud83d\udd25 \u00c9chauffement</div><div class="sd-section-text">' + s.warmup + '</div></div>' : '') +
+      '<div class="sd-section"><div class="sd-section-label">\ud83c\udfaf S\u00e9ance principale</div><div class="sd-section-text sd-main">' + s.main + '</div></div>' +
+      detailsHtml +
+      (s.cooldown ? '<div class="sd-section"><div class="sd-section-label">\ud83e\uddca Retour au calme</div><div class="sd-section-text">' + s.cooldown + '</div></div>' : '') +
+      (s.tip ? '<div class="sd-tip">\ud83d\udca1 ' + s.tip + '</div>' : '') +
+      '<div class="sd-actions">' +
+        '<button class="btn-primary" onclick="App.logFromPlan(' + idx + ')">\ud83d\udcdd Enregistrer cette s\u00e9ance</button>' +
+        (planDay.done ? '' : '<button class="btn-sm sd-skip-btn" onclick="App.skipSession(' + idx + ');App.closeSessionDetail()">\u2717 Pas pu</button>') +
+      '</div>';
+    modal.classList.remove('hidden');
+  },
+
+  createSessionDetailModal() {
+    const modal = document.createElement('div');
+    modal.id = 'sessionDetailModal';
+    modal.className = 'modal hidden';
+    modal.innerHTML = '<div class="modal-backdrop" onclick="App.closeSessionDetail()"></div>' +
+      '<div class="modal-content sd-modal"><div class="modal-header"><h3>D\u00e9tail s\u00e9ance</h3><button class="btn-icon" onclick="App.closeSessionDetail()">&times;</button></div>' +
+      '<div class="modal-body sd-body"></div></div>';
+    document.body.appendChild(modal);
+    return modal;
+  },
+
+  closeSessionDetail() {
+    const m = document.getElementById('sessionDetailModal');
+    if (m) m.classList.add('hidden');
+  },
+
+  logFromPlan(idx) {
+    const plan = Planner.getSavedPlan();
+    if (!plan || !plan[idx]) return;
+    const d = plan[idx];
+    this.closeSessionDetail();
+    this.switchTab('log');
+    LogForm.setType(d.exerciseType);
+    setTimeout(() => {
+      document.getElementById('logSessionType').value = d.sessionType;
+      LogForm.updateSessionTypeUI();
+      LogForm.showSuggestion();
+    }, 100);
+  },
+
+  regeneratePlan() {
+    const z = Training.getZonesSummary(); if (!z) return;
+    localStorage.removeItem('hf_weekplan');
+    const pos = Planner.getPlanPosition();
+    Planner.savePlan(Planner.generate(z, pos.week));
+    this.renderWeekPlan();
+    this.toast('Plan r\u00e9g\u00e9n\u00e9r\u00e9', 'info');
   },
 
   switchTab(tab) {
@@ -291,10 +453,15 @@ const LogForm = {
     Storage.addScoreSnapshot({global:gs.global,run:gs.breakdown.run,row:gs.breakdown.row,ski:gs.breakdown.ski});
     App.toast('Score: '+Scoring.scoreSession(saved)+'/100','success');
     AICoach.analyzeSession(saved);
+    // Trigger AI plan adaptation if RPE extreme
+    if (saved.rpe >= 8 || saved.pain >= 3) {
+      AICoach.adaptPlanAfterSession(saved);
+    }
     ['logDistance','logMin','logSec','logNotes'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('logVest').checked=false;document.getElementById('vestWeight').classList.add('hidden');
     document.getElementById('logRPE').value=5;this.updateRPE(5);document.getElementById('logPain').value=0;this.updatePain(0);
-    // Auto-update plan: regénérer pour mettre à jour les checks
+    // Auto-update plan: regenerate to update checks
+    localStorage.removeItem('hf_weekplan');
     App.refreshDashboard();App.renderWeekPlan();
   },
 };
