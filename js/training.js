@@ -368,6 +368,10 @@ const Training = {
     return { run: this.getRunZones(t.run.speedKmh), row: this.getErgoZones(t.row.time1000), ski: this.getErgoZones(t.ski.time1000) };
   },
   getCurrentWeek() {
+    // Use Planner if available for consistent week calculation
+    if (typeof Planner !== 'undefined' && Planner.getLaunchDate()) {
+      return Planner.getPlanPosition().week;
+    }
     const t = this.getTestResults(); if (!t) return 0;
     return Math.floor((new Date() - new Date(t.run.date)) / (7*24*60*60*1000));
   },
