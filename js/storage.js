@@ -121,6 +121,7 @@ async function syncToGitHub() {
       sessions: Storage.getSessions(),
       scores: Storage.getScoreHistory(),
       settings: Storage.getSettings(),
+      skips: typeof Planner !== 'undefined' ? Planner.getSkips() : {},
     };
     await ghPut(GH.dataPath, data, '💾 Sync training data — ' + new Date().toLocaleDateString('fr-FR'), sha);
     console.log('[HyroxForge] Synced to GitHub');
@@ -155,6 +156,9 @@ async function pullFromGitHub() {
       const merged = { ...data.settings, workerUrl: local.workerUrl || data.settings.workerUrl };
       localStorage.setItem('hf_settings', JSON.stringify(merged));
     }
+    if (data.skips) {
+      localStorage.setItem('hf_skips', JSON.stringify(data.skips));
+    }
 
     return true;
   } catch (e) {
@@ -176,6 +180,10 @@ const Storage = {
   },
 
   getSessionsThisWeek() {
+    // Use plan-based week if available, fallback to calendar week
+    if (typeof Planner !== 'undefined' && Planner.getLaunchDate()) {
+      return Planner.getSessionsThisPlanWeek();
+    }
     const now = new Date();
     const monday = new Date(now);
     monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
@@ -242,6 +250,7 @@ const Storage = {
     const scores = this.getScoreHistory().slice(-10);
     const tests = this.getTests();
     const settings = this.getSettings();
+    const planSummary = typeof Planner !== 'undefined' ? Planner.getPlanSummary() : null;
     return {
       sessions: sessions.map(s => ({
         date: s.date, type: s.type, sessionType: s.sessionType,
@@ -258,6 +267,7 @@ const Storage = {
       goalSpeed: settings.goalSpeed,
       compDate: settings.compDate,
       weight: settings.weight,
+      weekPlan: planSummary,
     };
   },
 
@@ -268,6 +278,7 @@ const Storage = {
     localStorage.removeItem('hf_settings');
     localStorage.removeItem('hf_tests');
     localStorage.removeItem('hf_weekplan');
+    localStorage.removeItem('hf_skips');
   },
 };
 
