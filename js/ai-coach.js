@@ -172,4 +172,96 @@ Quand tu génères une SÉANCE, réponds en JSON strict :
 
   fmt(t) { return t.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>'); },
   esc(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; },
+
+  /* ========== AI PLAN ADAPTATION ========== */
+  async adaptPlanAfterSkip(slotIndex) {
+    const plan = Planner.getSavedPlan();
+    if (!plan) return;
+    const pos = Planner.getPlanPosition();
+    const skippedDay = plan[slotIndex];
+    if (!skippedDay || !skippedDay.session) return;
+
+    // Find future slots that could absorb the skipped session
+    const futureSlotsInfo = plan.slice(pos.dayInWeek + 1).filter(d => d.slot !== 'rest' && !d.done && !d.skipped);
+
+    try {
+      const result = await this.callClaude(
+        'L\'athlète a SKIP la séance du jour ' + (slotIndex + 1) + ' (' + skippedDay.day + '): ' +
+        Scoring.getSessionTypeLabel(skippedDay.sessionType) + ' (' + skippedDay.exerciseType + ').\n' +
+        'Jours restants cette semaine: ' + futureSlotsInfo.map(d => d.day + ' = ' + Scoring.getSessionTypeLabel(d.sessionType)).join(', ') + '.\n' +
+        'Faut-il reporter cette séance ou adapter la semaine ? ' +
+        'Réponds en JSON: {"action":"report|adapt|ignore","reason":"...","modifications":[{"slotIndex":N,"newType":"sessionType","newExercise":"run|row|ski"}]}',
+        true
+      );
+
+      if (result.modifications && result.modifications.length > 0) {
+        result.modifications.forEach(mod => {
+          if (mod.slotIndex !== undefined && mod.newType) {
+            Planner.applyAIModification(mod.slotIndex, mod.newType, mod.newExercise);
+          }
+        });
+        App.renderWeekPlan();
+        App.toast('🤖 Plan adapté: ' + (result.reason || 'séance reportée'), 'success');
+      } else if (result.reason) {
+        App.toast('🤖 ' + result.reason, 'info');
+      }
+    } catch (err) {
+      console.log('[AI] Skip adaptation fallback:', err.message);
+      // Fallback local: just inform
+      App.toast('Séance skipée — pense à compenser', 'info');
+    }
+  },
+
+  async adaptPlanAfterSession(session) {
+    const plan = Planner.getSavedPlan();
+    if (!plan) return;
+    const pos = Planner.getPlanPosition();
+
+    // Only adapt future sessions
+    const futureSlotsInfo = plan.slice(pos.dayInWeek + 1).filter(d => d.slot !== 'rest' && !d.done && !d.skipped);
+    if (futureSlotsInfo.length === 0) return;
+
+    const alert = session.rpe >= 9 ? 'RPE ' + session.rpe + ' (surcharge)' :
+                  session.pain >= 3 ? 'Douleur tendon ' + session.pain + '/10' : '';
+
+    try {
+      const result = await this.callClaude(
+        'Séance terminée: ' + JSON.stringify({
+          type: session.type, sessionType: session.sessionType,
+          rpe: session.rpe, pain: session.pain, pace: session.pace
+        }) + '.\nALERTE: ' + alert +
+        '\nSéances restantes cette semaine: ' + futureSlotsInfo.map(d =>
+          'slot ' + d.slotIndex + ': ' + d.day + ' = ' + d.exerciseType + '/' + Scoring.getSessionTypeLabel(d.sessionType)
+        ).join(', ') +
+        '\nFaut-il modifier les séances restantes ? ' +
+        'Réponds en JSON: {"adapt":true|false,"reason":"...","modifications":[{"slotIndex":N,"newType":"sessionType","newExercise":"run|row|ski"}]}',
+        true
+      );
+
+      if (result.adapt && result.modifications && result.modifications.length > 0) {
+        result.modifications.forEach(mod => {
+          if (mod.slotIndex !== undefined && mod.newType) {
+            Planner.applyAIModification(mod.slotIndex, mod.newType, mod.newExercise);
+          }
+        });
+        App.renderWeekPlan();
+        App.toast('🤖 Plan adapté: ' + (result.reason || 'ajustement post-séance'), 'success');
+      }
+    } catch (err) {
+      console.log('[AI] Post-session adaptation fallback:', err.message);
+      // Local fallback for extreme cases
+      if (session.rpe >= 10 || session.pain >= 5) {
+        const nextIntense = plan.findIndex((d, i) =>
+          i > pos.dayInWeek && !d.done && !d.skipped &&
+          (d.sessionType === 'power' || d.sessionType === 'racePace' || d.sessionType === 'intervals_short' || d.sessionType === 'intervals_long')
+        );
+        if (nextIntense >= 0) {
+          const fallbackType = session.pain >= 5 ? 'technique' : 'z2';
+          Planner.applyAIModification(nextIntense, fallbackType, plan[nextIntense].exerciseType);
+          App.renderWeekPlan();
+          App.toast('⚠️ Séance intense → remplacée par ' + fallbackType, 'info');
+        }
+      }
+    }
+  },
 };
