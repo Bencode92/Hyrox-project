@@ -65,6 +65,9 @@
     </div>
   </div>
 
+  <!-- ===== LAUNCH SCREEN (entre onboarding et app) ===== -->
+  <div id="launchScreen" class="onboarding hidden"></div>
+
   <!-- ===== APP ===== -->
   <div id="app" class="app">
     <header class="header">
@@ -151,23 +154,16 @@
     <div class="modal-content">
       <div class="modal-header"><h3>Paramètres</h3><button class="btn-icon" onclick="App.closeSettings()">&times;</button></div>
       <div class="modal-body">
-        <!-- Statut connexions -->
         <div style="display:flex;gap:8px;margin-bottom:14px">
           <div style="flex:1;padding:8px 10px;background:var(--bg-input);border-radius:8px;font-size:12px;display:flex;align-items:center;justify-content:space-between"><span>Coach IA</span><span id="aiStatus"></span></div>
           <div style="flex:1;padding:8px 10px;background:var(--bg-input);border-radius:8px;font-size:12px;display:flex;align-items:center;justify-content:space-between"><span>Données</span><span id="ghStatus"></span></div>
         </div>
-
-        <!-- GitHub sync -->
-        <button class="btn-sm" onclick="requireGHToken(()=>{App.toast('GitHub connecté — sync activée','success');syncToGitHub()})" style="width:100%;margin-bottom:14px;padding:10px;border:1px solid var(--accent-dim);background:var(--bg-input);color:var(--text-secondary);font-size:12px;border-radius:var(--radius-sm);cursor:pointer">
-          🔗 Connecter GitHub (sauvegarde cross-device)
-        </button>
-
-        <!-- Worker URL (pré-rempli, modifiable) -->
+        <button class="btn-sm" onclick="requireGHToken(()=>{App.toast('GitHub connecté — sync activée','success');syncToGitHub()})" style="width:100%;margin-bottom:14px;padding:10px;border:1px solid var(--accent-dim);background:var(--bg-input);color:var(--text-secondary);font-size:12px;border-radius:var(--radius-sm);cursor:pointer">🔗 Connecter GitHub (sauvegarde cross-device)</button>
         <div class="form-group"><label>Cloudflare Worker</label><input type="url" id="settingsWorkerUrl" class="form-input" style="font-size:12px"><small class="form-hint">Proxy Claude API — déjà connecté</small></div>
         <div class="form-group"><label>Objectif 10km (km/h)</label><input type="number" id="settingsGoalSpeed" class="form-input" value="15" min="10" max="20" step="0.5"></div>
         <div class="form-group"><label>Date compétition</label><input type="date" id="settingsCompDate" class="form-input"></div>
         <div class="form-group"><label>Poids (kg)</label><input type="number" id="settingsWeight" class="form-input" min="40" max="150" step="0.5"></div>
-        <button class="btn-sm btn-accent" onclick="document.getElementById('onboarding').classList.remove('hidden');App.closeSettings()" style="margin-top:10px">🔄 Refaire les tests</button>
+        <button class="btn-sm btn-accent" onclick="App.openEditTests()" style="margin-top:10px">✎ Modifier mes tests</button>
         <div class="settings-actions">
           <button class="btn-primary" onclick="App.saveSettings()">Sauvegarder</button>
           <button class="btn-danger" onclick="App.resetData()">Réinitialiser</button>
@@ -176,16 +172,13 @@
     </div>
   </div>
 
-  <!-- ===== GITHUB TOKEN MODAL (même pattern que SlovakForge) ===== -->
+  <!-- ===== GITHUB TOKEN MODAL ===== -->
   <div class="modal hidden" id="gh-token-modal">
     <div class="modal-backdrop" onclick="cancelGHToken()"></div>
     <div class="modal-content">
       <div class="modal-header"><h3>🔐 GitHub Sync</h3><button class="btn-icon" onclick="cancelGHToken()">&times;</button></div>
       <div class="modal-body">
-        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5">
-          Tes entraînements seront sauvegardés dans <strong>data/training.json</strong> sur ton repo GitHub. Fonctionne cross-device.
-          <br>Token stocké uniquement dans ta session navigateur.
-        </p>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5">Tes entraînements seront sauvegardés dans <strong>data/training.json</strong> sur ton repo GitHub.<br>Token stocké uniquement dans ta session navigateur.</p>
         <div class="form-group">
           <label>Personal Access Token</label>
           <input type="password" id="modal-gh-token" class="form-input" placeholder="ghp_xxxxxxxxxxxx" onkeydown="if(event.key==='Enter')confirmGHToken()">
@@ -198,7 +191,6 @@
 
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- ===== SCRIPTS ===== -->
   <script src="js/storage.js"></script>
   <script src="js/scoring.js"></script>
   <script src="js/training.js"></script>
