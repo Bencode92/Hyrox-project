@@ -1,11 +1,13 @@
-/* HyroxForge — App v4 — Plan semaine + UX mobile */
+/* HyroxForge — App v4.1 — Worker pré-connecté */
 const App = {
   currentTab: 'dashboard',
   init() {
     this.switchTab('dashboard'); this.refreshDashboard(); LogForm.init();
     document.getElementById('logDate').valueAsDate = new Date();
     const s = Storage.getSettings();
-    document.getElementById('settingsWorkerUrl').value = s.workerUrl || '';
+    // Auto-remplir le worker URL si vide
+    if (!s.workerUrl) { s.workerUrl = AICoach.PROXY; Storage.saveSettings(s); }
+    document.getElementById('settingsWorkerUrl').value = s.workerUrl;
     document.getElementById('settingsGoalSpeed').value = s.goalSpeed;
     document.getElementById('settingsCompDate').value = s.compDate || '';
     document.getElementById('settingsWeight').value = s.weight || '';
@@ -19,7 +21,7 @@ const App = {
     const sk = Training.parseTime(document.getElementById('obSkiMin').value, document.getElementById('obSkiSec').value)||270;
     const data = Training.saveTestResults(rs, rw, sk);
     document.getElementById('onboarding').classList.add('hidden');
-    this.toast('VMA: ' + data.run.vma + ' km/h (test ' + rs + ' \u00d7 0.95)', 'success');
+    this.toast('VMA: ' + data.run.vma + ' km/h (test ' + rs + ' × 0.95)', 'success');
     this.renderZones(); this.renderWeekPlan(); this.refreshDashboard();
   },
 
@@ -28,18 +30,17 @@ const App = {
     if (!z) { document.getElementById('zonesCard').style.display='none'; return; }
     document.getElementById('zonesCard').style.display='block';
     const r=z.run, w=Training.getCurrentWeek();
-    const dl = Training.isDeloadWeek(w) ? '<div style="padding:5px 8px;background:var(--accent-amber-dim,rgba(240,160,48,.12));border-radius:6px;color:var(--accent-amber);font-weight:600;font-size:11px">\u26a1 D\u00c9CHARGE sem '+(w+1)+'</div>' : '<div style="padding:5px 8px;background:var(--bg-input);border-radius:6px;color:var(--text-muted);font-size:11px">Sem '+(w+1)+'</div>';
+    const dl = Training.isDeloadWeek(w) ? '<div style="padding:5px 8px;background:var(--accent-amber-dim,rgba(240,160,48,.12));border-radius:6px;color:var(--accent-amber);font-weight:600;font-size:11px">⚡ DÉCHARGE sem '+(w+1)+'</div>' : '<div style="padding:5px 8px;background:var(--bg-input);border-radius:6px;color:var(--text-muted);font-size:11px">Sem '+(w+1)+'</div>';
     document.getElementById('zonesContent').innerHTML='<div style="display:grid;gap:4px;font-size:11px">'+dl+
-      '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--accent-dim);border-radius:6px"><span style="color:var(--accent)">\ud83c\udfc3 VMA</span><span style="font-weight:600">'+r.vma+' km/h</span></div>'+
+      '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--accent-dim);border-radius:6px"><span style="color:var(--accent)">🏃 VMA</span><span style="font-weight:600">'+r.vma+' km/h</span></div>'+
       '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>Z2</span><span>'+Training.fmtS(r.z2.min)+'-'+Training.fmtS(r.z2.max)+' km/h</span></div>'+
       '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>Tempo</span><span>'+Training.fmtS(r.tempo.min)+'-'+Training.fmtS(r.tempo.max)+' km/h</span></div>'+
       '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>Frac court</span><span>'+Training.fmtS(r.iv_short.min)+'-'+Training.fmtS(r.iv_short.max)+' km/h</span></div>'+
-      '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>\ud83d\udea3 Row</span><span>'+Training.fmtP(z.row.testPace500)+'/500m</span></div>'+
-      '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>\u26f7\ufe0f Ski</span><span>'+Training.fmtP(z.ski.testPace500)+'/500m</span></div>'+
+      '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>🚣 Row</span><span>'+Training.fmtP(z.row.testPace500)+'/500m</span></div>'+
+      '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--bg-input);border-radius:6px"><span>⛷️ Ski</span><span>'+Training.fmtP(z.ski.testPace500)+'/500m</span></div>'+
     '</div>';
   },
 
-  /* ===== PLAN SEMAINE ===== */
   renderWeekPlan() {
     const zones = Training.getZonesSummary();
     if (!zones) { document.getElementById('planCard').style.display='none'; return; }
@@ -47,45 +48,31 @@ const App = {
     const week = Training.getCurrentWeek();
     let plan = Planner.getSavedPlan();
     if (!plan) { plan = Planner.generate(zones, week); Planner.savePlan(plan); }
-    const today = new Date().getDay(); // 0=dim, 1=lun...
-    const todayIdx = today === 0 ? 6 : today - 1; // 0=lun
+    const today = new Date().getDay();
+    const todayIdx = today === 0 ? 6 : today - 1;
     const container = document.getElementById('planDays');
     container.innerHTML = plan.map((d, i) => {
       const isToday = i === todayIdx;
-      const emoji = d.slot==='rest' ? '\ud83d\udca4' : d.exerciseType==='run' ? '\ud83c\udfc3' : d.exerciseType==='row' ? '\ud83d\udea3' : '\u26f7\ufe0f';
+      const emoji = d.slot==='rest' ? '💤' : d.exerciseType==='run' ? '🏃' : d.exerciseType==='row' ? '🚣' : '⛷️';
       const title = d.session ? d.session.title : d.label;
-      const meta = d.session && d.session.details ? Object.values(d.session.details).slice(0,2).join(' \u00b7 ') : (d.slot==='rest' ? 'R\u00e9cup\u00e9ration' : '');
+      const meta = d.session && d.session.details ? Object.values(d.session.details).slice(0,2).join(' · ') : (d.slot==='rest' ? 'Récupération' : '');
       const cls = (isToday?' today':'') + (d.done?' done':'') + (d.slot==='rest'?' rest':'');
       const onclick = d.session ? ' onclick="App.openPlanSession('+i+')"' : '';
-      return '<div class="plan-day'+cls+'"'+onclick+'>'+
-        '<div class="plan-day-name'+(isToday?' today-name':'')+'">'+d.day.slice(0,3)+'</div>'+
-        '<div class="plan-day-badge">'+emoji+'</div>'+
-        '<div class="plan-day-info"><div class="plan-day-title">'+title+'</div><div class="plan-day-meta">'+meta+'</div></div>'+
-        (d.done?'<div class="plan-day-check">\u2713</div>':'')+
-      '</div>';
+      return '<div class="plan-day'+cls+'"'+onclick+'><div class="plan-day-name'+(isToday?' today-name':'')+'">'+d.day.slice(0,3)+'</div><div class="plan-day-badge">'+emoji+'</div><div class="plan-day-info"><div class="plan-day-title">'+title+'</div><div class="plan-day-meta">'+meta+'</div></div>'+(d.done?'<div class="plan-day-check">✓</div>':'')+'</div>';
     }).join('');
   },
 
   regeneratePlan() {
-    const zones = Training.getZonesSummary();
-    if (!zones) return;
+    const zones = Training.getZonesSummary(); if (!zones) return;
     const plan = Planner.generate(zones, Training.getCurrentWeek());
-    Planner.savePlan(plan);
-    this.renderWeekPlan();
-    this.toast('Plan r\u00e9g\u00e9n\u00e9r\u00e9', 'info');
+    Planner.savePlan(plan); this.renderWeekPlan(); this.toast('Plan régénéré', 'info');
   },
 
   openPlanSession(idx) {
     const plan = Planner.getSavedPlan();
     if (!plan || !plan[idx] || !plan[idx].session) return;
-    const d = plan[idx];
-    this.switchTab('log');
-    LogForm.setType(d.exerciseType);
-    setTimeout(() => {
-      document.getElementById('logSessionType').value = d.sessionType;
-      LogForm.updateSessionTypeUI();
-      LogForm.showSuggestion();
-    }, 100);
+    const d = plan[idx]; this.switchTab('log'); LogForm.setType(d.exerciseType);
+    setTimeout(() => { document.getElementById('logSessionType').value = d.sessionType; LogForm.updateSessionTypeUI(); LogForm.showSuggestion(); }, 100);
   },
 
   switchTab(tab) {
@@ -122,14 +109,27 @@ const App = {
   refreshHistory(f){f=f||'all';Charts.renderHistoryChart(f);this.renderSessionList(f);},
   renderSessionList(f) {
     const c=document.getElementById('sessionList'),ss=f==='all'?Storage.getSessions():Storage.getSessionsByType(f);
-    if(!ss.length){c.innerHTML='<div class="empty-state">Aucune s\u00e9ance</div>';return;}
-    c.innerHTML=ss.slice(0,50).map(s=>{const sc=Scoring.scoreSession(s),dt=Scoring.computeDelta(s),d=new Date(s.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}),st=Scoring.getSessionTypeLabel(s.sessionType),pc=s.pace?Scoring.formatPace(s.pace):'\u2014',u=s.type==='run'?'/km':'/500m';let dh='';if(dt)dh='<span class="session-delta '+(dt.improved?'delta-up':'delta-down')+'">'+(dt.improved?'':'+')+dt.seconds.toFixed(0)+'s</span>';return '<div class="session-item"><div class="session-type-badge badge-'+s.type+'">'+Scoring.getTypeEmoji(s.type)+'</div><div class="session-info"><div class="session-main"><span class="session-title">'+st+'</span><span class="session-score">'+(sc!=null?sc:'\u2014')+'</span></div><div class="session-meta">'+d+' \u00b7 '+(s.distance?s.distance+'km ':'')+pc+u+' \u00b7 RPE '+s.rpe+' '+dh+'</div></div></div>';}).join('');
+    if(!ss.length){c.innerHTML='<div class="empty-state">Aucune séance</div>';return;}
+    c.innerHTML=ss.slice(0,50).map(s=>{const sc=Scoring.scoreSession(s),dt=Scoring.computeDelta(s),d=new Date(s.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}),st=Scoring.getSessionTypeLabel(s.sessionType),pc=s.pace?Scoring.formatPace(s.pace):'—',u=s.type==='run'?'/km':'/500m';let dh='';if(dt)dh='<span class="session-delta '+(dt.improved?'delta-up':'delta-down')+'">'+(dt.improved?'':'+')+dt.seconds.toFixed(0)+'s</span>';return '<div class="session-item"><div class="session-type-badge badge-'+s.type+'">'+Scoring.getTypeEmoji(s.type)+'</div><div class="session-info"><div class="session-main"><span class="session-title">'+st+'</span><span class="session-score">'+(sc!=null?sc:'—')+'</span></div><div class="session-meta">'+d+' · '+(s.distance?s.distance+'km ':'')+pc+u+' · RPE '+s.rpe+' '+dh+'</div></div></div>';}).join('');
   },
 
-  openSettings(){document.getElementById('settingsModal').classList.remove('hidden');},
+  openSettings(){
+    document.getElementById('settingsModal').classList.remove('hidden');
+    // Update AI status
+    const el = document.getElementById('aiStatus');
+    if (el) {
+      const url = Storage.getSettings().workerUrl || AICoach.PROXY;
+      el.innerHTML = url.includes('workers.dev')
+        ? '<span style="color:var(--accent-2)">✓ Connecté</span>'
+        : '<span style="color:var(--accent-red)">✗ Non connecté</span>';
+    }
+  },
   closeSettings(){document.getElementById('settingsModal').classList.add('hidden');},
-  saveSettings(){Storage.saveSettings({workerUrl:document.getElementById('settingsWorkerUrl').value.trim(),goalSpeed:parseFloat(document.getElementById('settingsGoalSpeed').value)||15,compDate:document.getElementById('settingsCompDate').value,weight:parseFloat(document.getElementById('settingsWeight').value)||75});this.closeSettings();this.toast('Sauvegard\u00e9','success');},
-  resetData(){if(confirm('Supprimer toutes les donn\u00e9es ?')){Storage.resetAll();localStorage.removeItem('hf_tests');localStorage.removeItem('hf_weekplan');location.reload();}},
+  saveSettings(){
+    Storage.saveSettings({workerUrl:document.getElementById('settingsWorkerUrl').value.trim(),goalSpeed:parseFloat(document.getElementById('settingsGoalSpeed').value)||15,compDate:document.getElementById('settingsCompDate').value,weight:parseFloat(document.getElementById('settingsWeight').value)||75});
+    this.closeSettings();this.toast('Sauvegardé','success');
+  },
+  resetData(){if(confirm('Supprimer toutes les données ?')){Storage.resetAll();localStorage.removeItem('hf_tests');localStorage.removeItem('hf_weekplan');location.reload();}},
   toast(m,t){const c=document.getElementById('toastContainer'),e=document.createElement('div');e.className='toast toast-'+(t||'info');e.textContent=m;c.appendChild(e);setTimeout(()=>e.remove(),3000);},
 };
 
@@ -143,7 +143,7 @@ const LogForm = {
     if(this.type==='run'){dl.textContent='Distance (km)';lt.parentElement.classList.remove('hidden');}else{dl.textContent='Distance (m)';lt.parentElement.classList.add('hidden');this.location='gym';}
     const sel=document.getElementById('logSessionType');
     const opts={run:['z2','tempo','intervals_short','intervals_long','long_run','fartlek','test'],row:['technique','power','endurance','racePace','test'],ski:['technique','power','endurance','racePace','test']};
-    const lbl={z2:'Zone 2',tempo:'Tempo',intervals_short:'Frac court',intervals_long:'Frac long',long_run:'Sortie longue',fartlek:'Fartlek',technique:'Technique',power:'Puissance',endurance:'Endurance',racePace:'Race Pace \ud83c\udfc1',test:'Test'};
+    const lbl={z2:'Zone 2',tempo:'Tempo',intervals_short:'Frac court',intervals_long:'Frac long',long_run:'Sortie longue',fartlek:'Fartlek',technique:'Technique',power:'Puissance',endurance:'Endurance',racePace:'Race Pace 🏁',test:'Test'};
     sel.innerHTML=opts[this.type].map(o=>'<option value="'+o+'">'+(lbl[o]||o)+'</option>').join('');
     this.updateSessionTypeUI();
   },
@@ -160,11 +160,11 @@ const LogForm = {
     if(!ss||!ss.main){box.style.display='none';return;}
     box.style.display='block';
     let dh='';if(ss.details){dh='<div style="display:grid;grid-template-columns:auto 1fr;gap:2px 8px;font-size:11px;margin-top:6px">';for(const[k,v]of Object.entries(ss.details))dh+='<span style="color:var(--text-muted)">'+k.replace(/_/g,' ').replace(/^./,c=>c.toUpperCase())+'</span><span style="font-weight:500">'+v+'</span>';dh+='</div>';}
-    box.innerHTML='<div style="background:var(--bg-card);border:1px solid var(--accent-dim);border-left:3px solid var(--accent);border-radius:var(--radius-md);padding:10px;margin-bottom:14px"><div style="font-family:var(--font-display);font-weight:600;font-size:13px;color:var(--accent);margin-bottom:4px">\u26a1 '+ss.title+'</div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px"><b>\u00c9chauff:</b> '+(ss.warmup||'')+'</div><div style="font-size:12px;color:var(--text-primary);line-height:1.4;font-weight:500">'+ss.main+'</div>'+dh+'<div style="font-size:11px;color:var(--text-secondary);margin-top:3px"><b>Retour:</b> '+(ss.cooldown||'')+'</div>'+(ss.tip?'<div style="margin-top:6px;padding:6px 8px;background:var(--accent-dim);border-radius:5px;font-size:11px;color:var(--accent)">\ud83d\udca1 '+ss.tip+'</div>':'')+'</div>';
+    box.innerHTML='<div style="background:var(--bg-card);border:1px solid var(--accent-dim);border-left:3px solid var(--accent);border-radius:var(--radius-md);padding:10px;margin-bottom:14px"><div style="font-family:var(--font-display);font-weight:600;font-size:13px;color:var(--accent);margin-bottom:4px">⚡ '+ss.title+'</div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px"><b>Échauff:</b> '+(ss.warmup||'')+'</div><div style="font-size:12px;color:var(--text-primary);line-height:1.4;font-weight:500">'+ss.main+'</div>'+dh+'<div style="font-size:11px;color:var(--text-secondary);margin-top:3px"><b>Retour:</b> '+(ss.cooldown||'')+'</div>'+(ss.tip?'<div style="margin-top:6px;padding:6px 8px;background:var(--accent-dim);border-radius:5px;font-size:11px;color:var(--accent)">💡 '+ss.tip+'</div>':'')+'</div>';
   },
   save(){
     const date=document.getElementById('logDate').value,st=document.getElementById('logSessionType').value,dr=parseFloat(document.getElementById('logDistance').value),mn=parseInt(document.getElementById('logMin').value)||0,sc=parseInt(document.getElementById('logSec').value)||0,rpe=parseInt(document.getElementById('logRPE').value),pain=parseInt(document.getElementById('logPain').value),vest=document.getElementById('logVest').checked,vkg=vest?parseFloat(document.getElementById('logVestKg').value)||0:0,notes=document.getElementById('logNotes').value.trim(),reps=parseInt(document.getElementById('logReps').value)||null,rd=parseInt(document.getElementById('logRepDistance').value)||null,rs=parseInt(document.getElementById('logRest').value)||null;
-    if(!date){App.toast('Date','error');return;}if(!dr||dr<=0){App.toast('Distance','error');return;}if(mn===0&&sc===0){App.toast('Dur\u00e9e','error');return;}
+    if(!date){App.toast('Date','error');return;}if(!dr||dr<=0){App.toast('Distance','error');return;}if(mn===0&&sc===0){App.toast('Durée','error');return;}
     const dm=mn+sc/60,ds=mn*60+sc;let dist,pace,spd;
     if(this.type==='run'){dist=dr;pace=ds/dist;spd=dist/(dm/60);}else{dist=dr/1000;pace=ds/(dr/500);spd=(dr/1000)/(dm/60);}
     const session={date,type:this.type,sessionType:st,location:this.location,distance:Math.round(dist*100)/100,duration:Math.round(dm*100)/100,durationSec:ds,pace:Math.round(pace*10)/10,speedKmh:Math.round(spd*100)/100,rpe,pain,vest,vestKg:vkg,reps,repDistance:rd,restSec:rs,notes};
