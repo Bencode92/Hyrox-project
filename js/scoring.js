@@ -65,7 +65,7 @@ const Scoring = {
     const diff = currentSession.pace - prev.pace;
     return { seconds: diff, percent: ((diff/prev.pace)*100).toFixed(1), improved: diff<0 };
   },
-  getSessionTypeLabel(st) { return {z2:'Zone 2',tempo:'Tempo',intervals_short:'Fractionné court',intervals_long:'Fractionné long',long_run:'Sortie longue',technique:'Technique',power:'Puissance',endurance:'Endurance',test:'Test'}[st]||st; },
+  getSessionTypeLabel(st) { return {z2:'Zone 2',tempo:'Tempo',intervals_short:'Fractionné court',intervals_long:'Fractionné long',long_run:'Sortie longue',fartlek:'Fartlek',fartlek_hyrox:'Fartlek Hyrox',brick:'Brick Ergo+Run',technique:'Technique',power:'Puissance',endurance:'Endurance',racePace:'Race Pace',test:'Test'}[st]||st; },
   getTypeEmoji(type) { return {run:'🏃',row:'🚣',ski:'⛷️'}[type]||'🏋️'; },
   getTypeName(type) { return {run:'Running',row:'Rowing',ski:'SkiErg'}[type]||type; },
 };
