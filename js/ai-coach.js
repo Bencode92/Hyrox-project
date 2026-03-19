@@ -1,30 +1,34 @@
-/* HyroxForge — AI Coach v2 (Worker connecté) */
+/* HyroxForge — AI Coach v3 — Expert validated */
 const AICoach = {
   PROXY: 'https://studyforge-proxy.benoit-comas.workers.dev',
 
   SYSTEM_PROMPT: `Tu es le coach sportif IA de HyroxForge. Focus: Run, Row, SkiErg pour Hyrox.
 
-ATHLÈTE :
+PROFIL ATHLÈTE :
 - Prépa Hyrox 6 mois, tendon d'Achille en guérison
-- Objectif: 15+ km/h au 10km
-- VMA corrigée = test 1km × 0.95
-- Gilet lesté interdit avant sem 8 et score run < 60
+- Objectif réaliste: 13.5 km/h en 6 mois, 15 km/h en 12 mois
+- VMA corrigée = test 1km × 0.95 (ou demi-Cooper: distance/100)
+- Row = point faible majeur (bottom 5%), ROI le plus élevé
 
-RÈGLES :
-- Progression dégressive: +1.5%/3sem (S1-8), +2%/3sem (S9-16), +1%/3sem (S17-24)
-- Décharge 3+1: sem 4,8,12,16,20,24 = -30% volume
-- Plafond +12% sans retest
-- Récup fractionné court: 90s CONSTANT (jamais réduire)
-- Cap fractionné long: 5×1000m max
-- RPE moyen > 8.5 sur 3 séances → repos/Z2
-- Douleur tendon > 3/10 → -50% volume, pas de course
-- Gilet: sem 8-12 marche uniquement, sem 12+ Z2 run, max 10kg
-- ADAPTATIF: RPE ≤5 → +4-6% next, RPE 6-7 → +2%, RPE 8 → consolider, RPE 9 → -3%, RPE 10 → -7%
+RÈGLES VALIDÉES COACH + EXPERT :
+1. PROGRESSION dégressive: +1.5%/3sem (S1-8), +2%/3sem (S9-16), +1%/3sem (S17-24). Plafond +12%.
+2. ADAPTATION RPE: ≤4 → +6%, 5 → +4%, 6-7 → +2%, 8 → hold, 9 → -3%, 10 → -7%.
+3. DÉCHARGE 3+1: sem 4,8,12,16,20,24 = -30% volume ET -10-15% intensité.
+4. RÉCUP fractionné court: 90s si VMA ≥ 13, sinon ratio 1:1 (récup = durée effort).
+5. Cap fractionné long: 6×1000m max.
+6. ROW: semaines 1-4 = 100% technique (cadence 20-22), sem 5-8 = 70% tech / 30% endurance, sem 9+ = toutes intensités.
+7. SESSIONS MAX: 4/sem S1-8 (2 run + 1 row + 1 ski), 5/sem S9-16, 5-6/sem S17-24.
+8. TENDON: douleur > 3/10 → -50% volume, pas de course. Toujours eccentric heel drops.
+9. GILET: interdit avant sem 8. Sem 8-12: marche uniquement. Sem 12+: Z2 run. Max 10kg.
+10. PACING HYROX: Run 1 = allure cible + 8s (échauffement). Run 2-7 = cible. Run 8 = cible - 5s (finish).
+11. BRICK (sem 8+): ergo + run enchaîné = simulation Hyrox cardio.
+12. FARTLEK HYROX (sem 8+): 30s sprint 105% VMA / 90s Z2 = simule relance post-station.
+13. CÔTES (sem 8+): montantes uniquement, redescente en marchant. 4-6 × 200m.
 
-FORMAT : Direct, chiffres exacts (vitesse, pace, reps, repos). Motivant mais honnête.
+FORMAT : Direct, chiffres exacts. Motivant mais honnête. Si 15 km/h en 6 mois est irréaliste, dis-le.
 
 Quand tu génères une SÉANCE, réponds en JSON strict :
-{"next_session":{"date":"YYYY-MM-DD","exercise":"run|row|ski","location":"outdoor|gym","type":"z2|tempo|intervals_short|intervals_long|long_run|fartlek|technique|power|endurance|racePace|test","warmup":"...","main":"...","cooldown":"...","details":{"sets":null,"distance_per_set":null,"total_distance":0,"target_pace":"M:SS","target_speed_kmh":0,"rest_seconds":null},"vest":{"use":false,"weight_kg":0,"reason":""},"coaching_tip":"..."},"analysis":"..."}`,
+{"next_session":{"date":"YYYY-MM-DD","exercise":"run|row|ski","location":"outdoor|gym","type":"z2|tempo|intervals_short|intervals_long|long_run|fartlek|fartlek_hyrox|brick|technique|power|endurance|racePace|test","warmup":"...","main":"...","cooldown":"...","details":{"sets":null,"distance_per_set":null,"total_distance":0,"target_pace":"M:SS","target_speed_kmh":0,"rest_seconds":null},"vest":{"use":false,"weight_kg":0,"reason":""},"coaching_tip":"..."},"analysis":"..."}`,
 
   getWorkerUrl() {
     const s = Storage.getSettings();
@@ -36,7 +40,24 @@ Quand tu génères une SÉANCE, réponds en JSON strict :
     const context = Storage.exportForAI();
     const zones = Training.getZonesSummary();
     const week = Training.getCurrentWeek();
-    const sys = this.SYSTEM_PROMPT + '\nSEMAINE: ' + (week+1) + (Training.isDeloadWeek(week) ? ' (DÉCHARGE)' : '') + '\nZONES: ' + (zones ? JSON.stringify({vma:zones.run.vma,z2:Training.fmtS(zones.run.z2.min)+'-'+Training.fmtS(zones.run.z2.max),tempo:Training.fmtS(zones.run.tempo.min)+'-'+Training.fmtS(zones.run.tempo.max),row_pace500:Training.fmtP(zones.row.testPace500),ski_pace500:Training.fmtP(zones.ski.testPace500)}) : 'non calibré') + '\nDONNÉES:\n' + JSON.stringify(context, null, 2);
+    const maxSess = Training.getMaxSessionsPerWeek(week);
+    const rowPhase = Training.getRowPhaseLabel(week);
+    const pacing = zones ? Training.getPacingStrategy((zones.run.tempo.min + zones.run.tempo.max) / 2) : null;
+
+    const sys = this.SYSTEM_PROMPT +
+      '\nSEMAINE: ' + (week+1) + (Training.isDeloadWeek(week) ? ' (DÉCHARGE -30% vol, -12% intensité)' : '') +
+      '\nSESSIONS MAX: ' + maxSess + '/semaine' +
+      '\nROW PHASE: ' + rowPhase +
+      (pacing ? '\nPACING: Run1=' + pacing.run1.label + ', Run2-7=' + pacing.run2to7.label + ', Run8=' + pacing.run8.label : '') +
+      '\nZONES: ' + (zones ? JSON.stringify({
+        vma: zones.run.vma,
+        z2: Training.fmtS(zones.run.z2.min)+'-'+Training.fmtS(zones.run.z2.max),
+        tempo: Training.fmtS(zones.run.tempo.min)+'-'+Training.fmtS(zones.run.tempo.max),
+        frac_court: Training.fmtS(zones.run.iv_short.min)+'-'+Training.fmtS(zones.run.iv_short.max),
+        row_pace500: Training.fmtP(zones.row.testPace500),
+        ski_pace500: Training.fmtP(zones.ski.testPace500)
+      }) : 'non calibré') +
+      '\nDONNÉES:\n' + JSON.stringify(context, null, 2);
 
     const r = await fetch(url, {
       method: 'POST',
@@ -63,7 +84,7 @@ Quand tu génères une SÉANCE, réponds en JSON strict :
     btn.disabled = true; btn.textContent = 'Génération...';
     body.innerHTML = '<div class="msg-loading">Le coach analyse...</div>';
     try {
-      const result = await this.callClaude('Génère ma prochaine séance. Réponds en JSON.', true);
+      const result = await this.callClaude('Génère ma prochaine séance. Respecte le nombre max de séances/semaine, la phase row, et la décharge si applicable. Réponds en JSON.', true);
       if (result.next_session) this.renderNextSession(result.next_session, result.analysis);
       else body.innerHTML = '<div style="line-height:1.5">' + this.fmt(result.analysis || 'Pas de réponse') + '</div>';
     } catch (err) { body.innerHTML = '<div style="color:var(--accent-red)">' + err.message + '</div>'; }
@@ -89,10 +110,11 @@ Quand tu génères une SÉANCE, réponds en JSON strict :
 
   async ask(preset) {
     const prompts = {
-      next_session: 'Génère ma prochaine séance basée sur mon historique.',
-      weekly_plan: 'Plan de la semaine jour par jour avec détails.',
-      progress_report: 'Bilan progression: ce qui va, ce qui ne va pas, ajustements.',
-      vest_advice: 'Suis-je prêt pour le gilet lesté ? Si oui comment, si non pourquoi.',
+      next_session: 'Génère ma prochaine séance basée sur mon historique. Respecte la phase row et le max sessions/semaine.',
+      weekly_plan: 'Plan de la semaine jour par jour. Max ' + Training.getMaxSessionsPerWeek(Training.getCurrentWeek()) + ' séances cardio. Phase row: ' + Training.getRowPhaseLabel(Training.getCurrentWeek()),
+      progress_report: 'Bilan progression: ce qui va, ce qui ne va pas, ajustements. Suis-je sur la trajectoire pour 13.5 km/h en 6 mois?',
+      vest_advice: 'Suis-je prêt pour le gilet lesté ? Rappel: interdit avant sem 8, marche uniquement sem 8-12.',
+      pacing: 'Donne-moi ma stratégie de pacing pour les 8 runs Hyrox basée sur mes zones actuelles.',
     };
     const msg = prompts[preset] || preset;
     this.addUserMsg(msg); await this.process(msg);
@@ -132,7 +154,7 @@ Quand tu génères une SÉANCE, réponds en JSON strict :
     ad.classList.remove('hidden');
     bd.innerHTML = '<div class="msg-loading">Analyse...</div>';
     try {
-      const resp = await this.callClaude('Séance terminée: ' + JSON.stringify(session) + '. Analyse et conseils.');
+      const resp = await this.callClaude('Séance terminée: ' + JSON.stringify(session) + '. Analyse, adaptation pour la prochaine, et alerte tendon si besoin.');
       bd.innerHTML = this.fmt(resp);
     } catch {
       this.showLocal(session, bd);
