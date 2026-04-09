@@ -67,21 +67,23 @@ const MuscuApp = (() => {
     };
     MuscuStorage.saveProfile(profile);
 
+    // Save initial PRs (all at once to avoid overwrite)
     const maxFields = ['back_squat', 'bench_press', 'deadlift', 'ohp', 'barbell_row'];
+    const prs = MuscuStorage.getPRs();
+    const today = new Date().toISOString().slice(0, 10);
     maxFields.forEach(id => {
       const val = parseFloat(document.getElementById('ob-max-' + id)?.value);
       if (val > 0) {
-        const prs = MuscuStorage.getPRs();
         prs[id] = {
           best1RM: val,
           bestWeight: Math.round(val * 0.85),
           bestReps: 5,
-          bestDate: new Date().toISOString().slice(0, 10),
-          history: [{ date: new Date().toISOString().slice(0, 10), weight: Math.round(val * 0.85), reps: 5, e1rm: val }],
+          bestDate: today,
+          history: [{ date: today, weight: Math.round(val * 0.85), reps: 5, e1rm: val }],
         };
-        localStorage.setItem('mf_prs', JSON.stringify(prs));
       }
     });
+    localStorage.setItem('mf_prs', JSON.stringify(prs));
 
     document.getElementById('onboarding-modal').style.display = 'none';
     _showLaunch();
@@ -114,22 +116,28 @@ const MuscuApp = (() => {
     document.getElementById('launch-modal').style.display = 'none';
     _hideSplash();
 
-    // Try AI generation first
-    _toast('Génération IA du plan en cours...', 'info');
+    // Generate local plan IMMEDIATELY (instant, always works)
+    const localPlan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), 1);
+    MuscuStorage.saveWeekPlan(localPlan);
+    _renderAll();
+
+    // Then try AI upgrade in background
+    _toast('Plan local affiché — génération IA en cours...', 'info');
+    _tryAIUpgrade();
+  }
+
+  async function _tryAIUpgrade() {
     try {
       const aiPlan = await MuscuAI.generateWeekPlan();
-      if (aiPlan) {
+      if (aiPlan && aiPlan.days && aiPlan.days.length > 0) {
         MuscuStorage.saveWeekPlan(aiPlan);
-        _toast('Plan IA généré !', 'success');
-        _renderAll();
-        return;
+        _toast('Plan mis à jour par le Coach IA (Opus)', 'success');
+        if (currentTab === 'dashboard') renderDashboard();
       }
-    } catch (e) { console.warn('AI plan generation failed, using local fallback', e); }
-
-    // Fallback to local
-    const plan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), 1);
-    MuscuStorage.saveWeekPlan(plan);
-    _renderAll();
+    } catch (e) {
+      console.warn('AI plan generation failed:', e.message);
+      _toast('IA indisponible — plan local conservé', 'info');
+    }
   }
 
   // ════════════════════════════════════════════════════════════
@@ -933,36 +941,26 @@ const MuscuApp = (() => {
 
   function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
 
-  async function _autoRegenPlan(weekNum) {
-    try {
-      const aiPlan = await MuscuAI.generateWeekPlan();
-      if (aiPlan) { MuscuStorage.saveWeekPlan(aiPlan); renderDashboard(); return; }
-    } catch (e) { /* fallback */ }
+  function _autoRegenPlan(weekNum) {
+    // Local first, AI in background
     const plan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), weekNum);
     MuscuStorage.saveWeekPlan(plan);
     renderDashboard();
+    _tryAIUpgrade();
   }
 
   async function regeneratePlan() {
-    if (!confirm('Régénérer le plan via le Coach IA ?')) return;
-    _toast('Le Coach IA crée ton plan...', 'info');
-
-    try {
-      const aiPlan = await MuscuAI.generateWeekPlan();
-      if (aiPlan) {
-        MuscuStorage.saveWeekPlan(aiPlan);
-        _toast('Plan IA généré !', 'success');
-        renderDashboard();
-        return;
-      }
-    } catch (e) { console.warn('AI plan failed', e); }
-
-    // Fallback
+    if (!confirm('Régénérer le plan ?')) return;
     const weekNum = MuscuStorage.getWeekNumber();
-    const plan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), weekNum);
-    MuscuStorage.saveWeekPlan(plan);
+
+    // Local plan immediately
+    const localPlan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), weekNum);
+    MuscuStorage.saveWeekPlan(localPlan);
     renderDashboard();
-    _toast('Plan local généré (IA indisponible)', 'info');
+    _toast('Plan local affiché — demande au Coach IA (Opus)...', 'info');
+
+    // AI upgrade in background
+    _tryAIUpgrade();
   }
 
   function resetAllData() {

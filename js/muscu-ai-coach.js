@@ -289,17 +289,22 @@ ${_formatFeedback()}
     if (!url) throw new Error('URL du Worker non configurée. Va dans Paramètres pour la configurer.');
 
     const body = {
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-opus-4-6',
       max_tokens: options.maxTokens || 2000,
       system: _buildSystemPrompt(),
       messages: [{ role: 'user', content: userMessage }],
     };
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
+      signal: controller.signal,
     });
+    clearTimeout(timeout);
 
     if (!res.ok) {
       if (res.status === 429) throw new Error('API surchargée, réessaie dans 30s');
