@@ -296,7 +296,8 @@ ${_formatFeedback()}
     };
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
+    const timeoutMs = options.maxTokens > 2000 ? 90000 : 60000; // 90s for plan gen, 60s for chat
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
     const res = await fetch(url, {
       method: 'POST',
