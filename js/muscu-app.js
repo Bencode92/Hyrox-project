@@ -51,6 +51,8 @@ const MuscuApp = (() => {
   //  ONBOARDING
   // ════════════════════════════════════════════════════════════
   function _showOnboarding() {
+    const splash = document.getElementById('splash');
+    if (splash) splash.style.display = 'none';
     document.getElementById('onboarding-modal').style.display = 'flex';
   }
 
@@ -89,6 +91,8 @@ const MuscuApp = (() => {
   //  LAUNCH
   // ════════════════════════════════════════════════════════════
   function _showLaunch() {
+    const splash = document.getElementById('splash');
+    if (splash) splash.style.display = 'none';
     const profile = MuscuStorage.getProfile();
     const template = MuscuExercises.getTemplate(profile.daysPerWeek);
     const el = document.getElementById('launch-modal');
