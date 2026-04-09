@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>HyroxForge — Musculation</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/muscu-style.css">
+</head>
+<body>
+
+  <!-- ══════════════ SPLASH ══════════════ -->
+  <div id="splash">
+    <div>
+      <div class="splash-title">HYROX<span>FORGE</span></div>
+      <div class="splash-sub">Musculation</div>
+    </div>
+  </div>
+
+  <!-- ══════════════ HEADER ══════════════ -->
+  <header class="header">
+    <div class="header-logo">HYROX<span>FORGE</span> MUSCU</div>
+    <div class="header-actions">
+      <button class="header-btn" onclick="MuscuApp.showObjectives()" title="Objectifs">🎯</button>
+      <button class="header-btn" onclick="MuscuApp.showSettings()" title="Paramètres">⚙️</button>
+      <a href="index.html" class="hyrox-link" title="Vers HyroxForge Cardio">🏃 Cardio</a>
+    </div>
+  </header>
+
+  <!-- ══════════════ MAIN CONTENT ══════════════ -->
+  <main class="main">
+
+    <!-- ──── DASHBOARD ──── -->
+    <section id="view-dashboard" class="view active">
+
+      <div class="dash-header">
+        <h2 id="dash-week">Semaine 1</h2>
+        <span class="dash-phase" id="dash-phase">Phase Adaptation</span>
+        <span class="deload-badge" id="dash-deload" style="display:none">DELOAD</span>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value" id="dash-sessions-count">0</div>
+          <div class="stat-label">Séances (28j)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="dash-volume">0</div>
+          <div class="stat-label">Volume total</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="dash-prs">0</div>
+          <div class="stat-label">PRs</div>
+        </div>
+      </div>
+
+      <!-- Week Plan -->
+      <div class="card">
+        <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+          Plan de la semaine
+          <button class="btn btn-sm btn-ghost" onclick="MuscuApp.regeneratePlan()">Régénérer</button>
+        </div>
+        <div id="dash-plan"></div>
+      </div>
+
+      <!-- PRs -->
+      <div class="card">
+        <div class="card-title">Records personnels (1RM)</div>
+        <div id="dash-prs-list"></div>
+      </div>
+
+      <!-- Objectives -->
+      <div class="card">
+        <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+          Objectifs
+          <button class="btn btn-sm btn-ghost" onclick="MuscuApp.showObjectives()">Modifier</button>
+        </div>
+        <div id="dash-objectives"></div>
+      </div>
+
+    </section>
+
+    <!-- ──── LOG (Séance) ──── -->
+    <section id="view-log" class="view">
+
+      <h2 style="margin-bottom:12px">Enregistrer une séance</h2>
+      <div id="log-session-label" style="font-size:13px;color:var(--accent-2);margin-bottom:10px"></div>
+
+      <div class="input-group">
+        <label>Date</label>
+        <input type="date" id="log-date">
+      </div>
+
+      <div id="log-exercises"></div>
+
+      <button class="btn btn-secondary" onclick="MuscuApp.showAddExercise()" style="margin-bottom:14px">+ Ajouter un exercice</button>
+
+      <div class="input-group">
+        <label>RPE global de la séance</label>
+        <div class="rpe-slider-group">
+          <input type="range" id="log-rpe" min="1" max="10" value="7" oninput="MuscuApp.updateRpeDisplay()">
+          <span class="rpe-val" id="log-rpe-val">7</span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Douleurs / gênes</label>
+        <input type="text" id="log-pain" placeholder="Ex: légère gêne genou droit...">
+      </div>
+
+      <div class="input-group">
+        <label>Notes</label>
+        <textarea id="log-notes" placeholder="Sensations, fatigue, sommeil..."></textarea>
+      </div>
+
+      <button class="btn" onclick="MuscuApp.saveSession()">Enregistrer la séance</button>
+
+      <div id="log-ai-analysis" style="display:none;margin-top:14px"></div>
+
+    </section>
+
+    <!-- ──── HISTORY ──── -->
+    <section id="view-history" class="view">
+
+      <h2 style="margin-bottom:12px">Historique</h2>
+
+      <div id="history-filter"></div>
+
+      <div class="card chart-container">
+        <canvas id="pr-chart"></canvas>
+      </div>
+
+      <div id="history-list"></div>
+
+    </section>
+
+    <!-- ──── EXERCISE BANK ──── -->
+    <section id="view-exercises" class="view">
+      <h2 style="margin-bottom:12px">Banque d'exercices</h2>
+      <div id="exercise-bank-content"></div>
+    </section>
+
+    <!-- ──── COACH IA ──── -->
+    <section id="view-coach" class="view">
+
+      <h2 style="margin-bottom:12px">Coach IA Musculation</h2>
+
+      <div id="coach-messages"></div>
+
+      <div class="coach-input-bar">
+        <input type="text" id="coach-input" placeholder="Pose ta question..." onkeydown="if(event.key==='Enter')MuscuApp.coachSend()">
+        <button onclick="MuscuApp.coachSend()">Envoyer</button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ══════════════ BOTTOM NAV ══════════════ -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-tab="dashboard">
+      <span class="nav-icon">📊</span>
+      Dashboard
+    </button>
+    <button class="nav-btn" data-tab="log">
+      <span class="nav-icon">🏋️</span>
+      Séance
+    </button>
+    <button class="nav-btn" data-tab="history">
+      <span class="nav-icon">📈</span>
+      Historique
+    </button>
+    <button class="nav-btn" data-tab="exercises">
+      <span class="nav-icon">📖</span>
+      Exercices
+    </button>
+    <button class="nav-btn" data-tab="coach">
+      <span class="nav-icon">🤖</span>
+      Coach IA
+    </button>
+  </nav>
+
+  <!-- ══════════════ MODALS ══════════════ -->
+
+  <!-- Onboarding -->
+  <div class="modal" id="onboarding-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Bienvenue sur HyroxForge Muscu</h2>
+      </div>
+      <p style="color:var(--text-2);margin-bottom:16px;font-size:13px">
+        Configure ton profil pour un programme de musculation adapté à la préparation Hyrox.
+      </p>
+
+      <div class="input-group">
+        <label>Prénom</label>
+        <input type="text" id="ob-name" placeholder="Ton prénom">
+      </div>
+      <div class="input-group">
+        <label>Poids (kg)</label>
+        <input type="number" id="ob-weight" value="75" step="0.5" min="40">
+      </div>
+      <div class="input-group">
+        <label>Jours d'entraînement / semaine</label>
+        <select id="ob-days">
+          <option value="3">3 jours</option>
+          <option value="4" selected>4 jours</option>
+          <option value="5">5 jours</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Niveau</label>
+        <select id="ob-level">
+          <option value="beginner">Débutant (< 1 an)</option>
+          <option value="intermediate" selected>Intermédiaire (1-3 ans)</option>
+          <option value="advanced">Avancé (3+ ans)</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Blessures / notes médicales</label>
+        <textarea id="ob-injury" placeholder="Ex: retour de blessure cheville, tendinite épaule..."></textarea>
+      </div>
+
+      <div class="card" style="margin-top:10px">
+        <div class="card-title">Records actuels (optionnel)</div>
+        <p style="font-size:12px;color:var(--text-2);margin-bottom:10px">Indique ton 1RM estimé ou laisse vide</p>
+        <div class="input-group">
+          <label>Back Squat (kg)</label>
+          <input type="number" id="ob-max-back_squat" placeholder="Ex: 100" step="2.5">
+        </div>
+        <div class="input-group">
+          <label>Bench Press (kg)</label>
+          <input type="number" id="ob-max-bench_press" placeholder="Ex: 80" step="2.5">
+        </div>
+        <div class="input-group">
+          <label>Deadlift (kg)</label>
+          <input type="number" id="ob-max-deadlift" placeholder="Ex: 120" step="2.5">
+        </div>
+        <div class="input-group">
+          <label>Overhead Press (kg)</label>
+          <input type="number" id="ob-max-ohp" placeholder="Ex: 50" step="2.5">
+        </div>
+        <div class="input-group">
+          <label>Barbell Row (kg)</label>
+          <input type="number" id="ob-max-barbell_row" placeholder="Ex: 70" step="2.5">
+        </div>
+      </div>
+
+      <button class="btn" onclick="MuscuApp.saveOnboarding()" style="margin-top:14px">Continuer</button>
+    </div>
+  </div>
+
+  <!-- Launch -->
+  <div class="modal" id="launch-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Ton programme</h2>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+          <strong id="launch-template-name">Upper/Lower 4x</strong>
+          <span class="text-muted text-sm" id="launch-days">4 jours/semaine</span>
+        </div>
+        <span class="text-muted text-sm">Niveau: <span id="launch-level">intermediate</span></span>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Jours d'entraînement</div>
+        <div id="launch-days-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Principes</div>
+        <ul style="font-size:13px;color:var(--text-2);padding-left:16px;line-height:1.8">
+          <li>Surcharge progressive : +2.5kg (haut) / +5kg (bas) quand objectif reps atteint</li>
+          <li>Deload toutes les 4 semaines (-30% volume & intensité)</li>
+          <li>RPE cible : 7-8 (normal), 5-6 (deload)</li>
+          <li>Focus Hyrox : exercices spécifiques aux épreuves</li>
+          <li>IA adapte le programme selon tes performances</li>
+        </ul>
+      </div>
+
+      <div class="input-group" style="margin-top:10px">
+        <label>Date de début du plan</label>
+        <input type="date" id="launch-start-date">
+      </div>
+
+      <button class="btn" onclick="MuscuApp.launchPlan()">Lancer le programme</button>
+    </div>
+  </div>
+
+  <!-- Day Detail -->
+  <div class="modal" id="day-detail-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="day-detail-title">Séance</h2>
+        <button class="modal-close" onclick="MuscuApp.closeDayDetail()">×</button>
+      </div>
+      <div id="day-detail-focus" class="text-muted text-sm" style="margin-bottom:12px"></div>
+      <div id="day-detail-exercises"></div>
+      <div class="detail-actions">
+        <button class="btn" id="day-detail-log-btn">Enregistrer cette séance</button>
+        <button class="btn btn-secondary" id="day-detail-skip-btn">Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Exercise -->
+  <div class="modal" id="add-exercise-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Ajouter un exercice</h2>
+        <button class="modal-close" onclick="MuscuApp.closeAddExercise()">×</button>
+      </div>
+      <div class="input-group">
+        <input type="text" id="exercise-search" placeholder="Rechercher un exercice..." oninput="MuscuApp.filterExercises()">
+      </div>
+      <div id="exercise-list" style="max-height:50vh;overflow-y:auto"></div>
+    </div>
+  </div>
+
+  <!-- Session Detail -->
+  <div class="modal" id="session-detail-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Détail séance</h2>
+        <button class="modal-close" onclick="MuscuApp.closeSessionDetail()">×</button>
+      </div>
+      <div id="session-detail-content"></div>
+    </div>
+  </div>
+
+  <!-- Objectives -->
+  <div class="modal" id="objectives-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Objectifs</h2>
+        <button class="modal-close" onclick="MuscuApp.closeObjectives()">×</button>
+      </div>
+      <p style="font-size:12px;color:var(--text-2);margin-bottom:12px">
+        Définis tes objectifs de poids et reps pour chaque exercice clé. L'IA adaptera ton programme en conséquence.
+      </p>
+      <div id="objectives-list"></div>
+      <button class="btn" onclick="MuscuApp.saveObjectives()" style="margin-top:14px">Sauvegarder</button>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="modal" id="settings-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Paramètres</h2>
+        <button class="modal-close" onclick="MuscuApp.closeSettings()">×</button>
+      </div>
+      <div class="input-group">
+        <label>URL Worker Cloudflare (API IA)</label>
+        <input type="text" id="set-worker-url" placeholder="https://...workers.dev">
+      </div>
+      <div class="input-group">
+        <label>Poids (kg)</label>
+        <input type="number" id="set-weight" step="0.5">
+      </div>
+      <div class="input-group">
+        <label>Jours / semaine</label>
+        <select id="set-days">
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Niveau</label>
+        <select id="set-level">
+          <option value="beginner">Débutant</option>
+          <option value="intermediate">Intermédiaire</option>
+          <option value="advanced">Avancé</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Blessures / notes</label>
+        <textarea id="set-injury"></textarea>
+      </div>
+      <button class="btn" onclick="MuscuApp.saveSettings()">Sauvegarder</button>
+      <button class="btn btn-secondary" onclick="MuscuApp.resetAllData()" style="margin-top:10px">Réinitialiser toutes les données</button>
+    </div>
+  </div>
+
+  <!-- Exercise Detail Modal -->
+  <div class="modal" id="exercise-detail-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Détail exercice</h2>
+        <button class="modal-close" onclick="MuscuApp.closeExerciseDetail()">×</button>
+      </div>
+      <div id="exdetail-content"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SCRIPTS ══════════════ -->
+  <script src="js/muscu-storage.js"></script>
+  <script src="js/muscu-exercises.js"></script>
+  <script src="js/muscu-ai-coach.js"></script>
+  <script src="js/muscu-app.js"></script>
+
+</body>
+</html>
