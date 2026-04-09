@@ -127,17 +127,48 @@ const MuscuApp = (() => {
   }
 
   async function _tryAIUpgrade() {
+    _showRunnerLoading();
     try {
       const aiPlan = await MuscuAI.generateWeekPlan();
+      _hideRunnerLoading();
       if (aiPlan && aiPlan.days && aiPlan.days.length > 0) {
         MuscuStorage.saveWeekPlan(aiPlan);
-        _toast('Plan mis à jour par le Coach IA (Opus)', 'success');
+        _toast('Plan Opus généré !', 'success');
         if (currentTab === 'dashboard') renderDashboard();
+      } else {
+        _toast('Plan local conservé', 'info');
       }
     } catch (e) {
+      _hideRunnerLoading();
       console.warn('AI plan generation failed:', e.message);
       _toast('IA indisponible — plan local conservé', 'info');
     }
+  }
+
+  function _showRunnerLoading() {
+    if (document.getElementById('ai-loading')) return;
+    const overlay = document.createElement('div');
+    overlay.id = 'ai-loading';
+    overlay.className = 'ai-loading-overlay';
+    overlay.innerHTML = `
+      <div class="runner-scene">
+        <div class="runner-track"></div>
+        <div class="runner">🏃</div>
+        <div class="runner-stations">
+          <span>🏋️</span>
+          <span>🚣</span>
+          <span>💪</span>
+        </div>
+      </div>
+      <div class="ai-loading-text">Le Coach IA prépare ton plan<span class="ai-loading-dots"></span></div>
+      <div class="ai-loading-sub">Opus analyse tes perfs, feedback et objectifs</div>
+    `;
+    document.body.appendChild(overlay);
+  }
+
+  function _hideRunnerLoading() {
+    const el = document.getElementById('ai-loading');
+    if (el) { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }
   }
 
   // ════════════════════════════════════════════════════════════
