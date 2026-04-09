@@ -119,12 +119,17 @@ ${_formatSessions(recent)}
 ## Plan semaine en cours
 ${plan ? _formatPlan(plan) : 'Pas de plan généré'}
 
+## Feedback de l'athlète sur les séances précédentes
+${_formatFeedback()}
+
 ## Format réponse
 - Sois concis et actionnable
 - **Gras** pour les points importants
 - Pour les prescriptions : exercice, séries × reps, charge suggérée, repos
 - Toujours justifier tes adaptations ("basé sur ton RPE de 9 au squat mardi, je réduis...")
-- Si douleur mentionnée : proposer alternative + étirement/mobilité`;
+- Si douleur mentionnée : proposer alternative + étirement/mobilité
+- IMPORTANT : tiens compte du feedback de l'athlète (exercices aimés/pas aimés, trop dur, manques)
+- Sois progressif dans les changements : pas de révolution, des ajustements doux`;
   }
 
   function _levelLabel(level) {
@@ -264,7 +269,7 @@ ${plan ? _formatPlan(plan) : 'Pas de plan généré'}
 
     const body = {
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 2000,
+      max_tokens: options.maxTokens || 2000,
       system: _buildSystemPrompt(),
       messages: [{ role: 'user', content: userMessage }],
     };
@@ -364,6 +369,147 @@ Adapte la complexité à mon niveau.`,
 
   function getPresets() { return PRESETS; }
 
+  // ── Generate Week Plan via AI ─────────────────────────────
+  async function generateWeekPlan() {
+    const profile = MuscuStorage.getProfile();
+    const weekNum = MuscuStorage.getWeekNumber();
+    const isDeload = weekNum > 1 && weekNum % 4 === 0;
+    const feedback = MuscuStorage.getRecentFeedback(10);
+    const prs = MuscuStorage.getPRs();
+
+    const exerciseList = MuscuExercises.getAll().map(e => e.id).join(', ');
+
+    const prompt = `Génère mon plan de semaine ${weekNum} (${profile.daysPerWeek} jours) de musculation Hyrox.
+${isDeload ? '⚠️ C\'est une semaine DELOAD : -30% volume, -30% intensité, RPE cible 5-6.' : ''}
+
+RÈGLES OBLIGATOIRES :
+- Structure en SUPERSETS (blocs A1/A2, B1/B2, C1/C2)
+- Chaque séance = échauffement + 2-3 blocs supersets + finisher Hyrox
+- Diversifier les exercices entre force, explosivité, endurance musculaire
+- Inclure 1 finisher Hyrox par séance (wall balls, farmers carry, burpees, sled...)
+- Core à chaque séance
+- Exercices unilatéraux prioritaires
+- Cibler mes faiblesses : sled pull (dos+grip), sled push (jambes), wall balls (thrusters)
+
+${feedback.length > 0 ? `TIENS COMPTE DE MES RETOURS PRÉCÉDENTS (très important) :
+${feedback.slice(-5).map(f => {
+  let parts = [`Séance du ${f.date}`];
+  if (f.liked && f.liked.length) parts.push(`Aimé : ${f.liked.join(', ')}`);
+  if (f.disliked && f.disliked.length) parts.push(`Pas aimé : ${f.disliked.join(', ')}`);
+  if (f.tooHard && f.tooHard.length) parts.push(`Trop dur : ${f.tooHard.join(', ')}`);
+  if (f.tooEasy && f.tooEasy.length) parts.push(`Trop facile : ${f.tooEasy.join(', ')}`);
+  if (f.missing) parts.push(`Manquait : ${f.missing}`);
+  if (f.notes) parts.push(`Notes : ${f.notes}`);
+  return '- ' + parts.join(' | ');
+}).join('\n')}
+→ Adapte en douceur : garde ce qui est aimé, remplace progressivement ce qui ne plaît pas, ajuste les charges sur ce qui est trop dur/facile.` : ''}
+
+RÉPONDS UNIQUEMENT en JSON valide avec cette structure exacte :
+{
+  "days": [
+    {
+      "label": "Nom du jour (ex: Bas du corps — Force + Sled)",
+      "focus": "Description courte du focus",
+      "warmup": "Description échauffement",
+      "blocks": [
+        {
+          "name": "Bloc A — Force",
+          "exercises": [
+            {"exerciseId": "back_squat", "name": "Back Squat", "sets": 4, "reps": "6", "weight": "85kg", "rest": "90s", "notes": "Superset avec A2"},
+            {"exerciseId": "barbell_row", "name": "Barbell Row", "sets": 4, "reps": "8", "weight": "60kg", "rest": "60s", "notes": "Tirer vers le nombril"}
+          ]
+        }
+      ],
+      "finisher": "60 Wall Balls for time",
+      "cooldown": "Étirements quadriceps, épaules, hanches — 5 min"
+    }
+  ]
+}
+
+Exercices disponibles (utilise UNIQUEMENT ces IDs) : ${exerciseList}
+
+Base les charges sur mes PRs actuels. Si pas de PR, suggère une charge conservative.`;
+
+    const response = await ask(prompt, { maxTokens: 3000 });
+
+    // Parse JSON from response
+    try {
+      let json = response;
+      // Strip markdown code blocks if present
+      const jsonMatch = response.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) json = jsonMatch[1];
+      // Try to find JSON object
+      const objMatch = json.match(/\{[\s\S]*\}/);
+      if (objMatch) json = objMatch[0];
+
+      const parsed = JSON.parse(json);
+      if (parsed.days && Array.isArray(parsed.days)) {
+        return _convertAIPlanToLocal(parsed, weekNum, isDeload);
+      }
+    } catch (e) {
+      console.warn('AI plan JSON parse failed, falling back to local generation', e);
+    }
+
+    // Fallback to local generation
+    return null;
+  }
+
+  function _convertAIPlanToLocal(aiPlan, weekNum, isDeload) {
+    return {
+      week: weekNum,
+      isDeload,
+      templateName: 'Coach IA',
+      generatedAt: new Date().toISOString(),
+      aiGenerated: true,
+      days: aiPlan.days.map((day, i) => {
+        const exercises = [];
+        (day.blocks || []).forEach(block => {
+          (block.exercises || []).forEach(ex => {
+            const info = MuscuExercises.getById(ex.exerciseId);
+            exercises.push({
+              exerciseId: ex.exerciseId || 'custom',
+              name: ex.name || (info ? info.name : 'Exercice'),
+              category: info ? info.category : 'lower',
+              sets: ex.sets || 3,
+              reps: ex.reps || '10',
+              suggestedWeight: ex.weight ? parseFloat(ex.weight) || null : null,
+              restSec: ex.rest ? parseInt(ex.rest) || 60 : 60,
+              notes: ex.notes || '',
+              blockName: block.name || '',
+              isDeload,
+            });
+          });
+        });
+        return {
+          dayIndex: i,
+          label: day.label || `Jour ${i + 1}`,
+          focus: day.focus || '',
+          warmup: day.warmup || '',
+          finisher: day.finisher || '',
+          cooldown: day.cooldown || '',
+          exercises,
+          status: 'pending',
+        };
+      }),
+    };
+  }
+
+  function _formatFeedback() {
+    const feedbacks = MuscuStorage.getRecentFeedback(10);
+    if (!feedbacks.length) return 'Aucun feedback encore — c\'est la première fois ou l\'athlète n\'a pas encore donné de retour.';
+    return feedbacks.map(f => {
+      let parts = [`[${f.date}]`];
+      if (f.liked && f.liked.length) parts.push(`✅ Aimé : ${f.liked.join(', ')}`);
+      if (f.disliked && f.disliked.length) parts.push(`❌ Pas aimé : ${f.disliked.join(', ')}`);
+      if (f.tooHard && f.tooHard.length) parts.push(`🔴 Trop dur : ${f.tooHard.join(', ')}`);
+      if (f.tooEasy && f.tooEasy.length) parts.push(`🟢 Trop facile : ${f.tooEasy.join(', ')}`);
+      if (f.missing) parts.push(`📝 Manquait : ${f.missing}`);
+      if (f.notes) parts.push(`💬 ${f.notes}`);
+      if (f.mood) parts.push(`Humeur : ${f.mood}`);
+      return parts.join(' | ');
+    }).join('\n');
+  }
+
   // ── Session Analysis ──────────────────────────────────────
   async function analyzeSession(session) {
     const prs = MuscuStorage.getPRs();
@@ -405,5 +551,5 @@ Sois CONCIS et ACTIONNABLE. Pas de blabla.`;
     return ask(prompt);
   }
 
-  return { ask, getPresets, analyzeSession };
+  return { ask, getPresets, analyzeSession, generateWeekPlan };
 })();

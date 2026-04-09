@@ -108,13 +108,27 @@ const MuscuApp = (() => {
     el.style.display = 'flex';
   }
 
-  function launchPlan() {
+  async function launchPlan() {
     const startDate = document.getElementById('launch-start-date')?.value || new Date().toISOString().slice(0, 10);
     MuscuStorage.setPlanStart(startDate);
-    const plan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), 1);
-    MuscuStorage.saveWeekPlan(plan);
     document.getElementById('launch-modal').style.display = 'none';
     _hideSplash();
+
+    // Try AI generation first
+    _toast('Génération IA du plan en cours...', 'info');
+    try {
+      const aiPlan = await MuscuAI.generateWeekPlan();
+      if (aiPlan) {
+        MuscuStorage.saveWeekPlan(aiPlan);
+        _toast('Plan IA généré !', 'success');
+        _renderAll();
+        return;
+      }
+    } catch (e) { console.warn('AI plan generation failed, using local fallback', e); }
+
+    // Fallback to local
+    const plan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), 1);
+    MuscuStorage.saveWeekPlan(plan);
     _renderAll();
   }
 
@@ -130,9 +144,8 @@ const MuscuApp = (() => {
     const isDeload = weekNum > 1 && weekNum % 4 === 0;
 
     if (plan && plan.week !== weekNum) {
-      const newPlan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), weekNum);
-      MuscuStorage.saveWeekPlan(newPlan);
-      renderDashboard();
+      // New week — regenerate (try AI, fallback local)
+      _autoRegenPlan(weekNum);
       return;
     }
 
@@ -165,19 +178,25 @@ const MuscuApp = (() => {
   function _renderWeekPlan(plan) {
     const container = document.getElementById('dash-plan');
     if (!plan || !plan.days) { container.innerHTML = '<p class="text-muted">Aucun plan</p>'; return; }
-    container.innerHTML = plan.days.map((day, i) => {
+    let html = '';
+    if (plan.aiGenerated) {
+      html += '<div class="ai-plan-badge">🤖 Plan créé par le Coach IA</div>';
+    }
+    html += plan.days.map((day, i) => {
       const statusClass = day.status === 'done' ? 'plan-done' : day.status === 'skipped' ? 'plan-skipped' : '';
       const statusIcon = day.status === 'done' ? '✓' : day.status === 'skipped' ? '✕' : (i + 1);
       const catInfo = MuscuExercises.getCategoryInfo(day.exercises[0]?.category || 'lower');
+      const finisherBadge = day.finisher ? '<span class="finisher-mini">⚡ Finisher</span>' : '';
       return `
         <div class="plan-day-card ${statusClass}" onclick="MuscuApp.showDayDetail(${i})">
           <div class="plan-day-num" style="background:${catInfo.color}20;color:${catInfo.color}">${statusIcon}</div>
           <div class="plan-day-info">
             <strong>${day.label}</strong>
-            <span class="text-muted text-sm">${day.exercises.length} exercices — ${day.focus}</span>
+            <span class="text-muted text-sm">${day.exercises.length} exercices — ${day.focus} ${finisherBadge}</span>
           </div>
         </div>`;
     }).join('');
+    container.innerHTML = html;
   }
 
   function _renderPRCards(prs, objectives) {
@@ -230,11 +249,23 @@ const MuscuApp = (() => {
     document.getElementById('day-detail-title').textContent = day.label;
     document.getElementById('day-detail-focus').textContent = day.focus;
 
-    const exHtml = day.exercises.map(ex => {
+    // Show warmup if available
+    let exHtml = '';
+    if (day.warmup) {
+      exHtml += `<div class="detail-warmup"><div class="cues-title">Échauffement</div><p>${day.warmup}</p></div>`;
+    }
+
+    // Group by block if available
+    let currentBlock = '';
+    day.exercises.forEach(ex => {
+      if (ex.blockName && ex.blockName !== currentBlock) {
+        currentBlock = ex.blockName;
+        exHtml += `<div class="block-header">${currentBlock}</div>`;
+      }
       const info = MuscuExercises.getById(ex.exerciseId);
       const catInfo = MuscuExercises.getCategoryInfo(ex.category);
-      const relevance = MuscuExercises.getHyroxRelevance(ex.exerciseId);
-      return `
+      const relevance = info ? MuscuExercises.getHyroxRelevance(ex.exerciseId) : [];
+      exHtml += `
         <div class="detail-exercise">
           <div class="detail-ex-header">
             <span class="cat-badge" style="background:${catInfo.color}20;color:${catInfo.color}">${catInfo.icon} ${catInfo.label}</span>
@@ -243,14 +274,24 @@ const MuscuApp = (() => {
           </div>
           <div class="detail-ex-prescription">
             <span class="rx-pill">${ex.sets} × ${ex.reps}</span>
-            ${ex.suggestedWeight ? `<span class="rx-pill rx-weight">${ex.suggestedWeight}kg</span>` : ''}
-            <span class="rx-pill rx-rest">Repos ${ex.restSec}s</span>
+            ${ex.suggestedWeight ? `<span class="rx-pill rx-weight">${typeof ex.suggestedWeight === 'string' ? ex.suggestedWeight : ex.suggestedWeight + 'kg'}</span>` : ''}
+            <span class="rx-pill rx-rest">Repos ${ex.restSec || 60}s</span>
           </div>
-          ${info && info.cues ? `<div class="technique-cues"><div class="cues-title">Points clés technique :</div><ul>${info.cues.slice(0, 4).map(c => `<li>${c}</li>`).join('')}</ul></div>` : ''}
+          ${ex.notes ? `<div class="exercise-note text-muted text-sm">${ex.notes}</div>` : ''}
+          ${info && info.cues ? `<div class="technique-cues"><div class="cues-title">Points clés :</div><ul>${info.cues.slice(0, 3).map(c => `<li>${c}</li>`).join('')}</ul></div>` : ''}
           ${ex.isDeload ? '<span class="deload-badge">DELOAD</span>' : ''}
-          <div class="detail-hyrox text-muted text-sm">Hyrox: ${relevance.join(', ')}</div>
+          ${relevance.length ? `<div class="detail-hyrox text-muted text-sm">Hyrox: ${relevance.join(', ')}</div>` : ''}
         </div>`;
-    }).join('');
+    });
+
+    // Finisher
+    if (day.finisher) {
+      exHtml += `<div class="detail-finisher"><div class="cues-title">Finisher Hyrox</div><p><strong>${day.finisher}</strong></p></div>`;
+    }
+    // Cooldown
+    if (day.cooldown) {
+      exHtml += `<div class="detail-cooldown"><div class="cues-title">Retour au calme</div><p>${day.cooldown}</p></div>`;
+    }
     document.getElementById('day-detail-exercises').innerHTML = exHtml;
 
     document.getElementById('day-detail-log-btn').onclick = () => {
@@ -612,7 +653,11 @@ const MuscuApp = (() => {
 
     _toast('Séance enregistrée !', 'success');
 
-    // AI analysis
+    // Show feedback form
+    _lastSavedSession = session;
+    _showFeedbackForm(session);
+
+    // AI analysis (async, after feedback form shown)
     const analysisEl = document.getElementById('log-ai-analysis');
     analysisEl.style.display = 'block';
     analysisEl.innerHTML = '<p class="loading-text">Analyse IA en cours...</p>';
@@ -887,13 +932,36 @@ const MuscuApp = (() => {
 
   function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
 
-  function regeneratePlan() {
-    if (!confirm('Régénérer le plan de la semaine ?')) return;
+  async function _autoRegenPlan(weekNum) {
+    try {
+      const aiPlan = await MuscuAI.generateWeekPlan();
+      if (aiPlan) { MuscuStorage.saveWeekPlan(aiPlan); renderDashboard(); return; }
+    } catch (e) { /* fallback */ }
+    const plan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), weekNum);
+    MuscuStorage.saveWeekPlan(plan);
+    renderDashboard();
+  }
+
+  async function regeneratePlan() {
+    if (!confirm('Régénérer le plan via le Coach IA ?')) return;
+    _toast('Le Coach IA crée ton plan...', 'info');
+
+    try {
+      const aiPlan = await MuscuAI.generateWeekPlan();
+      if (aiPlan) {
+        MuscuStorage.saveWeekPlan(aiPlan);
+        _toast('Plan IA généré !', 'success');
+        renderDashboard();
+        return;
+      }
+    } catch (e) { console.warn('AI plan failed', e); }
+
+    // Fallback
     const weekNum = MuscuStorage.getWeekNumber();
     const plan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), weekNum);
     MuscuStorage.saveWeekPlan(plan);
     renderDashboard();
-    _toast('Plan régénéré', 'success');
+    _toast('Plan local généré (IA indisponible)', 'info');
   }
 
   function resetAllData() {
@@ -942,6 +1010,61 @@ const MuscuApp = (() => {
     document.getElementById('log-rpe-val').textContent = val;
   }
 
+  // ════════════════════════════════════════════════════════════
+  //  FEEDBACK (post-session)
+  // ════════════════════════════════════════════════════════════
+  let _lastSavedSession = null;
+
+  function _showFeedbackForm(session) {
+    const modal = document.getElementById('feedback-modal');
+    if (!modal) return;
+    const exerciseNames = (session.exercises || []).map(e => {
+      const info = MuscuExercises.getById(e.exerciseId);
+      return info ? info.name : e.exerciseId;
+    });
+
+    // Build exercise checkboxes for liked/disliked/tooHard/tooEasy
+    const exCheckboxes = exerciseNames.map((name, i) => `
+      <div class="fb-exercise-row">
+        <span class="fb-ex-name">${name}</span>
+        <div class="fb-ex-ratings">
+          <label class="fb-chip" title="Aimé"><input type="checkbox" name="fb-liked" value="${name}"> 👍</label>
+          <label class="fb-chip" title="Pas aimé"><input type="checkbox" name="fb-disliked" value="${name}"> 👎</label>
+          <label class="fb-chip" title="Trop dur"><input type="checkbox" name="fb-hard" value="${name}"> 🔴</label>
+          <label class="fb-chip" title="Trop facile"><input type="checkbox" name="fb-easy" value="${name}"> 🟢</label>
+        </div>
+      </div>`).join('');
+
+    document.getElementById('fb-exercises').innerHTML = exCheckboxes;
+    document.getElementById('fb-missing').value = '';
+    document.getElementById('fb-notes').value = '';
+    modal.style.display = 'flex';
+  }
+
+  function saveFeedback() {
+    const liked = [...document.querySelectorAll('input[name="fb-liked"]:checked')].map(el => el.value);
+    const disliked = [...document.querySelectorAll('input[name="fb-disliked"]:checked')].map(el => el.value);
+    const tooHard = [...document.querySelectorAll('input[name="fb-hard"]:checked')].map(el => el.value);
+    const tooEasy = [...document.querySelectorAll('input[name="fb-easy"]:checked')].map(el => el.value);
+    const missing = document.getElementById('fb-missing').value.trim();
+    const notes = document.getElementById('fb-notes').value.trim();
+    const mood = document.querySelector('input[name="fb-mood"]:checked')?.value || '';
+
+    const fb = {
+      sessionId: _lastSavedSession ? _lastSavedSession.id : null,
+      date: _lastSavedSession ? _lastSavedSession.date : new Date().toISOString().slice(0, 10),
+      liked, disliked, tooHard, tooEasy, missing, notes, mood,
+    };
+
+    MuscuStorage.saveFeedback(fb);
+    document.getElementById('feedback-modal').style.display = 'none';
+    _toast('Feedback enregistré — l\'IA en tiendra compte', 'success');
+  }
+
+  function skipFeedback() {
+    document.getElementById('feedback-modal').style.display = 'none';
+  }
+
   return {
     init, switchTab,
     saveOnboarding, launchPlan,
@@ -955,6 +1078,8 @@ const MuscuApp = (() => {
     showObjectives, saveObjectives, closeObjectives,
     showSettings, saveSettings, closeSettings,
     regeneratePlan, resetAllData,
+    // Feedback
+    saveFeedback, skipFeedback,
     // Exercise bank
     setBankFilter, bankSearchChange, showExerciseDetail, closeExerciseDetail,
   };

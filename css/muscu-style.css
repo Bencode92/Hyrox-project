@@ -851,6 +851,107 @@ textarea { resize: vertical; min-height: 60px; }
 }
 .bank-count { font-size: 12px; }
 
+/* ── Feedback Form ────────────────────────────────────────── */
+.mood-row {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.mood-chip {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mood-chip:has(input:checked) {
+  border-color: var(--accent-2);
+  background: var(--accent-2)15;
+  color: var(--accent-2);
+}
+.mood-chip input { display: none; }
+.fb-exercise-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.fb-exercise-row:last-child { border: none; }
+.fb-ex-name { font-size: 13px; font-weight: 600; flex: 1; }
+.fb-ex-ratings { display: flex; gap: 4px; }
+.fb-chip {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.fb-chip:has(input:checked) {
+  border-color: var(--accent-2);
+  background: var(--accent-2)20;
+  transform: scale(1.1);
+}
+.fb-chip input { display: none; }
+
+/* ── Superset Blocks ─────────────────────────────────────── */
+.block-header {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-purple);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 14px 0 6px;
+  padding: 6px 10px;
+  background: var(--accent-purple)10;
+  border-left: 3px solid var(--accent-purple);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.exercise-note {
+  font-style: italic;
+  padding: 2px 0;
+}
+.detail-warmup, .detail-finisher, .detail-cooldown {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.detail-finisher {
+  border-color: var(--accent-red)40;
+  background: var(--accent-red)08;
+}
+.detail-finisher .cues-title { color: var(--accent-red); }
+.detail-warmup .cues-title { color: var(--accent-amber); }
+.detail-cooldown .cues-title { color: var(--accent-2); }
+
+/* ── AI Plan Badge ────────────────────────────────────────── */
+.ai-plan-badge {
+  background: var(--accent-purple)15;
+  border: 1px solid var(--accent-purple)30;
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-purple);
+  text-align: center;
+  margin-bottom: 8px;
+}
+.finisher-mini {
+  display: inline-block;
+  background: var(--accent-red)15;
+  color: var(--accent-red);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
 /* ── Bottom Nav 5 tabs ───────────────────────────────────── */
 .bottom-nav { gap: 0; }
 .nav-btn { padding: 6px 8px; font-size: 10px; }

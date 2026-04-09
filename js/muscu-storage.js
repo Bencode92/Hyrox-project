@@ -12,6 +12,7 @@ const MuscuStorage = (() => {
     prs:        'mf_prs',         // personal records history
     settings:   'mf_settings',    // app settings (worker url, etc.)
     planStart:  'mf_plan_start',  // plan start date
+    feedback:   'mf_feedback',    // session feedback & preferences
   };
 
   function _get(key, fallback = null) {
@@ -146,6 +147,23 @@ const MuscuStorage = (() => {
     return Math.max(1, Math.floor(diff / (7 * 24 * 60 * 60 * 1000)) + 1);
   }
 
+  // ── Feedback (session preferences & notes for AI) ──────────
+  function getFeedback() { return _get(KEYS.feedback, []); }
+
+  function saveFeedback(fb) {
+    // fb = { sessionId, date, liked:[], disliked:[], tooHard:[], tooEasy:[], missing:'', notes:'', mood:'' }
+    const all = getFeedback();
+    fb.createdAt = new Date().toISOString();
+    all.push(fb);
+    // Keep last 50 feedbacks
+    if (all.length > 50) all.splice(0, all.length - 50);
+    _set(KEYS.feedback, all);
+  }
+
+  function getRecentFeedback(n = 15) {
+    return getFeedback().slice(-n);
+  }
+
   // ── Utilities ─────────────────────────────────────────────
   function estimate1RM(weight, reps) {
     if (reps <= 0 || weight <= 0) return 0;
@@ -189,6 +207,7 @@ const MuscuStorage = (() => {
     getWeekPlan, saveWeekPlan, clearWeekPlan,
     getSettings, saveSettings,
     getPlanStart, setPlanStart, getWeekNumber,
+    getFeedback, saveFeedback, getRecentFeedback,
     resetAll, exportData, importData,
   };
 })();

@@ -395,6 +395,48 @@
     </div>
   </div>
 
+  <!-- Feedback Modal -->
+  <div class="modal" id="feedback-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Ton ressenti</h2>
+        <button class="modal-close" onclick="MuscuApp.skipFeedback()">×</button>
+      </div>
+      <p style="font-size:12px;color:var(--text-2);margin-bottom:12px">
+        L'IA utilisera tes retours pour adapter les prochaines séances. Sois honnête !
+      </p>
+
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-title">Comment tu te sens ?</div>
+        <div class="mood-row">
+          <label class="mood-chip"><input type="radio" name="fb-mood" value="great"> 💪 Au top</label>
+          <label class="mood-chip"><input type="radio" name="fb-mood" value="good"> 😊 Bien</label>
+          <label class="mood-chip"><input type="radio" name="fb-mood" value="ok"> 😐 Moyen</label>
+          <label class="mood-chip"><input type="radio" name="fb-mood" value="tired"> 😓 Fatigué</label>
+          <label class="mood-chip"><input type="radio" name="fb-mood" value="bad"> 😣 Difficile</label>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-title">Par exercice (👍 aimé · 👎 pas aimé · 🔴 trop dur · 🟢 trop facile)</div>
+        <div id="fb-exercises"></div>
+      </div>
+
+      <div class="input-group">
+        <label>Il manquait quelque chose ? (exercice, muscle, type de travail...)</label>
+        <input type="text" id="fb-missing" placeholder="Ex: plus de travail de grip, j'aurais aimé du sled...">
+      </div>
+
+      <div class="input-group">
+        <label>Notes libres pour l'IA</label>
+        <textarea id="fb-notes" placeholder="Ex: j'ai adoré les supersets push/pull, la prochaine fois plus d'explosivité..."></textarea>
+      </div>
+
+      <button class="btn" onclick="MuscuApp.saveFeedback()">Envoyer le feedback</button>
+      <button class="btn btn-secondary" onclick="MuscuApp.skipFeedback()" style="margin-top:6px">Passer</button>
+    </div>
+  </div>
+
   <!-- Exercise Detail Modal -->
   <div class="modal" id="exercise-detail-modal">
     <div class="modal-content">
