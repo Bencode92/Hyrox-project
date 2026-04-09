@@ -918,6 +918,7 @@ const MuscuApp = (() => {
     const settings = MuscuStorage.getSettings();
     const profile = MuscuStorage.getProfile();
     document.getElementById('set-worker-url').value = settings.workerUrl || '';
+    document.getElementById('set-ai-model').value = settings.aiModel || 'claude-sonnet-4-20250514';
     document.getElementById('set-weight').value = profile.weight || '';
     document.getElementById('set-days').value = profile.daysPerWeek || 4;
     document.getElementById('set-level').value = profile.level || 'intermediate';
@@ -928,6 +929,7 @@ const MuscuApp = (() => {
   function saveSettings() {
     const settings = MuscuStorage.getSettings();
     settings.workerUrl = document.getElementById('set-worker-url').value.trim();
+    settings.aiModel = document.getElementById('set-ai-model').value;
     MuscuStorage.saveSettings(settings);
     const profile = MuscuStorage.getProfile();
     profile.weight = parseFloat(document.getElementById('set-weight').value) || profile.weight;

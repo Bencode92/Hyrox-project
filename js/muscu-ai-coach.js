@@ -289,7 +289,7 @@ ${_formatFeedback()}
     if (!url) throw new Error('URL du Worker non configurée. Va dans Paramètres pour la configurer.');
 
     const body = {
-      model: 'claude-opus-4-6',
+      model: settings.aiModel || 'claude-sonnet-4-20250514',
       max_tokens: options.maxTokens || 2000,
       system: _buildSystemPrompt(),
       messages: [{ role: 'user', content: userMessage }],

@@ -372,6 +372,15 @@
         <input type="text" id="set-worker-url" placeholder="https://...workers.dev">
       </div>
       <div class="input-group">
+        <label>Modèle IA</label>
+        <select id="set-ai-model">
+          <option value="claude-sonnet-4-20250514">Claude Sonnet 4 (mai 2025)</option>
+          <option value="claude-sonnet-4-6">Claude Sonnet 4.6 (dernier)</option>
+          <option value="claude-opus-4-6">Claude Opus 4.6 (premium)</option>
+        </select>
+        <span class="text-muted text-sm" style="margin-top:4px;display:block">Opus = meilleur mais plus cher. Ton Worker doit le supporter.</span>
+      </div>
+      <div class="input-group">
         <label>Poids (kg)</label>
         <input type="number" id="set-weight" step="0.5">
       </div>
