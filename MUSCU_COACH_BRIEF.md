@@ -4,24 +4,50 @@
 
 HyroxForge Musculation est le module de renforcement musculaire de l'app HyroxForge, conçu pour préparer physiquement aux 8 épreuves Hyrox. L'app est accessible ici : **https://bencode92.github.io/Hyrox-project/muscu.html**
 
-Ce document compile les recommandations de coachs experts Hyrox (HWPO/Mat Fraser, Compromised Running/Rich Ryan, TrainRox, rb100.fitness, Jake Dearden) et les données scientifiques disponibles.
+Ce document compile les recommandations de coachs experts Hyrox (HWPO/Mat Fraser, Compromised Running/Rich Ryan, TrainRox, rb100.fitness, Jake Dearden) et les données scientifiques disponibles, **corrigé et validé par un coach spécialisé**.
 
 ---
 
-## 1. Principes fondamentaux
+## ⚠️ CORRECTION COACH — Principes corrigés
 
-### La force au service de l'endurance
-- **VO2max** est le prédicteur n°1 de performance Hyrox, pas la masse musculaire
-- La musculation doit **supporter** la performance aérobie, pas la dominer
-- Consensus experts : **2-3 séances muscu/semaine** suffisent
-- Toujours faire la muscu **AVANT** le cardio dans la même session (interférence AMPK/mTOR)
-- Séparer muscu et cardio de **6-8h minimum** si possible
+> **"Ton programme est bien construit comme programme de musculation, mais il y a un angle mort majeur pour Hyrox : le running n'apparaît nulle part. Or Hyrox, c'est ~50% de course."**
 
-### Effet d'interférence
-Le travail de force combiné à un gros volume d'endurance crée des signaux moléculaires contradictoires : la voie AMPK (adaptation aérobie) peut inhiber la voie mTOR (hypertrophie et force). Stratégies :
-1. Séparer les sessions muscu/cardio de 6-8h
-2. Toujours faire la force en premier
-3. Gérer le volume total (pas trop de volume endurance à côté)
+### Shift mental fondamental
+On passe de **"musculation avec finishers Hyrox"** à **"hybride avec force au service de la course et des stations"**. La musculation est un OUTIL, pas l'objectif.
+
+### Corrections appliquées
+1. **Intensité plafonnée** — Plus de 85-90% 1RM en phase 4. Cap à 75-80% pour préserver la fraîcheur running.
+2. **Finishers 2x/sem max** — Pas à chaque séance. Placés les jours sans course le lendemain.
+3. **Micro-progressions** — +1.25kg haut du corps et unilatéraux. +2.5kg bas du corps bilatéral. +5kg réservé deadlift/sled en début de cycle.
+4. **Sled Pull ≠ tirage haltère** — Le sled pull = deadlift + grip + ischios. Pas du barbell row.
+5. **Grip = farmers carry** — Dead hang en complément seulement. Objectif : 2×24kg (ou 2×32kg) farmers carry 200m sans pause.
+6. **Bilatéral + unilatéral** — Complémentaires, pas l'un OU l'autre. 60% bilatéral / 40% uni en phase force. Inverse en pré-compétition.
+7. **Phase 0 retour blessure** — 2-3 semaines mono-articulaire progressif AVANT les supersets.
+8. **Running intégré** — 3-4 runs/sem minimum (Z2 + seuil + compromised). Référence au module Cardio HyroxForge.
+9. **Deload sur signaux** — Pas mécanique toutes les 4 sem. Basé sur RPE en hausse, sommeil dégradé, fatigue chronique.
+
+---
+
+## 1. Principes fondamentaux (corrigés)
+
+### Modèle hybride, pas powerlifting
+- **VO2max** = prédicteur n°1 de performance Hyrox
+- La musculation **supporte** la course et les stations, elle ne domine pas
+- Consensus : **2-3 séances muscu/sem + 3-4 runs/sem + 1-2 sessions stations**
+- Rich Ryan programme **2-3 force + 5-7 course/compromised** pour ses athlètes
+- Toujours faire la muscu **AVANT** le cardio si même session
+- Séparer muscu lourde et run qualité de **6-8h minimum**, idéalement jours différents
+
+### Effet d'interférence (risque n°1)
+Force lourde 3-4×/sem + finishers + running = cortisol chronique, sommeil dégradé, perte de VO2max.
+- Séparer lift lourd et run qualité (jours différents idéalement)
+- **Max 2 finishers/semaine**, les jours sans course le lendemain
+- Les autres séances → clore par mobilité/étirements
+
+### Endurance de force sous fatigue cardio
+> "Ce qui compte pour Hyrox, c'est l'endurance de force sous fatigue cardio (= compromised strength), pas juste plus de reps."
+
+Ça se travaille en intégrant sled/wall balls dans des blocs cardio (compromised workouts), pas en passant à 4×15 en salle.
 
 ---
 
@@ -40,420 +66,226 @@ Le travail de force combiné à un gros volume d'endurance crée des signaux mol
 | Sandbag Lunges | 100m | 20 kg | 30 kg | 10 kg | 20 kg |
 | Wall Balls | 100 reps / 3m | 6 kg | 9 kg | 75 reps / 2.7m | 100 reps / 2.7m (6kg) |
 
-### Muscles ciblés par épreuve
+### Muscles ciblés par épreuve (corrigé)
 
-| Épreuve | Muscles primaires | Muscles secondaires | Exercices clés |
-|---------|------------------|---------------------|----------------|
-| **SkiErg** | Lats, triceps, core | Jambes | Lat pulldown, med ball slams, straight-arm pulldown |
-| **Sled Push** | Quadriceps, fessiers, mollets | Core, deltoïdes, triceps | Back squat, front squat, leg press, step-ups |
-| **Sled Pull** | Dos, biceps, trapèzes | Core, ischio-jambiers, grip | Barbell row, pull-ups, deadlift, rope pulls |
-| **Burpee BJ** | Full body explosif | Hip flexors, épaules | Box jumps, jumping lunges, plyometric push-ups |
-| **Rowing** | Dos, jambes, core | Biceps, obliques | Seated row, leg press, Russian twists |
-| **Farmers Carry** | Grip, trapèzes, core | Stabilisateurs épaules | Farmers walk, dead hangs, shrugs |
-| **Lunges** | Quadriceps, fessiers, hip flexors | Core | Walking lunges, Bulgarian split squat, goblet squat |
-| **Wall Balls** | Quadriceps, épaules, core | Fessiers, triceps | Front squat, thrusters, OHP |
+| Épreuve | Ce qui drive la perf | Exercices clés muscu |
+|---------|---------------------|---------------------|
+| **SkiErg** | Lats + triceps + core | Lat pulldown, med ball slams |
+| **Sled Push** | Quadriceps + fessiers (force horizontale) | **Back squat lourd, trap bar DL**, step-ups, calf raises |
+| **Sled Pull** | Ischios/fessiers/dos + grip (pattern deadlift) | **Deadlift lourd, hip hinge**, grip work — PAS barbell row |
+| **Burpee BJ** | Full body explosif + puissance unijambiste | Box jumps, jumping lunges |
+| **Rowing** | Compétence cardio-musculaire | **Ergomètre dédié** (intervals 4×500m) >> tirage haltère |
+| **Farmers Carry** | Grip endurance sous marche | **Farmers carry à poids compétition**, distance progressive |
+| **Lunges** | Quad/fessier endurance + core | Walking lunges avec charge > compétition |
+| **Wall Balls** | Quad + épaule endurance (lactate >12mmol/L) | Front squat, thrusters, pratiquer en état de fatigue |
 
 ---
 
-## 3. Structure de séances — Double Sets (Supersets)
+## 3. Structure de séances — Supersets (corrigé)
 
-### Principe des supersets Hyrox
-Les supersets sont particulièrement efficaces pour Hyrox car ils :
-- Simulent la fatigue enchaînée de la course (cardio élevé pendant la muscu)
+### Phase 0 — Retour de blessure (2-3 semaines)
+**AVANT les supersets** :
+- Séquencer les exercices (pas de supersets)
+- Mono-articulaire progressif
+- Juger technique et douleur sans biais de fatigue croisée
+- Puis passer aux supersets si la zone blessée n'est pas impliquée des deux côtés
+
+### Supersets (après phase 0)
+Les supersets sont efficaces pour Hyrox car ils :
+- Simulent la fatigue enchaînée
 - Réduisent le temps d'entraînement
 - Améliorent l'endurance musculaire sous fatigue
 
-### Pairings recommandés par experts
+### Pairings recommandés
 
-#### Par pattern de mouvement
 | Superset | Exercice A | Exercice B | Logique |
 |----------|-----------|-----------|---------|
-| Push + Pull | Bench Press | Barbell Row | Équilibre agoniste/antagoniste |
-| Push + Pull | OHP | Pull-ups | Vertical push/pull |
-| Lower + Upper | Back Squat | Pull-ups | Repos actif bas/haut |
-| Bilatéral + Unilatéral | Deadlift | Bulgarian Split Squat | Force globale + stabilité |
-| Force + Plyométrie | Heavy Squat | Box Jumps | Contrast training (PAP) |
-| Station-spécifique | Wall Balls | Farmers Carry | Simule fin de course Hyrox |
-| Excentrique + Max | Eccentric Push-ups (4s) | Max Push-ups | Force + endurance |
+| Push + Pull | Bench Press | Barbell Row | Agoniste/antagoniste |
+| Lower + Upper | Back Squat | Pull-ups | Repos actif |
+| Force + Plyo | Heavy Squat | Box Jumps | Contrast training (PAP) |
+| Bilatéral + Uni | Deadlift | Bulgarian Split Squat | Force + stabilité |
 
-#### Supersets spécifiques Hyrox (Rich Ryan / Compromised Running)
-| Superset | Exercice A | Exercice B | Cible Hyrox |
-|----------|-----------|-----------|-------------|
-| A1/A2 | Walking Lunge 4×8 | DB Strict Press 3×8 | Lunges + Wall Balls |
-| B1/B2 | Single-leg Glute Bridge 3×10 | Eccentric Push-ups 4×4 + max | Sled Push + Burpees |
-| A1/A2 | DB RDL 4×8 | Inverted Row 4×10 | Sled Pull + Row |
-| B1/B2 | Split Squat 3×8 | Eccentric Pull-up 3×3 | Lunges + Sled Pull |
-| Carry block | Overhead Carry 3×40s | Farmer's Walk 3×40s heavy | Farmers Carry |
+### Structure type (corrigée — pas de finisher systématique)
 
-### Structure type d'une séance superset
 ```
 ÉCHAUFFEMENT (10 min)
-- 5 min cardio léger (rameur ou vélo)
+- 5 min cardio léger
 - Mobilité dynamique ciblée
-- 2-3 séries progressives du mouvement principal (50%, 70%, 85%)
+- 2-3 séries progressives (50%, 70%, 85%)
 
 BLOC A — FORCE (12-15 min)
-A1: Mouvement compound lourd — 4×5-6 reps — repos 90s
-A2: Mouvement antagoniste — 4×8-10 reps — repos 60s
+A1: Compound lourd bilatéral — 4×5-6 — repos 2-3 min
+A2: Antagoniste — 4×8 — repos 60s
 
-BLOC B — HYPERTROPHIE/ENDURANCE (12-15 min)
-B1: Mouvement unilatéral — 3×10-12/jambe — repos 60s
-B2: Mouvement upper body — 3×10-12 reps — repos 45s
+BLOC B — UNILATÉRAL + ACCESSOIRE (12-15 min)
+B1: Unilatéral — 3×8-10/jambe — repos 60s
+B2: Upper body — 3×10 — repos 45s
 
-BLOC C — HYROX SPÉCIFIQUE (8-10 min)
-C1: Exercice explosif — 3×8 reps — repos 45s
-C2: Core — 3×30-45s — repos 30s
+BLOC C — CORE + GRIP (8 min)
+C1: Core anti-rotation/stabilité — 3×30-45s
+C2: Grip work (farmers carry ou dead hang) — 3×30-40s
 
-FINISHER (5 min)
-- 40-60 Wall Balls OU 30m Farmers Carry × 3 OU 50m Sled Push
+FINISHER (uniquement 2x/semaine, jours sans course lendemain)
+- 40-60 Wall Balls OU 3×60m Farmers Carry OU Sled Push
 
 RETOUR AU CALME (5 min)
-- Étirements statiques zones travaillées
-- Foam rolling
+- Étirements + mobilité (TOUTES les séances, surtout sans finisher)
 ```
 
 ---
 
-## 4. Programmation par objectif
+## 4. Programmation (corrigée — modèle hybride)
 
-### 3 zones de charge
+### Périodisation corrigée (cap intensité)
 
-| Objectif | Reps | Séries | Repos | Charge | But |
-|----------|------|--------|-------|--------|-----|
-| **Force max** | 1-5 | 3-5 | 3-5 min | 80-90% 1RM | Base neurale, puissance |
-| **Hypertrophie** | 6-12 | 3-4 | 60-90s | 65-80% 1RM | Volume musculaire, capacité de travail |
-| **Endurance musculaire** | 12+ | 3-4 | 30-60s | 40-65% 1RM | Résistance à la fatigue (spécifique course) |
-| **Puissance/Vitesse** | 3-5 | 3-5 | 2-3 min | ~60% 1RM | Excentrique lent + concentrique explosif |
+| Phase | Durée | Reps | Intensité max | Note coach |
+|-------|-------|------|---------------|------------|
+| **0. Retour blessure** | 2-3 sem | 12-15 | 50-60% 1RM | Mono-articulaire, pas de supersets |
+| **1. Adaptation** | 4-6 sem | 10-12 | 60-70% 1RM | Technique, compound léger |
+| **2. Construction** | 6-8 sem | 8-10 | 70-75% 1RM | Volume progressif |
+| **3. Force** | 4-6 sem | 5-8 | **75-80% 1RM max** | Bilatéral lourd + uni |
+| **4. Pré-compétition** | 4-6 sem | 6-10 | 70-75% 1RM | Plus d'uni, stations sous fatigue |
+| **5. Taper** | 7-14 jours | Technique | -40-60% volume | Intensité maintenue, pas de nouveau |
 
-### Progression de charge (règles)
-- **+2.5 kg haut du corps** quand toutes les séries complétées à RPE ≤ 7
-- **+5 kg bas du corps** quand toutes les séries complétées à RPE ≤ 7
-- **RPE = 8** → maintenir la charge
-- **RPE ≥ 9** → baisser de 5-10%
-- **Douleur signalée** → adapter ou remplacer, JAMAIS forcer
-- **Max +10% de volume/semaine** (règle des 10%)
+> ⚠️ Plus de 85-90% 1RM — ça sacrifie la fraîcheur running et stations.
 
-### Exercices unilatéraux = PRIORITÉ
-> "Almost everything in Hyrox uses one leg at a time" — Rich Ryan
+### Progression de charge (corrigée)
 
-Presque tout en Hyrox est unilatéral : course, lunges, foulée du sled push. Prioriser :
-- Bulgarian Split Squat > Back Squat pour le transfert spécifique
-- Step-ups > Leg Press
-- Single-leg RDL > Barbell RDL
-- Single-leg Glute Bridge > Hip Thrust
+| Zone | Progression | Condition |
+|------|------------|-----------|
+| **Haut du corps** (OHP, row, bench) | **+1.25 kg** | Toutes séries à RPE ≤ 7 |
+| **Bas du corps bilatéral** (squat) | **+2.5 kg** | Toutes séries à RPE ≤ 7 |
+| **Deadlift / sled push** (début de cycle) | **+5 kg** | RPE ≤ 7 + technique parfaite |
+| **Unilatéraux** (Bulgarian, step-up) | **+1.25 kg** | RPE ≤ 7 |
 
----
+> "Si tu montes 4 semaines consécutives sans rater une rép à RPE ≤ 7, tu vas trop vite en RPE." — vérifier la technique ou augmenter, pas simplement ajouter.
 
-## 5. Périodisation annuelle (5 phases)
+### Ratio bilatéral / unilatéral
 
-### Modèle expert (rb100.fitness + TrainRox)
+| Phase | Bilatéral | Unilatéral |
+|-------|-----------|-----------|
+| Force | **60%** | 40% |
+| Pré-compétition | 40% | **60%** |
 
-| Phase | Durée | Focus muscu | Reps | Intensité |
-|-------|-------|------------|------|-----------|
-| **1. Base/Fondation** | 12-20 sem | Force générale, compound, hypertrophie | 8-15 | 60-70% 1RM |
-| **2. Construction** | 8-12 sem | Force max + plyométrie, sled lourd | 3-8 | 70-85% 1RM |
-| **3. Spécifique/Peak** | 4-6 sem | Maintien force, puissance sous fatigue | 3-6 | 75-90% 1RM |
-| **4. Taper** | 7-14 jours | 40-60% du volume, pas de nouveaux exercices | Technique | Léger |
-| **5. Récupération** | 2-4 sem post-course | Repos actif, mobilité | Libre | Très léger |
-
-### Périodisation intra-bloc (cycle de 4 semaines)
-```
-Semaine 1 : Volume modéré — 3×10 @ RPE 7
-Semaine 2 : Volume augmenté — 4×8 @ RPE 7-8
-Semaine 3 : Intensité haute — 4×6 @ RPE 8
-Semaine 4 : DELOAD — 2×8 @ RPE 5-6 (-30% volume, -30% intensité)
-```
+### Safety rails IA (OBLIGATOIRES)
+1. **Volume +8%/semaine max** — gel 1 semaine même si RPE bas
+2. **3 séances consécutives RPE ≤ 7 même mouvement** → vérifier technique, pas ajouter automatiquement
+3. **Sommeil < 6.5h pendant 3 nuits** → auto-deload intensité -15%
+4. **RPE en hausse à charge stable** → signal de fatigue, pas de montée
+5. **Finishers max 2/semaine** — jamais veille d'une course qualité
+6. **Deload sur signaux** (RPE ↑ à charge ↓, sommeil dégradé, fatigue chronique) — pas mécanique toutes les 4 sem
 
 ---
 
-## 6. Séances types par split
+## 5. Semaine-type hybride (validée coach)
 
-### Option A : Upper/Lower 4x/semaine (recommandé intermédiaire)
+| Jour | Focus | Détails |
+|------|-------|---------|
+| **Lundi** | Force bas du corps | Back squat lourd + trap bar DL + split squat + core. **Pas de finisher.** |
+| **Mardi** | Run seuil | 30-40 min + strides. (Module Cardio HyroxForge) |
+| **Mercredi** | Force haut + pull | OHP + row lourd + pull-up + farmer's carry. **Finisher grip court.** |
+| **Jeudi** | **Compromised run** | 4×(800m run + station : wall balls/burpees/sled). **LA séance clé.** |
+| **Vendredi** | Repos ou Z2 | Repos complet ou 40 min Z2 facile. |
+| **Samedi** | Full body performance | Sled push/pull heavy + thrusters + wall balls. **Finisher burpees.** |
+| **Dimanche** | Long run Z2 | 60-75 min. (Module Cardio HyroxForge) |
 
-**Jour 1 — Bas du corps Force**
-```
-A1: Back Squat 4×5 @ 80% — repos 3 min
-A2: Dead Hang 4×30s — repos pendant repos squat
-B1: RDL 3×8 — repos 90s
-B2: Face Pulls 3×15 — repos 60s
-C1: Bulgarian Split Squat 3×10/jambe — repos 60s
-C2: Plank 3×45s — repos 30s
-Finisher : 60 Wall Balls for time
-```
-
-**Jour 2 — Haut du corps Force**
-```
-A1: Bench Press 4×6 — repos 2 min
-A2: Pull-ups 4×6-8 — repos 90s
-B1: OHP 3×8 — repos 90s
-B2: Barbell Row 3×8 — repos 90s
-C1: Dips 3×max — repos 60s
-C2: Hanging Leg Raise 3×12 — repos 45s
-Finisher : Farmers Carry 3×40m heavy
-```
-
-**Jour 3 — Bas du corps Puissance Hyrox**
-```
-A1: Front Squat 3×6 — repos 2 min
-A2: Box Jumps 3×5 — repos 90s (contrast training)
-B1: KB Swings 4×12 — repos 60s
-B2: Walking Lunges 4×20m — repos 60s
-C1: Thrusters 3×10 — repos 60s
-C2: Russian Twists 3×20 — repos 30s
-Finisher : Sled Push 4×15m + 400m run
-```
-
-**Jour 4 — Haut du corps Endurance Hyrox**
-```
-A1: Seated Row 3×12 — repos 60s
-A2: Push-ups max × 3 — repos 60s
-B1: Lat Pulldown 3×12 — repos 60s
-B2: DB OHP 3×12 — repos 60s
-C1: Farmer's Carry 3×60m — repos 90s
-C2: Pallof Press 3×12/côté — repos 30s
-Finisher : 50 Burpees for time
-```
-
-### Option B : Full Body 3x/semaine (recommandé débutant/retour de blessure)
-
-**Séance A — Force**
-```
-A1: Back Squat 4×5 — repos 3 min
-A2: Barbell Row 4×6 — repos 2 min
-B1: RDL 3×8 — repos 90s
-B2: Bench Press 3×8 — repos 90s
-C: Plank 3×45s + Dead Bug 3×10
-Finisher : 40 Wall Balls
-```
-
-**Séance B — Hyrox Spécifique**
-```
-A1: Thrusters 4×8 — repos 90s
-A2: Pull-ups 4×max — repos 90s
-B1: KB Swings 3×15 — repos 60s
-B2: Walking Lunges 3×20m — repos 60s
-C1: Farmers Carry 3×40m — repos 60s
-C2: Hanging Leg Raise 3×10 — repos 45s
-```
-
-**Séance C — Volume/Accessoires**
-```
-A1: Front Squat 3×10 — repos 90s
-A2: Seated Row 3×10 — repos 60s
-B1: Hip Thrust 3×12 — repos 60s
-B2: OHP 3×10 — repos 60s
-C1: Bulgarian Split Squat 3×8/jambe — repos 60s
-C2: Face Pulls 3×15 — repos 30s
-Finisher : 3 rounds : 10 Burpees + 30m Farmers Carry
-```
+→ 2-3 muscu + 3-4 runs + 1 compromised + 1-2 repos
 
 ---
 
-## 7. Faiblesses communes Hyrox et correctifs
+## 6. Corrections spécifiques par épreuve
 
-### Diagnostic par résultats précédents de l'athlète
+### Sled Pull (priorité n°1) — CORRIGÉ
+> "Ta logique '2 tirages = dos = sled pull' est fausse."
 
-| Épreuve | Temps | Classement | Verdict | Priorité |
-|---------|-------|------------|---------|----------|
-| Row 1000m | 5:22 | bottom 5% | **CRITIQUE** | Séances tirage 2x/sem |
-| Sled Pull | 5:50 | bottom 5% | **CRITIQUE** | Force dos + grip |
-| Sled Push | 2:32 | bottom 12% | **FAIBLE** | Force jambes |
-| Run 1 | 7:17 | bottom 6% | **FAIBLE** | Pacing + échauffement |
-| Burpee BJ | 3:54 | bottom 25% | **À AMÉLIORER** | Plyométrie |
-| Wall Balls | 5:10 | bottom 23% | **À AMÉLIORER** | Thrusters + endurance quad |
-| Farmers Carry | 1:59 | bottom 14% | **FAIBLE** | Grip endurance |
-| Lunges | 3:18 | **top 30% ✅** | **POINT FORT** | Maintenir |
+Le sled pull = **pattern deadlift** + grip. Pas du tirage haltère classique.
+- **Deadlift lourd 1×/semaine**
+- **Hip hinge** (RDL, KB swing) pour ischios/fessiers
+- **Grip** : farmers carry 2×/sem progression distance à charge fixe
+- Travail sled pull spécifique si accès
+- Dead hang en complément seulement (pas objectif principal)
 
-### Plans correctifs
+### Row 1000m (priorité n°1) — CORRIGÉ
+> "C'est une compétence cardio-musculaire, pas un problème de force dos."
 
-**Sled Pull (priorité n°1) :**
-- Barbell Row 2x/semaine (lourd)
-- Pull-ups TOUS les jours de muscu
-- Dead Hangs : objectif 90s (grip)
-- Rope Pulls 2x/semaine si accès
-- Hammer Curls pour brachioradial (grip)
+- **2× ergomètre/sem** : intervals 4×500m, 2×1000m → Module Cardio HyroxForge
+- Le tirage haltère aide mais n'est PAS le driver principal
+- Technique rameur > force tirage
 
-**Sled Push (priorité n°2) :**
-- Back Squat LOURD : priorité séance legs
-- Step-ups avec charge : simule le pattern de poussée
-- Calf Raises : propulsion
-- Entraîner PLUS LOURD que le poids de compétition
+### Grip — CORRIGÉ
+> "Le dead hang mesure une endurance isométrique passive qui ne transfère que modérément."
 
-**Wall Balls (priorité n°3) :**
-- Thrusters = exercice n°1 de préparation
-- Front Squats pour endurance quad
-- OHP pour endurance épaules
-- Pratiquer en état de fatigue (après run)
+- **Objectif principal** : farmers carry 2×24kg (Open) 200m sans pause
+- **Méthode** : farmers carry 2×/sem, progression distance à charge fixe
+- Dead hang = complément (2×max en fin de séance)
+- Objectif utile : **2×32kg KB carry 200m sans pause** (entraîner plus lourd que compétition)
 
 ---
 
-## 8. Tracking des performances — Ce qu'il faut mesurer
+## 7. Les 5 risques identifiés par le coach
+
+| Risque | Pourquoi c'est critique | Atténuation |
+|--------|------------------------|-------------|
+| **Interference effect** | Force lourde + finishers + running = cortisol chronique | Séparer lift/run, max 2 finishers/sem |
+| **Running absent** | Hyrox = 50% running ; impossible de progresser sans 3-4 runs/sem | Intégrer Module Cardio HyroxForge |
+| **Deload mécanique** | Trop rigide toutes les 4 sem | Deload sur signaux (RPE, sommeil, fatigue) |
+| **Pas de taper** | Cadre linéaire sans peak | 10 derniers jours : -40% volume, intensité maintenue |
+| **Retour blessure mal géré** | Supersets dès la reprise = risque compensation | Phase 0 : 2-3 sem mono-articulaire |
+
+---
+
+## 8. Tracking des performances
 
 ### Par exercice (à chaque séance)
 - **Poids** (kg) × **Reps** × **Séries**
-- **RPE** par série (ou global exercice)
-- **1RM estimé** (formule Epley : 1RM = poids × (1 + reps/30))
-- **Volume total** (poids × reps × séries)
-- **Douleur** (localisation + intensité 0-10)
+- **RPE** par série
+- **1RM estimé** (Epley)
+- **Douleur** (localisation + intensité)
+- **Sommeil** (heures la nuit précédente)
+- **Feedback** : aimé/pas aimé/trop dur/trop facile/manques
 
 ### Métriques de progression
-- **1RM estimé** par exercice (tendance sur 4-8 semaines)
-- **Volume total par séance** (tendance)
-- **RPE moyen** (doit rester 7-8 en semaine normale)
-- **Ratio charge/poids de corps** (ex: squat 1.5× BW = bon niveau Hyrox)
-- **Endurance grip** : temps de dead hang (objectif 90s)
-- **Wall balls unbroken** : max reps sans pause
+- 1RM estimé par exercice (tendance 4-8 sem)
+- Volume hebdo total (gel si +8%)
+- RPE moyen (7-8 normal, alert si hausse à charge stable)
+- **Farmers carry** : distance à poids compétition sans pause
+- **Wall balls unbroken** : max reps
 
-### Benchmarks Hyrox (homme intermédiaire ~75kg)
+### Benchmarks Hyrox corrigés (homme ~75kg)
 
-| Exercice | Débutant | Intermédiaire | Avancé | Elite |
-|----------|----------|---------------|--------|-------|
-| Back Squat (1RM) | 80 kg (1.05×BW) | 110 kg (1.45×BW) | 140 kg (1.85×BW) | 170+ kg |
-| Bench Press (1RM) | 60 kg | 85 kg | 110 kg | 130+ kg |
-| Deadlift (1RM) | 100 kg | 140 kg | 180 kg | 220+ kg |
-| OHP (1RM) | 40 kg | 55 kg | 70 kg | 85+ kg |
-| Pull-ups (reps) | 3-5 | 8-12 | 15-20 | 20+ |
-| Dead Hang | 20s | 45s | 90s | 120s+ |
-| Wall Balls unbroken | 15 | 30 | 50+ | 75+ |
-| Farmers Carry 2×24kg | 100m | 200m sans pause | 200m <1:30 | 200m <1:10 |
+| Exercice | Suffisant Hyrox | Diminishing returns | Note |
+|----------|----------------|-------------------|------|
+| Back Squat | **1.25×BW** (94kg) | **1.5×BW** (112kg) | Au-delà, mieux vaut courir |
+| Deadlift | **1.5×BW** (112kg) | **2×BW** (150kg) | Driver sled push + pull |
+| OHP | **0.6×BW** (45kg) | **0.75×BW** (56kg) | Suffisant pour wall balls |
+| Farmers Carry | **200m à 2×24kg** | **200m à 2×32kg** | Plus pertinent que dead hang |
+| Pull-ups | 8-10 | 15+ | Base suffisante |
+
+> "Au-delà de 1.5×BW squat / 2×BW deadlift, tu gagnes plus de temps en courant mieux qu'en liftant plus lourd."
 
 ---
 
-## 9. Simulation Hyrox en musculation (Brick Workouts)
+## 9. Lien avec le module Cardio HyroxForge
 
-### Mini-simulation (en salle de muscu)
-```
-3-5 rounds :
-- 400m Run (ou 500m rameur)
-- 15 Thrusters @ 40kg
-- 15 Pull-ups
-- 30m Farmers Carry heavy
-Repos : 90s entre les rounds
-```
+Le module musculation **ne fonctionne pas seul**. Il doit être combiné avec le module Cardio (`index.html`) qui gère :
+- Course : Z2, seuil, fractionné, compromised running
+- Rameur : technique, endurance, intervals
+- SkiErg : technique, endurance
+- Scoring global /100
 
-### Finishers Hyrox (à ajouter en fin de séance muscu)
-```
-Option A : 60 Wall Balls for time
-Option B : 3×60m Farmers Carry (poids compétition)
-Option C : 5×15m Sled Push + 200m Run
-Option D : 50 Burpees for time
-Option E : 3 rounds : 10 KB Swings + 20 Walking Lunges + 200m Run
-```
-
-### Fréquence des simulations par phase
-
-| Phase | Fréquence | Format | Effort |
-|-------|-----------|--------|--------|
-| Base (sem 1-4) | 1 / 2 semaines | Mini (2 stations) | 70-80% |
-| Construction (sem 5-8) | 1 / semaine | Half (4 stations) | 80-90% |
-| Peak (sem 9-12) | 2 / semaine | 1 full + 1 half | Race intensity |
-| Taper | Variable | Light rehearsals | Réduit |
-
----
-
-## 10. Récupération et deload
-
-### Deload (toutes les 4 semaines)
-- Volume : **-30 à -50%**
-- Intensité : **-10 à -15%** (ou changer pour mouvements plus légers)
-- Garder les mouvements principaux mais réduire séries/reps
-- RPE cible : 5-6
-
-### Protocole taper pré-course (Jake Dearden)
-```
-J-7 : Lundi — Muscu à 80%
-J-6 : Mardi — Repos + stretching
-J-5 : Mercredi — Repos + stretching
-J-4 : Jeudi — 45 min aérobie + poids légers
-J-3 : Vendredi — 30 min jogging facile + quelques efforts intenses courts
-J-2 : Samedi — Repos complet
-J-1 : Dimanche — COURSE
-```
-
-### Science du taper
-- Un taper de 7-14 jours permet la reconversion des fibres musculaires Type IIx vers un phénotype plus rapide et puissant
-- Réduire le volume de 40-60% mais garder l'intensité
-- Pas de nouveaux exercices pendant le taper
-
-### Récupération quotidienne
-- **Sommeil** : priorité n°1 (7-9h)
-- **Protéines** : 1.6-2.2g/kg/jour
-- **Hydratation** : 3-4L/jour minimum
-- **Glucides** : abondants (4-6g/kg/jour pour supporter le volume)
-- **1 jour de repos complet/semaine** minimum
-
----
-
-## 11. Profil de l'athlète (mise à jour)
-
-- **Poids** : ~75 kg
-- **Objectif** : Hyrox dans 6 mois, améliorer les stations faibles
-- **Blessure** : retour de blessure (tendon d'Achille + à préciser)
-- **Points faibles majeurs** : Row (bottom 5%), Sled Pull (bottom 5%), grip
-- **Point fort** : Lunges (top 30%)
-- **Disponibilité muscu** : 3-4 séances/semaine
-- **Stratégie** : musculation d'abord, intégration cardio Hyrox progressivement
-
----
-
-## 12. Questions pour validation coach
-
-1. **Les supersets** push/pull sont-ils adaptés pour un retour de blessure ou faut-il séquencer ?
-
-2. **La progression +2.5/+5kg** est-elle trop agressive ? Faut-il des micro-progressions (+1.25kg) ?
-
-3. **Le ratio force/endurance musculaire** (50/50 ou 60/40 vers l'endurance vu les faiblesses ?) est-il bon ?
-
-4. **Les finishers Hyrox** en fin de séance muscu sont-ils contre-productifs pour la récupération ?
-
-5. **La fréquence** de 2 séances tirage/dos par semaine est-elle suffisante vu le retard en Row/Sled Pull ?
-
-6. **Les exercices unilatéraux** doivent-ils remplacer ou compléter les exercices bilatéraux ?
-
-7. **Le dead hang** comme indicateur de grip readiness (objectif 90s) est-il pertinent ?
-
-8. **Les benchmarks** proposés sont-ils réalistes pour le profil et l'objectif à 6 mois ?
-
----
-
-## Architecture technique
-
-```
-Hyrox-project/
-├── index.html              → App Cardio (course, rameur, skierg)
-├── muscu.html              → App Musculation (force, supersets, tracking)
-├── css/
-│   ├── style.css           → Thème cardio
-│   └── muscu-style.css     → Thème musculation (même design system)
-├── js/
-│   ├── storage.js          → Storage cardio
-│   ├── scoring.js          → Scoring cardio
-│   ├── training.js         → Moteur zones cardio
-│   ├── planner.js          → Planificateur semaine cardio
-│   ├── ai-coach.js         → Coach IA cardio (Claude)
-│   ├── charts.js           → Graphiques
-│   ├── app.js              → Contrôleur cardio
-│   ├── muscu-storage.js    → Storage musculation
-│   ├── muscu-exercises.js  → 49 exercices + programmes + vidéos
-│   ├── muscu-ai-coach.js   → Coach IA musculation (Claude)
-│   └── muscu-app.js        → Contrôleur musculation
-├── COACH_BRIEF.md          → Brief coach cardio
-├── MUSCU_COACH_BRIEF.md    → Ce document
-└── README.md
-```
+**Semaine hybride** = Module Muscu (lun, mer, sam) + Module Cardio (mar, jeu, dim)
 
 ---
 
 ## Sources
 
+- **Coach externe** — Audit complet du brief (avril 2026)
 - **HWPO Hyrox** (Mat Fraser) — Programme 8 semaines
-- **Compromised Running** (Rich Ryan) — Strength workouts Hyrox
+- **Compromised Running** (Rich Ryan) — Strength workouts Hyrox, modèle hybride
 - **TrainRox** — Periodization framework
 - **rb100.fitness** — Periodisation & simulation workouts
 - **Jake Dearden** — Protocole deload pré-course
 - **Hello Hyrox** — Strength training guide
-- **PureGym** — Sled Push training
-- **RunReps** — Station training guide
 - **Rox Lyfe** — Interference effect, tapering
 - **The 5K Runner** — Hyrox sports science
 - **PMC/PubMed** — High intensity functional training in hybrid competitions

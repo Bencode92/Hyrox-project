@@ -168,11 +168,11 @@ const MuscuApp = (() => {
   }
 
   function _getPhaseLabel(weekNum) {
-    if (weekNum <= 4) return 'Phase Adaptation';
-    if (weekNum <= 8) return 'Phase Construction';
-    if (weekNum <= 12) return 'Phase Force';
-    if (weekNum <= 16) return 'Phase Intensification';
-    return 'Phase Peak';
+    if (weekNum <= 3) return 'Phase 0 — Retour blessure';
+    if (weekNum <= 8) return 'Phase Adaptation';
+    if (weekNum <= 14) return 'Phase Construction';
+    if (weekNum <= 20) return 'Phase Force (max 80% 1RM)';
+    return 'Phase Pré-compétition';
   }
 
   function _renderWeekPlan(plan) {
@@ -622,6 +622,7 @@ const MuscuApp = (() => {
       date: document.getElementById('log-date').value,
       type: 'musculation',
       globalRpe: parseInt(document.getElementById('log-rpe').value) || 7,
+      sleepHours: parseFloat(document.getElementById('log-sleep').value) || null,
       painNotes: document.getElementById('log-pain').value.trim(),
       notes: document.getElementById('log-notes').value.trim(),
       exercises: logExercises.map(ex => ({
