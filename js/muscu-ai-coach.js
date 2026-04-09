@@ -289,7 +289,7 @@ ${_formatFeedback()}
     if (!url) throw new Error('URL du Worker non configurée. Va dans Paramètres pour la configurer.');
 
     const body = {
-      model: settings.aiModel || 'claude-sonnet-4-20250514',
+      model: settings.aiModel || 'claude-opus-4-6',
       max_tokens: options.maxTokens || 2000,
       system: _buildSystemPrompt(),
       messages: [{ role: 'user', content: userMessage }],
@@ -403,67 +403,42 @@ Adapte la complexité à mon niveau.`,
     const feedback = MuscuStorage.getRecentFeedback(10);
     const prs = MuscuStorage.getPRs();
 
-    const exerciseList = MuscuExercises.getAll().map(e => e.id).join(', ');
+    // Build compact list of known exercise IDs
+    const exerciseIds = MuscuExercises.getAll().map(e => e.id).join(', ');
 
-    const prompt = `Génère mon plan de semaine ${weekNum} (${profile.daysPerWeek} jours) de musculation Hyrox.
-${isDeload ? '⚠️ C\'est une semaine DELOAD : -30% volume, -30% intensité, RPE cible 5-6.' : ''}
+    // Build compact PR summary
+    const prSummary = Object.entries(prs).map(([id, d]) =>
+      `${id}:${d.best1RM}kg`
+    ).join(', ') || 'Aucun PR';
 
-RÈGLES OBLIGATOIRES (validées par coach externe) :
-- Structure en SUPERSETS (blocs A1/A2, B1/B2, C1/C2) — SAUF si phase 0 retour blessure (séquencer)
-- Chaque séance = échauffement + 2-3 blocs supersets + core + grip
-- FINISHER Hyrox : MAX 2 séances sur ${profile.daysPerWeek} dans la semaine. Les autres → mobilité/étirements.
-- Placer les finishers les jours sans course le lendemain
-- Intensité PLAFONNÉE : jamais au-dessus de 80% 1RM (ce n'est PAS du powerlifting)
-- Diversifier : force, explosivité, endurance musculaire
-- Core à chaque séance
-- Ratio bilatéral/unilatéral selon la phase (60/40 en force, 40/60 en pré-compétition)
-- Sled Pull = pattern DEADLIFT + grip, PAS du tirage haltère
-- Row = compétence CARDIO (ergomètre), pas force dos
-- Grip = farmers carry à poids compétition, pas dead hang
-- Micro-progressions : +1.25kg haut du corps, +2.5kg bas du corps
-
-${feedback.length > 0 ? `TIENS COMPTE DE MES RETOURS PRÉCÉDENTS (très important) :
-${feedback.slice(-5).map(f => {
-  let parts = [`Séance du ${f.date}`];
-  if (f.liked && f.liked.length) parts.push(`Aimé : ${f.liked.join(', ')}`);
-  if (f.disliked && f.disliked.length) parts.push(`Pas aimé : ${f.disliked.join(', ')}`);
-  if (f.tooHard && f.tooHard.length) parts.push(`Trop dur : ${f.tooHard.join(', ')}`);
-  if (f.tooEasy && f.tooEasy.length) parts.push(`Trop facile : ${f.tooEasy.join(', ')}`);
-  if (f.missing) parts.push(`Manquait : ${f.missing}`);
-  if (f.notes) parts.push(`Notes : ${f.notes}`);
-  return '- ' + parts.join(' | ');
-}).join('\n')}
-→ Adapte en douceur : garde ce qui est aimé, remplace progressivement ce qui ne plaît pas, ajuste les charges sur ce qui est trop dur/facile.` : ''}
-
-RÉPONDS UNIQUEMENT en JSON valide avec cette structure exacte :
-{
-  "days": [
-    {
-      "label": "Nom du jour (ex: Bas du corps — Force + Sled)",
-      "focus": "Description courte du focus",
-      "warmup": "Description échauffement",
-      "blocks": [
-        {
-          "name": "Bloc A — Force",
-          "exercises": [
-            {"exerciseId": "back_squat", "name": "Back Squat", "sets": 4, "reps": "6", "weight": "85kg", "rest": "90s", "notes": "Superset avec A2"},
-            {"exerciseId": "barbell_row", "name": "Barbell Row", "sets": 4, "reps": "8", "weight": "60kg", "rest": "60s", "notes": "Tirer vers le nombril"}
-          ]
-        }
-      ],
-      "finisher": "60 Wall Balls for time",
-      "cooldown": "Étirements quadriceps, épaules, hanches — 5 min"
+    // Build compact feedback
+    let feedbackStr = '';
+    if (feedback.length > 0) {
+      feedbackStr = `\nFEEDBACK RÉCENT :\n` + feedback.slice(-3).map(f => {
+        const parts = [];
+        if (f.liked?.length) parts.push(`+${f.liked.join(',')}`);
+        if (f.disliked?.length) parts.push(`-${f.disliked.join(',')}`);
+        if (f.tooHard?.length) parts.push(`dur:${f.tooHard.join(',')}`);
+        if (f.tooEasy?.length) parts.push(`facile:${f.tooEasy.join(',')}`);
+        if (f.notes) parts.push(f.notes);
+        return parts.join(' | ');
+      }).join('\n') + '\n→ Adapter en douceur.\n';
     }
-  ]
-}
 
-Exercices disponibles (utilise UNIQUEMENT ces IDs) : ${exerciseList}
+    const prompt = `Génère ${profile.daysPerWeek} jours de muscu Hyrox, semaine ${weekNum}.${isDeload ? ' DELOAD: -30% volume/intensité.' : ''}
+PRs: ${prSummary}
+${feedbackStr}
+RÈGLES: supersets A1/A2 B1/B2 C1/C2, max 80% 1RM, core chaque séance, finisher Hyrox max 2 jours sur ${profile.daysPerWeek}, farmers carry pour grip, deadlift pour sled pull.
 
-Base les charges sur mes PRs actuels. Si pas de PR, suggère une charge conservative.`;
+RÉPONDS en JSON COMPACT uniquement (pas de texte avant/après):
+{"days":[{"label":"...","focus":"...","warmup":"...","blocks":[{"name":"Bloc A","exercises":[{"exerciseId":"back_squat","name":"Back Squat","sets":4,"reps":"6","weight":"70kg","rest":"90s","notes":"..."}]}],"finisher":"...ou vide si pas de finisher","cooldown":"..."}]}
 
-    const response = await ask(prompt, { maxTokens: 3000 });
+IDs valides: ${exerciseIds}`;
 
-    // Parse JSON from response
+
+    const response = await ask(prompt, { maxTokens: 4096 });
+
+    // Parse JSON from response (robust: handle truncated/wrapped JSON)
     try {
       let json = response;
       // Strip markdown code blocks if present
@@ -473,12 +448,26 @@ Base les charges sur mes PRs actuels. Si pas de PR, suggère une charge conserva
       const objMatch = json.match(/\{[\s\S]*\}/);
       if (objMatch) json = objMatch[0];
 
+      // Fix truncated JSON: if it ends abruptly, try to close it
+      if (!json.trim().endsWith('}')) {
+        // Find last complete day object
+        const lastDayEnd = json.lastIndexOf('"cooldown"');
+        if (lastDayEnd > 0) {
+          const afterCooldown = json.indexOf('}', lastDayEnd);
+          if (afterCooldown > 0) {
+            json = json.substring(0, afterCooldown + 1) + ']}';
+          }
+        }
+      }
+
       const parsed = JSON.parse(json);
-      if (parsed.days && Array.isArray(parsed.days)) {
+      if (parsed.days && Array.isArray(parsed.days) && parsed.days.length > 0) {
+        console.log('AI plan parsed successfully:', parsed.days.length, 'days');
         return _convertAIPlanToLocal(parsed, weekNum, isDeload);
       }
     } catch (e) {
-      console.warn('AI plan JSON parse failed, falling back to local generation', e);
+      console.warn('AI plan JSON parse failed:', e.message);
+      console.warn('Raw response (first 500 chars):', response.substring(0, 500));
     }
 
     // Fallback to local generation
