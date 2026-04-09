@@ -64,18 +64,45 @@ ${trends.painAnalysis}
 - Endurance musculaire (15+ reps) : 30-60 secondes
 - Explosif : 60-90 secondes
 
-### Spécificité Hyrox
-- Les exercices doivent préparer aux 8 épreuves Hyrox : sled push/pull, wall balls, burpee broad jumps, farmers carry, sandbag lunges, rameur, skierg
-- Inclure au moins 1-2 exercices spécifiques Hyrox par séance quand possible
-- Les thrusters préparent aux wall balls
-- Les KB swings préparent au sled push/pull
-- Les farmers carry se travaillent en distance (30-60m) pas en reps
-- Core à chaque séance (stabilité pour toutes les épreuves)
+### Spécificité Hyrox — Connaissances expert
+Les 8 épreuves Hyrox et leurs exercices clés de musculation :
+1. SkiErg 1000m → Lat pulldown, med ball slams, straight-arm pulldown
+2. Sled Push 50m (152kg H Open) → Back squat LOURD, front squat, step-ups, calf raises. Entraîner PLUS LOURD que compétition.
+3. Sled Pull 50m (103kg H Open) → Barbell row, pull-ups, deadlift, rope pulls. GRIP critique : dead hang objectif 90s.
+4. Burpee Broad Jump 80m → Box jumps, jumping lunges, plyometric push-ups. Puissance unijambiste = clé.
+5. Rowing 1000m → Seated row, Russian twists, leg press.
+6. Farmers Carry 200m (2×24kg H Open) → Farmers walk progressif, dead hangs, shrugs. Grip = limiteur n°1.
+7. Sandbag Lunges 100m (20kg H Open) → Walking lunges, Bulgarian split squat, goblet squat. Entraîner plus lourd que compétition.
+8. Wall Balls 100 reps 3m (6kg H Open) → Thrusters (exercice n°1), front squat, OHP. Lactate >12mmol/L à cette station.
+
+### Principes expert (sources : HWPO/Mat Fraser, Compromised Running, TrainRox)
+- Exercices unilatéraux = PRIORITÉ (presque tout en Hyrox est unilatéral : course, lunges, sled)
+- Bulgarian Split Squat > Back Squat pour le transfert spécifique
+- SUPERSETS recommandés : Push+Pull, Lower+Upper, Force+Plyométrie (contrast training)
+- Inclure un FINISHER Hyrox en fin de séance (60 wall balls, 3×60m farmers carry, 50 burpees)
+- Core à CHAQUE séance
+- Force AVANT cardio (interférence AMPK/mTOR)
+- Séparer muscu et cardio de 6-8h si possible
+- 2-3 séances muscu/semaine suffisent (la VO2max est le prédicteur n°1, pas la masse musculaire)
+
+### Structure superset type
+- BLOC A (Force) : Compound lourd + antagoniste, 4×5-6, repos 90s-2min
+- BLOC B (Hypertrophie) : Unilatéral + upper body, 3×10-12, repos 60s
+- BLOC C (Hyrox) : Explosif + Core, 3×8, repos 45s
+- FINISHER : Exercice Hyrox spécifique (wall balls, farmers, sled, burpees)
 
 ### Échauffement (toujours recommander)
-- 5 min cardio léger
-- Mobilité articulaire ciblée
-- 2-3 séries progressives de l'exercice principal (50%, 70%, 85%)
+- 5 min cardio léger (rameur ou vélo)
+- Mobilité dynamique ciblée
+- 2-3 séries progressives du mouvement principal (50%, 70%, 85%)
+
+### Faiblesses identifiées de l'athlète (Hyrox précédent)
+- Row : bottom 5% → priorité tirage 2x/semaine
+- Sled Pull : bottom 5% → force dos + grip
+- Sled Push : bottom 12% → force jambes lourdes
+- Wall Balls : bottom 23% → thrusters + endurance quad
+- Farmers Carry : bottom 14% → grip endurance
+- Point fort : Lunges (top 30%) → maintenir
 
 ## Records personnels actuels
 ${_formatPRs(prs)}
