@@ -722,7 +722,7 @@ const MuscuApp = (() => {
     const sessions = MuscuStorage.getSessions().slice().reverse();
     const prs = MuscuStorage.getPRs();
 
-    document.getElementById('history-filter').innerHTML = ['all', 'lower', 'upper_push', 'upper_pull', 'core', 'explosive'].map(f => {
+    document.getElementById('history-filter').innerHTML = ['all', 'lower', 'upper_push', 'upper_pull', 'core', 'explosive', 'functional'].map(f => {
       const label = f === 'all' ? 'Tout' : MuscuExercises.getCategoryInfo(f).label;
       return `<button class="filter-btn ${historyFilter === f ? 'active' : ''}" onclick="MuscuApp.setHistoryFilter('${f}')">${label}</button>`;
     }).join('');

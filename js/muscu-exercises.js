@@ -306,6 +306,175 @@ const MuscuExercises = (() => {
       videoUrl: 'https://www.youtube.com/watch?v=dR6EbYAnJac',
       cues: ['Suspendu à la barre, bras tendus', 'Épaules tirées vers le bas (pas relâchées)', 'Tenir le plus longtemps possible', 'Développe l\'endurance de grip pour les épreuves Hyrox', 'Objectif : 60s+ pour être prêt'],
       mistakes: ['Épaules relâchées (risque blessure)', 'Grip trop large'] },
+
+    // ─── FUNCTIONAL / HYROX RACE SIMULATION ─────────────────
+    { id: 'sandbag_squat', name: 'Sandbag Squat', category: 'functional', subcategory: 'sandbag', equipment: 'sandbag',
+      hyrox: ['lunges','wall_balls','sled_push'], primary: ['quadriceps','fessiers','core'], secondary: ['épaules','dos'],
+      videoUrl: 'https://www.youtube.com/watch?v=VfBrGLsEYQo',
+      cues: ['Sandbag en position bear hug (contre la poitrine)', 'Squat profond, coudes hauts', 'Core ultra engagé pour ne pas se pencher', 'Simule la charge front-loaded des lunges Hyrox', 'Commencer léger, augmenter progressivement'],
+      mistakes: ['Laisser le sandbag glisser', 'Dos qui arrondit', 'Pas assez profond'] },
+
+    { id: 'sandbag_lunge', name: 'Sandbag Lunges', category: 'functional', subcategory: 'sandbag', equipment: 'sandbag',
+      hyrox: ['lunges'], primary: ['quadriceps','fessiers','core'], secondary: ['épaules'],
+      videoUrl: 'https://www.youtube.com/watch?v=nMDAxBqR9kw',
+      cues: ['Sandbag sur l\'épaule ou en bear hug', 'IDENTIQUE À L\'ÉPREUVE HYROX (100m)', 'Grand pas, genou arrière frôle le sol', 'Alterner les côtés de portage', 'Entraîner à poids > compétition (25-30kg si Open 20kg)'],
+      mistakes: ['Pas trop courts', 'Torse penché', 'Ne pas alterner le côté de portage'] },
+
+    { id: 'sandbag_carry', name: 'Sandbag Carry', category: 'functional', subcategory: 'sandbag', equipment: 'sandbag',
+      hyrox: ['lunges','farmers_carry'], primary: ['core','épaules','trapèzes'], secondary: ['tout le corps'],
+      videoUrl: 'https://www.youtube.com/watch?v=dkOMUJLqiqs',
+      cues: ['Bear hug : serrer le sandbag contre le torse', 'Pas courts et rapides', 'Core serré, ne pas se pencher en arrière', 'Varier les positions : épaule, bear hug, zercher'],
+      mistakes: ['Laisser le sandbag glisser', 'Se pencher en arrière', 'Pas trop longs'] },
+
+    { id: 'sandbag_over_shoulder', name: 'Sandbag Over Shoulder', category: 'functional', subcategory: 'sandbag', equipment: 'sandbag',
+      hyrox: ['sled_pull','burpees'], primary: ['dos','fessiers','épaules'], secondary: ['core','ischio-jambiers'],
+      videoUrl: 'https://www.youtube.com/watch?v=VH_GsBlQKek',
+      cues: ['Sandbag au sol, position deadlift', 'Tirer vers le haut avec les hanches', 'Faire passer par-dessus l\'épaule', 'Alterner les côtés', 'Mouvement explosif de hip extension'],
+      mistakes: ['Tirer avec le dos arrondi', 'Pas assez d\'extension de hanches', 'Toujours le même côté'] },
+
+    { id: 'sandbag_clean', name: 'Sandbag Clean', category: 'functional', subcategory: 'sandbag', equipment: 'sandbag',
+      hyrox: ['sled_pull','wall_balls'], primary: ['tout le corps'], secondary: [],
+      videoUrl: 'https://www.youtube.com/watch?v=0cSPMJfn9fA',
+      cues: ['Sol → épaules en un mouvement', 'Extension de hanches explosive', 'Attraper en position front squat', 'Enchaîner avec un squat ou un press pour du travail combo'],
+      mistakes: ['Tirer avec les bras', 'Pas d\'extension de hanches'] },
+
+    { id: 'bear_crawl', name: 'Bear Crawl', category: 'functional', subcategory: 'locomotion', equipment: 'bodyweight',
+      hyrox: ['burpees','all'], primary: ['core','épaules','quadriceps'], secondary: ['triceps','fléchisseurs hanches'],
+      videoUrl: 'https://www.youtube.com/watch?v=pxMRKqGfCik',
+      cues: ['4 pattes : mains sous les épaules, genoux à 2cm du sol', 'Avancer main droite + pied gauche simultanément', 'Garder le dos PLAT, hanches basses', 'Pas courts et contrôlés', 'Variantes : latéral, arrière, avec poids'],
+      mistakes: ['Hanches trop hautes (ours debout)', 'Balancement latéral', 'Pas trop grands'] },
+
+    { id: 'bear_crawl_weighted', name: 'Bear Crawl Lesté', category: 'functional', subcategory: 'locomotion', equipment: 'vest',
+      hyrox: ['burpees','sled_push'], primary: ['core','épaules','quadriceps'], secondary: ['tout le corps'],
+      videoUrl: 'https://www.youtube.com/watch?v=pxMRKqGfCik',
+      cues: ['Même technique que bear crawl + gilet lesté ou sandbag sur le dos', 'Augmente drastiquement le travail de core et d\'épaules', 'Commencer avec 5-10kg', '20-30m par série'],
+      mistakes: ['Charge trop lourde au début', 'Technique qui se dégrade'] },
+
+    { id: 'box_step_over', name: 'Box Step-Overs', category: 'functional', subcategory: 'box', equipment: 'box',
+      hyrox: ['lunges','sled_push','burpees'], primary: ['quadriceps','fessiers'], secondary: ['core','cardio'],
+      videoUrl: 'https://www.youtube.com/watch?v=o0T4LHKZ4p0',
+      cues: ['Monter sur la box, passer de l\'autre côté, redescendre', 'Mouvement continu sans pause en haut', 'Hauteur 50-60cm', 'Excellent pour l\'endurance des jambes sous fatigue', 'Ajouter des DB pour plus d\'intensité'],
+      mistakes: ['S\'arrêter en haut', 'Ne pas contrôler la descente', 'Box trop haute'] },
+
+    { id: 'box_jump_over', name: 'Box Jump-Overs', category: 'functional', subcategory: 'box', equipment: 'box',
+      hyrox: ['burpees','sled_push'], primary: ['quadriceps','fessiers','mollets'], secondary: ['core','cardio'],
+      videoUrl: 'https://www.youtube.com/watch?v=bVFwelBRbGE',
+      cues: ['Sauter sur la box, passer de l\'autre côté', 'Atterrir en douceur de l\'autre côté', 'Rythme soutenu sans pause', 'Simule les broad jumps des burpees Hyrox', 'Travailler en séries de 10-20'],
+      mistakes: ['Mauvaise réception', 'Rythme irrégulier'] },
+
+    { id: 'broad_jump', name: 'Broad Jumps', category: 'functional', subcategory: 'plyo', equipment: 'bodyweight',
+      hyrox: ['burpees'], primary: ['quadriceps','fessiers','mollets'], secondary: ['core'],
+      videoUrl: 'https://www.youtube.com/watch?v=96zJo3nlmHI',
+      cues: ['MOUVEMENT IDENTIQUE AUX BURPEE BROAD JUMPS HYROX', 'Demi-squat, balancer les bras, sauter le plus loin possible', 'Atterrir en douceur, genoux fléchis', 'Enchaîner immédiatement', 'Objectif : maximiser la distance par saut'],
+      mistakes: ['Atterrir jambes tendues', 'Ne pas utiliser les bras', 'Sauter en hauteur au lieu de longueur'] },
+
+    { id: 'burpee_broad_jump', name: 'Burpee Broad Jumps', category: 'functional', subcategory: 'full', equipment: 'bodyweight',
+      hyrox: ['burpees'], primary: ['tout le corps'], secondary: ['cardio'],
+      videoUrl: 'https://www.youtube.com/watch?v=dZgVxmf6jkA',
+      cues: ['ÉPREUVE IDENTIQUE HYROX : 80m', 'Burpee complet (poitrine au sol) + broad jump', 'Rythme régulier > vitesse max', 'Objectif : max distance par jump pour moins de jumps total', 'Pratiquer en état de fatigue (après course)'],
+      mistakes: ['Sauter trop haut au lieu de loin', 'Rythme irrégulier', 'Ne pas toucher la poitrine au sol'] },
+
+    { id: 'devil_press', name: 'Devil Press', category: 'functional', subcategory: 'full', equipment: 'dumbbells',
+      hyrox: ['burpees','wall_balls','skierg'], primary: ['tout le corps'], secondary: ['cardio'],
+      videoUrl: 'https://www.youtube.com/watch?v=roMRnpNMZbQ',
+      cues: ['Burpee avec DB + snatch DB overhead en remontant', 'Combo ultime : burpee + puissance + overhead', 'Excellent pour endurance totale sous fatigue', 'Charges légères-modérées (10-15kg par DB)', 'Rythme constant'],
+      mistakes: ['Charge trop lourde', 'Mauvaise technique de snatch', 'Ne pas toucher la poitrine au sol'] },
+
+    { id: 'man_maker', name: 'Man Makers', category: 'functional', subcategory: 'full', equipment: 'dumbbells',
+      hyrox: ['burpees','wall_balls','sled_push'], primary: ['tout le corps'], secondary: ['cardio'],
+      videoUrl: 'https://www.youtube.com/watch?v=hkelFkFpRvE',
+      cues: ['Burpee + row + clean + press — le combo ultime', 'Push-up → Row gauche → Row droite → Clean → Press', 'Charges légères (8-12kg par DB)', 'Travaille TOUT : push, pull, squat, overhead, core', 'Endurance musculaire totale'],
+      mistakes: ['Charge trop lourde', 'Perdre la technique quand fatigué', 'Oublier le row'] },
+
+    { id: 'assault_bike', name: 'Assault Bike', category: 'functional', subcategory: 'conditioning', equipment: 'bike',
+      hyrox: ['all','course'], primary: ['quadriceps','cardio'], secondary: ['épaules','core'],
+      videoUrl: 'https://www.youtube.com/watch?v=nMjE1MRf0nk',
+      cues: ['Pousser bras ET jambes simultanément', 'Excellent pour le conditioning sans impact', 'Intervals : 30s max / 30s repos × 8-10', 'Simule l\'effort cardio intense entre les stations', 'Alternative au running pour retour de blessure'],
+      mistakes: ['Seulement les jambes (utiliser les bras)', 'Rythme irrégulier'] },
+
+    { id: 'wall_sit', name: 'Wall Sit', category: 'functional', subcategory: 'isometric', equipment: 'bodyweight',
+      hyrox: ['sled_push','wall_balls'], primary: ['quadriceps','fessiers'], secondary: ['core'],
+      videoUrl: 'https://www.youtube.com/watch?v=y-wV4Lz6jBU',
+      cues: ['Dos contre le mur, cuisses parallèles au sol', 'Genoux à 90°', 'Objectif : 60-90s', 'Simule la brûlure des quads du sled push', 'Variante : avec sandbag sur les cuisses'],
+      mistakes: ['Cuisses pas assez basses', 'S\'appuyer sur les mains'] },
+
+    { id: 'wall_walk', name: 'Wall Walks', category: 'functional', subcategory: 'bodyweight', equipment: 'bodyweight',
+      hyrox: ['burpees','all'], primary: ['épaules','core','triceps'], secondary: ['tout le corps'],
+      videoUrl: 'https://www.youtube.com/watch?v=Oy5BkNI0GBo',
+      cues: ['Position push-up face au mur', 'Marcher les pieds sur le mur en montant les mains vers le mur', 'Arriver en handstand face au mur', 'Redescendre contrôlé', 'Force épaules + core intense'],
+      mistakes: ['Aller trop vite', 'Core relâché (dos qui cambre)', 'Mains trop loin du mur'] },
+
+    { id: 'mountain_climber', name: 'Mountain Climbers', category: 'functional', subcategory: 'bodyweight', equipment: 'bodyweight',
+      hyrox: ['burpees','all'], primary: ['core','fléchisseurs hanches','cardio'], secondary: ['épaules','quadriceps'],
+      videoUrl: 'https://www.youtube.com/watch?v=nmwgirgXLYM',
+      cues: ['Position planche, alterner genou vers poitrine rapidement', 'Garder les hanches basses', 'Rythme rapide pour le cardio, lent pour le core', 'Excellent échauffement ou finisher'],
+      mistakes: ['Hanches trop hautes', 'Rythme irrégulier'] },
+
+    { id: 'jump_lunge', name: 'Jump Lunges', category: 'functional', subcategory: 'plyo', equipment: 'bodyweight',
+      hyrox: ['lunges','burpees'], primary: ['quadriceps','fessiers','mollets'], secondary: ['core','cardio'],
+      videoUrl: 'https://www.youtube.com/watch?v=y7Iug7eAAsA',
+      cues: ['Lunge classique puis sauter et alterner les jambes en l\'air', 'Atterrir en douceur dans la lunge opposée', 'Puissance + endurance des jambes', 'Directement applicable aux lunges et burpees Hyrox'],
+      mistakes: ['Genou qui touche le sol trop fort', 'Mauvais équilibre', 'Pas assez de hauteur'] },
+
+    { id: 'pistol_squat', name: 'Pistol Squat', category: 'functional', subcategory: 'bodyweight', equipment: 'bodyweight',
+      hyrox: ['lunges','sled_push'], primary: ['quadriceps','fessiers','stabilisateurs'], secondary: ['core'],
+      videoUrl: 'https://www.youtube.com/watch?v=vq5-vdgJc0I',
+      cues: ['Squat complet sur une jambe, l\'autre tendue devant', 'Descendre contrôlé, remonter sans élan', 'Force et stabilité unilatérale ultime', 'Progresser : assisté (TRX) → libre → lesté'],
+      mistakes: ['Genou qui rentre', 'Talon qui décolle', 'Perte d\'équilibre'] },
+
+    { id: 'sled_push_heavy', name: 'Sled Push Lourd', category: 'functional', subcategory: 'sled', equipment: 'sled',
+      hyrox: ['sled_push'], primary: ['quadriceps','fessiers','mollets'], secondary: ['core','épaules'],
+      videoUrl: 'https://www.youtube.com/watch?v=aVB9slCpLME',
+      cues: ['Charge > poids compétition (170-200kg)', 'Mains hautes, corps à 45°', 'Pas courts et explosifs', 'Travailler en distance : 4×15m ou 2×25m', 'LA séance spécifique sled push'],
+      mistakes: ['Dos arrondi', 'Pas trop longs', 'Charge insuffisante (entraîner plus lourd que compétition)'] },
+
+    { id: 'sled_pull_heavy', name: 'Sled Pull Lourd', category: 'functional', subcategory: 'sled', equipment: 'sled',
+      hyrox: ['sled_pull'], primary: ['dos','biceps','ischio-jambiers','grip'], secondary: ['core'],
+      videoUrl: 'https://www.youtube.com/watch?v=ZajDo1V7FRo',
+      cues: ['Face au sled, position assise basse', 'Tirer la corde main sur main', 'Ancrer les pieds, utiliser TOUT le corps', 'Charge > compétition', 'ÉPREUVE IDENTIQUE HYROX'],
+      mistakes: ['Tirer seulement avec les bras', 'Position trop haute', 'Grip qui lâche'] },
+
+    { id: 'rope_climb', name: 'Rope Climb', category: 'functional', subcategory: 'bodyweight', equipment: 'rope',
+      hyrox: ['sled_pull','farmers_carry'], primary: ['dos','biceps','grip','core'], secondary: ['tout le corps'],
+      videoUrl: 'https://www.youtube.com/watch?v=Ymjsa_-gPR0',
+      cues: ['Technique pieds : enrouler la corde autour du pied', 'Tirer avec les bras + pousser avec les pieds', 'Force de grip ultime', 'Alternative : rope pulls au sol si pas de corde verticale'],
+      mistakes: ['Ne pas utiliser les pieds', 'Descendre trop vite (brûlure)', 'Grip insuffisant'] },
+
+    { id: 'air_squat', name: 'Air Squats', category: 'functional', subcategory: 'bodyweight', equipment: 'bodyweight',
+      hyrox: ['wall_balls','sled_push'], primary: ['quadriceps','fessiers'], secondary: ['core'],
+      videoUrl: 'https://www.youtube.com/watch?v=C_VtOYc6j5c',
+      cues: ['Squat poids du corps, descente profonde', 'Idéal en haute reps pour endurance (50-100)', 'Échauffement parfait avant wall balls', 'Tempo rapide pour le cardio'],
+      mistakes: ['Pas assez profond', 'Genoux qui rentrent'] },
+
+    { id: 'hand_release_pushup', name: 'Hand Release Push-ups', category: 'functional', subcategory: 'bodyweight', equipment: 'bodyweight',
+      hyrox: ['burpees'], primary: ['pectoraux','triceps','épaules'], secondary: ['core'],
+      videoUrl: 'https://www.youtube.com/watch?v=yL1rnfPZ_RI',
+      cues: ['Push-up complet, poitrine au sol', 'Lever les mains du sol en bas (hand release)', 'Reposer les mains, pousser pour remonter', 'IDENTIQUE au mouvement du burpee Hyrox', 'Travailler en volume : 3×20-30'],
+      mistakes: ['Ne pas lever complètement les mains', 'Hanches qui restent au sol', 'Mouvement partiel'] },
+
+    { id: 'sprawl', name: 'Sprawls', category: 'functional', subcategory: 'bodyweight', equipment: 'bodyweight',
+      hyrox: ['burpees'], primary: ['tout le corps','cardio'], secondary: [],
+      videoUrl: 'https://www.youtube.com/watch?v=PmKDNJBntDw',
+      cues: ['Comme un burpee SANS le push-up ni le saut', 'Mains au sol → pieds en arrière → revenir debout', 'Plus rapide que le burpee complet', 'Excellent pour le conditioning et la vitesse de transition'],
+      mistakes: ['Ajouter un push-up (c\'est pas un burpee)', 'Mouvement trop lent'] },
+
+    { id: 'turkish_getup', name: 'Turkish Get-Up', category: 'functional', subcategory: 'full', equipment: 'kettlebell',
+      hyrox: ['all'], primary: ['épaules','core','stabilisateurs'], secondary: ['tout le corps'],
+      videoUrl: 'https://www.youtube.com/watch?v=0bWRPC49-KI',
+      cues: ['KB bras tendu, passer de couché à debout', 'Mouvement lent et contrôlé', 'Stabilité d\'épaule + core + mobilité de hanche', 'Exercice de prévention blessure par excellence', '3-5 reps par côté'],
+      mistakes: ['Aller trop vite', 'Perdre le KB des yeux', 'Sauter des étapes'] },
+
+    { id: 'suitcase_carry', name: 'Suitcase Carry', category: 'functional', subcategory: 'carry', equipment: 'kettlebell',
+      hyrox: ['farmers_carry','all'], primary: ['obliques','core','grip'], secondary: ['trapèzes'],
+      videoUrl: 'https://www.youtube.com/watch?v=31ryaJCPmyQ',
+      cues: ['Un seul KB/DB dans une main', 'Résister à l\'inclinaison latérale', 'Core anti-latéral : obliques à fond', 'Alterner les côtés', '30-40m par côté'],
+      mistakes: ['Se pencher du côté du poids', 'Épaule qui monte'] },
+
+    { id: 'overhead_carry', name: 'Overhead Carry', category: 'functional', subcategory: 'carry', equipment: 'kettlebell',
+      hyrox: ['wall_balls','farmers_carry'], primary: ['épaules','core','stabilisateurs'], secondary: ['trapèzes'],
+      videoUrl: 'https://www.youtube.com/watch?v=p5TABsQ4KIo',
+      cues: ['KB/DB bras tendu au-dessus de la tête', 'Biceps à côté de l\'oreille', 'Core serré, côtes basses', 'Stabilité d\'épaule sous charge', '30-40s par bras'],
+      mistakes: ['Coude plié', 'Côtes qui s\'ouvrent (dos cambré)', 'Mauvais alignement'] },
   ];
 
   // ── Category labels ───────────────────────────────────────
@@ -315,6 +484,7 @@ const MuscuExercises = (() => {
     upper_pull: { label: 'Haut - Tirage', icon: '🏋️', color: '#8b5cf6' },
     core:       { label: 'Core', icon: '🔥', color: '#f0a030' },
     explosive:  { label: 'Explosif / Hyrox', icon: '⚡', color: '#ff4060' },
+    functional: { label: 'Fonctionnel / Race', icon: '🏁', color: '#e040fb' },
   };
 
   // ── Program Templates ─────────────────────────────────────
@@ -356,43 +526,44 @@ const MuscuExercises = (() => {
       ]
     },
     4: {
-      name: 'Upper/Lower 4x',
+      name: 'Hyrox Fonctionnel 4x',
       days: [
         {
-          label: 'Bas du corps — Force',
-          focus: 'Squats & hip hinge lourds',
+          label: 'Force + Sandbag',
+          focus: 'Force lourde bas du corps + travail sandbag',
           slots: [
-            { category: 'lower', pick: 3, prefer: ['back_squat','rdl','bulgarian_split'] },
-            { category: 'explosive', pick: 1, prefer: ['kb_swing'] },
+            { category: 'lower', pick: 2, prefer: ['back_squat','deadlift'] },
+            { category: 'functional', pick: 2, prefer: ['sandbag_lunge','sandbag_over_shoulder'] },
             { category: 'core', pick: 1, prefer: ['plank'] },
           ]
         },
         {
-          label: 'Haut du corps — Force',
-          focus: 'Compound poussée & tirage',
+          label: 'Push-Pull + Box',
+          focus: 'Force haut du corps + box work + carries',
           slots: [
-            { category: 'upper_push', pick: 2, prefer: ['bench_press','ohp'] },
-            { category: 'upper_pull', pick: 2, prefer: ['barbell_row','pull_ups'] },
+            { category: 'upper_push', pick: 1, prefer: ['ohp'] },
+            { category: 'upper_pull', pick: 1, prefer: ['pull_ups'] },
+            { category: 'functional', pick: 2, prefer: ['box_step_over','farmers_carry'] },
             { category: 'core', pick: 1, prefer: ['hanging_leg_raise'] },
           ]
         },
         {
-          label: 'Bas du corps — Puissance Hyrox',
-          focus: 'Explosivité & endurance musculaire',
+          label: 'Impulsion + Poids du corps',
+          focus: 'Plyométrie, broad jumps, endurance poids du corps',
           slots: [
-            { category: 'lower', pick: 1, prefer: ['front_squat'] },
-            { category: 'explosive', pick: 3, prefer: ['thruster','box_jump','farmers_carry'] },
-            { category: 'core', pick: 1, prefer: ['pallof_press'] },
+            { category: 'functional', pick: 3, prefer: ['burpee_broad_jump','jump_lunge','bear_crawl'] },
+            { category: 'explosive', pick: 1, prefer: ['box_jump'] },
+            { category: 'functional', pick: 1, prefer: ['hand_release_pushup'] },
           ]
         },
         {
-          label: 'Haut du corps — Endurance Hyrox',
-          focus: 'Tirage & portage',
+          label: 'Hyrox Race Simulation',
+          focus: 'Circuit complet épreuves Hyrox',
           slots: [
-            { category: 'upper_pull', pick: 2, prefer: ['pull_ups','seated_row'] },
-            { category: 'upper_push', pick: 1, prefer: ['dips'] },
-            { category: 'explosive', pick: 1, prefer: ['battle_ropes'] },
-            { category: 'core', pick: 1, prefer: ['russian_twist'] },
+            { category: 'functional', pick: 2, prefer: ['sled_push_heavy','sled_pull_heavy'] },
+            { category: 'explosive', pick: 1, prefer: ['wall_ball'] },
+            { category: 'functional', pick: 1, prefer: ['sandbag_carry'] },
+            { category: 'explosive', pick: 1, prefer: ['kb_swing'] },
           ]
         },
       ]

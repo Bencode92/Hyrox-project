@@ -426,13 +426,26 @@ Adapte la complexité à mon niveau.`,
       }).join('\n') + '\n→ Adapter en douceur.\n';
     }
 
-    const prompt = `Génère ${profile.daysPerWeek} jours de muscu Hyrox, semaine ${weekNum}.${isDeload ? ' DELOAD: -30% volume/intensité.' : ''}
+    const prompt = `Génère ${profile.daysPerWeek} jours d'entraînement HYROX fonctionnel, semaine ${weekNum}.${isDeload ? ' DELOAD: -30% volume/intensité.' : ''}
+
 PRs: ${prSummary}
 ${feedbackStr}
-RÈGLES: supersets A1/A2 B1/B2 C1/C2, max 80% 1RM, core chaque séance, finisher Hyrox max 2 jours sur ${profile.daysPerWeek}, farmers carry pour grip, deadlift pour sled pull.
+STYLE DE SÉANCES (OBLIGATOIRE — PAS de muscu classique):
+- Mélanger FORCE FONCTIONNELLE + POIDS DU CORPS + SPÉCIFIQUE HYROX
+- Inclure du sandbag (lunges, squats, carry, over shoulder, clean)
+- Inclure du box work (box jumps, step-overs, jump-overs)
+- Inclure des bear crawls, broad jumps, burpee broad jumps
+- Inclure des carries variés (farmers, overhead, suitcase, sandbag)
+- Travailler les 3 axes : ENDURANCE musculaire + IMPULSION (plyo) + PUISSANCE
+- Les exercices poids du corps sont essentiels : pistol squats, hand release push-ups, jump lunges, mountain climbers, sprawls
+- Structure en supersets (blocs A/B/C) avec un mix force + fonctionnel
+- Finisher Hyrox sur max 2 jours : circuits type (burpee BJ + wall balls + farmers carry)
+- Core et grip intégrés dans les exercices fonctionnels (pas isolé)
+- Max 80% 1RM sur les barres, le reste en fonctionnel/poids du corps/sandbag
+- Les séances doivent RESSEMBLER à un entraînement Hyrox, pas à une séance de bodybuilding
 
-RÉPONDS en JSON COMPACT uniquement (pas de texte avant/après):
-{"days":[{"label":"...","focus":"...","warmup":"...","blocks":[{"name":"Bloc A","exercises":[{"exerciseId":"back_squat","name":"Back Squat","sets":4,"reps":"6","weight":"70kg","rest":"90s","notes":"..."}]}],"finisher":"...ou vide si pas de finisher","cooldown":"..."}]}
+JSON COMPACT uniquement (pas de texte avant/après):
+{"days":[{"label":"...","focus":"...","warmup":"...","blocks":[{"name":"Bloc A — Force fonctionnelle","exercises":[{"exerciseId":"back_squat","name":"Back Squat","sets":4,"reps":"6","weight":"70kg","rest":"90s","notes":"Superset avec bear crawl"}]}],"finisher":"Circuit: 10 burpee BJ + 15 wall balls + 40m farmers carry x3","cooldown":"..."}]}
 
 IDs valides: ${exerciseIds}`;
 
