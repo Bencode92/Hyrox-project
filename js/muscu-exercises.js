@@ -583,7 +583,7 @@ const MuscuExercises = (() => {
               ]},
             { name: 'Superset B — Impulsion + Force',
               exercises: [
-                { id: 'box_jump', sets: 4, reps: '5', rest: 60, notes: 'B1 — Landing contrôlé' },
+                { id: 'box_jump', sets: 4, reps: '10', rest: 60, notes: 'B1 — Rebond explosif, landing contrôlé' },
                 { id: 'thruster', sets: 4, reps: '10', rest: 60, notes: 'B2 — Squat + press fluide' },
               ]},
             { name: 'Circuit C — Race Simulation',
@@ -609,7 +609,7 @@ const MuscuExercises = (() => {
             { name: 'Superset A — Squat + Explosif',
               exercises: [
                 { id: 'back_squat', sets: 5, reps: '5', rest: 90, notes: 'A1 — 5×5 force, enchaîner avec A2' },
-                { id: 'box_jump', sets: 5, reps: '5', rest: 90, notes: 'A2 — Contrast training (PAP)' },
+                { id: 'box_jump', sets: 4, reps: '10', rest: 60, notes: 'A2 — Rebond explosif, landing contrôlé' },
               ]},
             { name: 'Superset B — Hinge + Unilateral',
               exercises: [
@@ -723,7 +723,7 @@ const MuscuExercises = (() => {
             { name: 'Superset A — Squat + Explosif',
               exercises: [
                 { id: 'back_squat', sets: 5, reps: '5', rest: 90, notes: 'A1 — 5×5, enchaîner avec A2' },
-                { id: 'box_jump', sets: 5, reps: '5', rest: 90, notes: 'A2 — Contrast training' },
+                { id: 'box_jump', sets: 4, reps: '10', rest: 60, notes: 'A2 — Rebond explosif, landing contrôlé' },
               ]},
             { name: 'Superset B — Hinge + Unilatéral',
               exercises: [
