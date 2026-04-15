@@ -487,15 +487,15 @@ STYLE (OBLIGATOIRE — PAS de muscu classique):
 - Inclure prehab : tibialis raises, single-leg RDL, copenhagen plank
 - Sled : 1 type/sem en cycle rotatif (force→lactate→vitesse→deload) jusqu'à sem 6, puis rotation hebdo
 
-SEMAINE TYPE (validée 3 experts):
-- Lun : Force bas + Sled (squat 5×5 + DL 3×5 + leg press + calf raises + sled push 4×20m, 75min)
-- Mar : Run intervals (6×3min @ vVO2max, R=2min — module Cardio, 50min)
-- Mer : Force haut + Carries (bench 5×5 + OHP 4×6 + pull-ups + row + farmers carry 4×80m, 65min)
-- Jeu : Run Z2 + mobilité (45min easy + ankle mob + tibialis, 60min)
-- Ven : Endurance fonctionnelle Hyrox (SB lunges + wall balls 5×20 + box step-overs + KB swings + SkiErg, 65min)
-- Sam : Race-style + plyo (BBJ + bear crawl + jump lunges + thrusters + circuit 4 rounds [400m run + 15 WB + 40m FC], 75min)
-- Dim : OFF complet ou marche 30min (récup CNS totale)
-NB: 3 séances cardio (mar, jeu, sam circuit) + 3 séances muscu/fonctionnel (lun, mer, ven) + 1 OFF
+SEMAINE TYPE MUSCU/FONCTIONNEL (supersets — PAS de running intégré pour l'instant):
+- Lun : Force bas + Sled — Squat 5×5 + DL 3×5 + Leg Press + Calf Raises + Sled Push 4×20m (75min)
+- Mar : REPOS ou mobilité
+- Mer : Force haut + Carries — Bench 5×5 + OHP 4×6 + Pull-ups + Row + Farmers Carry 4×80m (65min)
+- Jeu : REPOS ou mobilité + prehab (tibialis, ankle mob)
+- Ven : Endurance fonctionnelle — SB Lunges + Wall Balls 5×20 + Box Step-overs + KB Swings + SkiErg (65min)
+- Sam : Poids du corps + Race sim — BBJ + Bear Crawl + Jump Lunges + Thrusters + Circuit Hyrox (75min)
+- Dim : OFF complet
+NB: 4 séances muscu/fonctionnel + 2-3 jours repos/mobilité. Le running sera intégré plus tard via le module Cardio.
 
 JSON COMPACT uniquement (pas de texte avant/après):
 {"days":[{"label":"...","focus":"...","warmup":"...","blocks":[{"name":"Bloc A — Force fonctionnelle","exercises":[{"exerciseId":"back_squat","name":"Back Squat","sets":4,"reps":"6","weight":"70kg","rest":"90s","notes":"Superset avec bear crawl"}]}],"finisher":"Circuit: 10 burpee BJ + 15 wall balls + 40m farmers carry x3","cooldown":"..."}]}
