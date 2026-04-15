@@ -207,11 +207,11 @@ const MuscuApp = (() => {
   }
 
   function _getPhaseLabel(weekNum) {
-    if (weekNum <= 3) return 'Phase 0 — Retour blessure';
-    if (weekNum <= 8) return 'Phase Adaptation';
-    if (weekNum <= 14) return 'Phase Construction';
-    if (weekNum <= 20) return 'Phase Force (max 80% 1RM)';
-    return 'Phase Pré-compétition';
+    if (weekNum <= 1) return 'Ramp-up';
+    if (weekNum <= 7) return 'Construction';
+    if (weekNum <= 12) return 'Force + Spécifique';
+    if (weekNum <= 16) return 'Pré-compétition';
+    return 'Taper';
   }
 
   function _renderWeekPlan(plan) {

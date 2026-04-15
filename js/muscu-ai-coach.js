@@ -53,13 +53,16 @@ ${profile.injuryNotes ? `⚠️ IMPORTANT : ${profile.injuryNotes}
 - RPE ≥ 9 → baisser 5-10%
 - Douleur → remplacer l'exercice, JAMAIS forcer
 
-### SAFETY RAILS (freins automatiques — CRITIQUE)
-1. **Volume max +8%/semaine** — gel 1 semaine même si RPE bas
-2. **3 séances consécutives RPE ≤ 7 même mouvement** → VÉRIFIER la technique d'abord, pas ajouter automatiquement. L'athlète sous-évalue peut-être son RPE.
+### SAFETY RAILS (freins automatiques — validés par 2 coachs)
+1. **Volume max +5%/semaine** — gel même si RPE bas (plus conservateur car retour Achille)
+2. **3 séances consécutives RPE ≤ 7 même mouvement** → vérifier technique d'abord
 3. **Sommeil < 6.5h pendant 3 nuits** → auto-deload intensité -15%
-4. **RPE en hausse à charge stable** → signal de fatigue, PAS de montée
-5. **Finishers MAX 2x/semaine** — jamais la veille d'une course qualité
-6. **Deload sur SIGNAUX** (RPE ↑ à charge ↓, sommeil dégradé, fatigue chronique) — PAS mécanique toutes les 4 sem
+4. **RPE en hausse à charge stable** → signal fatigue CNS, PAS de montée
+5. **Finishers MAX 2x/semaine** — jamais veille de course qualité
+6. **Deload COMBINÉ** : mécanique (sem 4, 8, 12 auto) + d'urgence sur signaux (RPE, sommeil, fatigue)
+7. **🔴 ACHILLE ≥ 2/10 = ANNULATION séance jambes** — NON NÉGOCIABLE
+8. **Sled MAX 1x/sem les 6 premières semaines, 2x/sem ensuite**
+9. **RPE ≤ 6 pour progresser** sur exercices impliquant mollet/Achille (sled push, calf, box jumps). RPE ≤ 7 pour le reste.
 
 ### Adaptation RPE
 ${trends.rpeAnalysis}
@@ -67,14 +70,17 @@ ${trends.rpeAnalysis}
 ### Adaptation douleur
 ${trends.painAnalysis}
 
-### Périodisation (CORRIGÉE — modèle hybride, PAS powerlifting)
-- Phase 0 (retour blessure) : 2-3 sem, mono-articulaire, 50-60% 1RM, PAS de supersets
-- Semaines 1-4 : ADAPTATION — 60-70% 1RM, 3×10-12, technique
-- Semaines 5-8 : CONSTRUCTION — 70-75% 1RM, 3-4×8-10
-- Semaines 9-12 : FORCE — **75-80% 1RM MAX** (PAS 85-90% — ça sacrifie la fraîcheur running)
-- Semaines 13+ : PRÉ-COMPÉTITION — 70-75% 1RM, plus d'unilatéral, stations sous fatigue
-- ⚠️ PLUS JAMAIS de 85-90% 1RM — ce n'est PAS du powerlifting
-- Deload : sur signaux (RPE, sommeil, fatigue), pas mécanique
+### Périodisation (prépa accélérée 4-5 mois — Achille 0/10)
+- Sem 1 : RAMP-UP accéléré — 60-65% 1RM, technique, 1 semaine seulement (pas 3 sem — Achille OK)
+- Sem 2-7 : CONSTRUCTION — 70-75% 1RM, volume + force fonctionnelle, sled 1x/sem
+- Sem 8-12 : FORCE + SPÉCIFIQUE — 75-80% 1RM (autoriser 1 session 82-85% DL/squat 3×3), sled 2x/sem, compromised workouts
+- Sem 13-16 : PRÉ-COMPÉTITION — 70-75% 1RM, unilatéral dominant, simulations sous fatigue
+- Sem 17-18 : TAPER — volume -40-60%, intensité maintenue
+- Deload COMBINÉ : mécanique (sem 4, 8, 12) + urgence sur signaux
+- Sled : 1 TYPE/sem en cycle rotatif (sem1=force, sem2=lactate, sem3=vitesse, sem4=deload). Rotation hebdo seulement après 6 semaines d'adaptation.
+- EMOM/AMRAP à introduire sem 8+ (pas avant = compétition de fatigue, mauvaise technique)
+- 3 simulations course totales : sem 8 (demi), sem 12 (3/4), sem 14 (complète -10%)
+- Compromised workouts : à partir de sem 6-7
 
 ### Temps de repos
 - Force (≤6 reps) : 2-3 min
@@ -83,9 +89,10 @@ ${trends.painAnalysis}
 
 ### PROGRESSION PAR TYPE D'EXERCICE (connaissances expert)
 
-**Sandbag** : commencer 10% BW → +2-3kg/sem si technique OK → ne pas monter tant que distance de course (100m) pas tenue sans perte de forme → objectif = poids > compétition
-- Cycle 4 sem : sem1 50% race weight, sem2 60%, sem3 70%, sem4 80%
+**Sandbag** : commencer 10% BW → +2-3kg/sem si technique OK → ne pas monter tant que 100m pas tenu sans perte de forme
+- Cycle LONG 7 sem : 50-55-60-65-70-75-80% race weight (pas 4 sem — trop agressif)
 - Progression : distance d'abord (20m→50m→100m) → charge ensuite → état de fatigue en dernier
+- La fatigue cumulative sandbag est sous-estimée (chaîne postérieure + grip + core simultanés)
 
 **Box work** : step-ups → step-ups avec knee drive → low box jumps (40cm) → standard (50-60cm) → depth drops → depth jumps → weighted step-ups → lateral jumps
 - Augmenter hauteur SEULEMENT quand atterrissage contrôlé (pas de valgus, landing stable 2s)
@@ -175,11 +182,11 @@ ${_formatFeedback()}
   }
 
   function _phaseLabel(weekNum) {
-    if (weekNum <= 3) return 'PHASE 0 — Retour blessure (mono-articulaire, pas de supersets, 50-60% 1RM)';
-    if (weekNum <= 8) return 'ADAPTATION (60-70% 1RM, technique, supersets progressifs)';
-    if (weekNum <= 14) return 'CONSTRUCTION (70-75% 1RM, volume progressif)';
-    if (weekNum <= 20) return 'FORCE (75-80% 1RM MAX — PAS de powerlifting)';
-    return 'PRÉ-COMPÉTITION (70-75% 1RM, unilatéral dominant, stations sous fatigue)';
+    if (weekNum <= 1) return 'RAMP-UP (60-65% 1RM, technique, activation)';
+    if (weekNum <= 7) return 'CONSTRUCTION (70-75%, sled 1x/sem, volume progressif)';
+    if (weekNum <= 12) return 'FORCE + SPÉCIFIQUE (75-80%, sled 2x/sem, compromised)';
+    if (weekNum <= 16) return 'PRÉ-COMPÉTITION (stations sous fatigue, simulations)';
+    return 'TAPER (volume -40-60%, maintien intensité)';
   }
 
   function _analyzeTrends(sessions, prs) {
@@ -457,19 +464,25 @@ Adapte la complexité à mon niveau.`,
 
 PRs: ${prSummary}
 ${feedbackStr}
-STYLE DE SÉANCES (OBLIGATOIRE — PAS de muscu classique):
-- Mélanger FORCE FONCTIONNELLE + POIDS DU CORPS + SPÉCIFIQUE HYROX
-- Inclure du sandbag (lunges, squats, carry, over shoulder, clean)
-- Inclure du box work (box jumps, step-overs, jump-overs)
-- Inclure des bear crawls, broad jumps, burpee broad jumps
-- Inclure des carries variés (farmers, overhead, suitcase, sandbag)
-- Travailler les 3 axes : ENDURANCE musculaire + IMPULSION (plyo) + PUISSANCE
-- Les exercices poids du corps sont essentiels : pistol squats, hand release push-ups, jump lunges, mountain climbers, sprawls
-- Structure en supersets (blocs A/B/C) avec un mix force + fonctionnel
-- Finisher Hyrox sur max 2 jours : circuits type (burpee BJ + wall balls + farmers carry)
-- Core et grip intégrés dans les exercices fonctionnels (pas isolé)
-- Max 80% 1RM sur les barres, le reste en fonctionnel/poids du corps/sandbag
-- Les séances doivent RESSEMBLER à un entraînement Hyrox, pas à une séance de bodybuilding
+STYLE (OBLIGATOIRE — PAS de muscu classique):
+- Mélanger force fonctionnelle + poids du corps + spécifique Hyrox
+- Sandbag, box work, bear crawls, broad jumps, carries variés, sled
+- 3 axes : 35% puissance + 35% endurance sous fatigue + 30% impulsion
+- Supersets en phase Construction, EMOM/AMRAP en phase Spécifique (sem 8+)
+- Finisher max 2 jours (circuits Hyrox)
+- Core et grip intégrés (pas isolé)
+- Max 80% 1RM (autoriser 1 session 82-85% DL/squat 3×3 en phase Force sem 8-12)
+- Inclure prehab : tibialis raises, single-leg RDL, copenhagen plank
+- Sled : 1 type/sem en cycle rotatif (force→lactate→vitesse→deload) jusqu'à sem 6, puis rotation hebdo
+
+SEMAINE TYPE CORRIGÉE (validée 2 coachs):
+- Lun : Force bas + Sled (DL/squat 75-80% + sled lourd 4×20m, 75min)
+- Mar : Run Seuil 3-4×8min (module Cardio)
+- Mer : Push-Pull + Carries (OHP/row + farmers 4×60m + wall balls 4×25, 60min)
+- Jeu : OFF ou Z2 mobilité + ankle work (30-45min)
+- Ven : Compromised 4×(800m run + 1 station rotation, 60min)
+- Sam : Race simulation partielle (sled+SB lunges+BBJ+wall balls, 75min)
+- Dim : Long run Z2 60-75min (module Cardio)
 
 JSON COMPACT uniquement (pas de texte avant/après):
 {"days":[{"label":"...","focus":"...","warmup":"...","blocks":[{"name":"Bloc A — Force fonctionnelle","exercises":[{"exerciseId":"back_squat","name":"Back Squat","sets":4,"reps":"6","weight":"70kg","rest":"90s","notes":"Superset avec bear crawl"}]}],"finisher":"Circuit: 10 burpee BJ + 15 wall balls + 40m farmers carry x3","cooldown":"..."}]}

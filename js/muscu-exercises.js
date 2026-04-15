@@ -301,6 +301,30 @@ const MuscuExercises = (() => {
       cues: ['Avant-bras posés sur les cuisses', 'Fléchir les poignets vers le haut', 'Mouvement lent et contrôlé', 'Important pour l\'endurance de grip (Farmers Carry Hyrox)'],
       mistakes: ['Charge trop lourde', 'Mouvement rapide'] },
 
+    { id: 'single_leg_rdl', name: 'Single-Leg RDL', category: 'lower', subcategory: 'hip', equipment: 'dumbbells',
+      hyrox: ['lunges','sled_pull','course'], primary: ['ischio-jambiers','fessiers','stabilisateurs'], secondary: ['core'],
+      videoUrl: 'https://www.youtube.com/watch?v=Ej3VhB_dZHI',
+      cues: ['Debout sur une jambe, basculer le torse en avant', 'Jambe arrière monte naturellement pour contrebalancer', 'Hanche, genou et cheville alignés (pas de rotation)', 'Étirement ischio max en bas, squeeze fessier en haut', 'Essentiel pour asymétries post-blessure Achille'],
+      mistakes: ['Hanche qui s\'ouvre', 'Genou qui plie trop', 'Dos arrondi'] },
+
+    { id: 'tibialis_raise', name: 'Tibialis Raises', category: 'lower', subcategory: 'calves', equipment: 'bodyweight',
+      hyrox: ['course','sled_push'], primary: ['tibial antérieur'], secondary: ['stabilisateurs cheville'],
+      videoUrl: 'https://www.youtube.com/watch?v=gNS_QjGAs_k',
+      cues: ['Dos contre un mur, pieds à 30cm du mur', 'Lever les orteils vers les tibias', 'Pause 2s en haut', 'ESSENTIEL prévention Achille / shin splints', '3×20 quotidien en prehab'],
+      mistakes: ['Mouvement trop rapide', 'Amplitude incomplète'] },
+
+    { id: 'copenhagen_plank', name: 'Copenhagen Plank', category: 'core', subcategory: 'stability', equipment: 'bodyweight',
+      hyrox: ['course','lunges','all'], primary: ['adducteurs','obliques'], secondary: ['core'],
+      videoUrl: 'https://www.youtube.com/watch?v=V8bT6phG4gA',
+      cues: ['Sur le coude, jambe du haut sur un banc', 'Lever les hanches, corps en ligne droite', 'Engager les adducteurs pour maintenir', 'Prévention blessure adducteurs (souvent négligé)', '3×20-30s par côté'],
+      mistakes: ['Hanches qui tombent', 'Rotation du torse'] },
+
+    { id: 'heavy_kb_row', name: 'Heavy KB Row', category: 'upper_pull', subcategory: 'back', equipment: 'kettlebell',
+      hyrox: ['sled_pull','rowing'], primary: ['dos','biceps','grip'], secondary: ['core'],
+      videoUrl: 'https://www.youtube.com/watch?v=roCP6wCXPqo',
+      cues: ['Un genou et une main sur banc, KB dans l\'autre main', 'Tirer le KB vers la hanche', 'Analog direct du sled pull (grip + tirage)', 'Charges lourdes OK (24-32kg KB)', 'Serrer les omoplates en haut'],
+      mistakes: ['Rotation du torse', 'Tirer vers l\'épaule au lieu de la hanche'] },
+
     { id: 'dead_hang', name: 'Dead Hang', category: 'upper_pull', subcategory: 'grip', equipment: 'bodyweight',
       hyrox: ['farmers_carry','sled_pull'], primary: ['avant-bras','épaules'], secondary: [],
       videoUrl: 'https://www.youtube.com/watch?v=dR6EbYAnJac',
