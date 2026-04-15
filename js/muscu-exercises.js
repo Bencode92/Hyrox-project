@@ -515,137 +515,332 @@ const MuscuExercises = (() => {
 
   const TEMPLATES = {
     3: {
-      name: 'Hyrox Hybride 3x',
+      name: 'Hyrox Supersets 3x',
       days: [
         {
-          label: 'Force — Salle + Sled',
-          focus: 'Compound lourds + sled + prehab',
-          slots: [
-            { category: 'lower', pick: 2, prefer: ['back_squat','deadlift'] },
-            { category: 'lower', pick: 1, prefer: ['calf_raise'] },
-            { category: 'functional', pick: 1, prefer: ['sled_push_heavy'] },
-            { category: 'core', pick: 1, prefer: ['plank'] },
-          ]
+          label: 'Force Supersets + Sled',
+          focus: 'Supersets force + conditioning sled',
+          warmup: '5 min rameur léger + mobilité hanches/chevilles + 2 séries progressives squat (50%, 70%)',
+          blocks: [
+            { name: 'Superset A — Force bas',
+              exercises: [
+                { id: 'back_squat', sets: 5, reps: '5', rest: 90, notes: 'A1 — Enchaîner avec A2' },
+                { id: 'kb_swing', sets: 5, reps: '12', rest: 60, notes: 'A2 — Explosivité hip hinge' },
+              ]},
+            { name: 'Superset B — Push/Pull',
+              exercises: [
+                { id: 'bench_press', sets: 4, reps: '6', rest: 60, notes: 'B1 — Enchaîner avec B2' },
+                { id: 'pull_ups', sets: 4, reps: 'max', rest: 60, notes: 'B2 — Tirage antagoniste' },
+              ]},
+            { name: 'Conditioning — Sled',
+              exercises: [
+                { id: 'sled_push_heavy', sets: 4, reps: '20m', rest: 120, notes: 'Force lourde, pas courts' },
+              ]},
+            { name: 'Core + Prehab',
+              exercises: [
+                { id: 'plank', sets: 3, reps: '45s', rest: 30, notes: '' },
+                { id: 'tibialis_raise', sets: 3, reps: '20', rest: 30, notes: 'Prehab Achille' },
+              ]},
+          ],
+          finisher: '',
+          cooldown: 'Étirements hanches, chevilles, épaules — 5 min',
         },
         {
-          label: 'Endurance — Sandbag + Carries',
-          focus: 'Haute reps, sandbag, farmers carry, wall balls',
-          slots: [
-            { category: 'functional', pick: 2, prefer: ['sandbag_lunge','farmers_carry'] },
-            { category: 'explosive', pick: 1, prefer: ['wall_ball'] },
-            { category: 'upper_pull', pick: 1, prefer: ['pull_ups'] },
-            { category: 'core', pick: 1, prefer: ['hanging_leg_raise'] },
-          ]
+          label: 'Endurance Hyrox — Sandbag + Carries',
+          focus: 'Supersets endurance + conditioning carries',
+          warmup: '5 min SkiErg + mobilité épaules + 10 air squats',
+          blocks: [
+            { name: 'Superset A — Sandbag + Wall Balls',
+              exercises: [
+                { id: 'sandbag_lunge', sets: 3, reps: '40m', rest: 60, notes: 'A1 — Foulée 0.9-1.1m' },
+                { id: 'wall_ball', sets: 3, reps: '20', rest: 45, notes: 'A2 — Enchaîner direct' },
+              ]},
+            { name: 'Superset B — Carries variés',
+              exercises: [
+                { id: 'farmers_carry', sets: 4, reps: '60m', rest: 60, notes: 'B1 — Race weight ou +4kg' },
+                { id: 'overhead_carry', sets: 4, reps: '30m', rest: 60, notes: 'B2 — Stabilité épaule' },
+              ]},
+            { name: 'Circuit C — Hyrox Conditioning',
+              exercises: [
+                { id: 'box_step_over', sets: 3, reps: '12', rest: 0, notes: 'C1 — Enchaîner tout' },
+                { id: 'sandbag_over_shoulder', sets: 3, reps: '8', rest: 0, notes: 'C2 — Explosif hanche' },
+                { id: 'hanging_leg_raise', sets: 3, reps: '10', rest: 60, notes: 'C3 — Core, repos après le circuit' },
+              ]},
+          ],
+          finisher: '',
+          cooldown: 'Foam rolling quads, ischios, épaules — 5 min',
         },
         {
-          label: 'Poids du corps + Race Simulation',
-          focus: 'Burpee BJ, bear crawl, box, circuit Hyrox',
-          slots: [
-            { category: 'functional', pick: 2, prefer: ['burpee_broad_jump','bear_crawl'] },
-            { category: 'functional', pick: 1, prefer: ['box_step_over'] },
-            { category: 'explosive', pick: 1, prefer: ['thruster'] },
-            { category: 'functional', pick: 1, prefer: ['jump_lunge'] },
-          ]
+          label: 'Poids du corps + Circuit Race',
+          focus: 'Bodyweight + circuits Hyrox complets',
+          warmup: '5 min jumping jacks + mobilité + 10 hand release push-ups',
+          blocks: [
+            { name: 'Circuit A — Poids du corps (3 tours)',
+              exercises: [
+                { id: 'burpee_broad_jump', sets: 3, reps: '20m', rest: 0, notes: 'A1 — Technique step-up' },
+                { id: 'bear_crawl', sets: 3, reps: '20m', rest: 0, notes: 'A2 — Dos plat, hanches basses' },
+                { id: 'jump_lunge', sets: 3, reps: '10/jambe', rest: 60, notes: 'A3 — Repos après le circuit' },
+              ]},
+            { name: 'Superset B — Impulsion + Force',
+              exercises: [
+                { id: 'box_jump', sets: 4, reps: '5', rest: 60, notes: 'B1 — Landing contrôlé' },
+                { id: 'thruster', sets: 4, reps: '10', rest: 60, notes: 'B2 — Squat + press fluide' },
+              ]},
+            { name: 'Circuit C — Race Simulation',
+              exercises: [
+                { id: 'wall_ball', sets: 2, reps: '25', rest: 0, notes: 'Enchaîner sans pause' },
+                { id: 'farmers_carry', sets: 2, reps: '40m', rest: 0, notes: 'Direct après wall balls' },
+                { id: 'broad_jump', sets: 2, reps: '10', rest: 90, notes: 'Repos après le circuit' },
+              ]},
+          ],
+          finisher: 'AMRAP 6 min : 8 BBJ + 12 Wall Balls + 30m Farmers Carry',
+          cooldown: 'Étirements complets 8 min',
         },
       ]
     },
     4: {
-      name: 'Hyrox Hybride 4x',
+      name: 'Hyrox Supersets 4x',
       days: [
         {
-          label: 'Force — Salle + Sled',
-          focus: 'Squat/DL lourds + leg press + sled push',
-          slots: [
-            { category: 'lower', pick: 2, prefer: ['back_squat','deadlift'] },
-            { category: 'lower', pick: 1, prefer: ['leg_press'] },
-            { category: 'functional', pick: 1, prefer: ['sled_push_heavy'] },
-            { category: 'lower', pick: 1, prefer: ['tibialis_raise'] },
-          ]
+          label: 'Force bas — Supersets + Sled',
+          focus: 'Squat 5×5 + DL supersetés + conditioning sled',
+          warmup: '5 min rameur + mobilité hanches/chevilles + séries progressives squat (50%, 70%)',
+          blocks: [
+            { name: 'Superset A — Squat + Explosif',
+              exercises: [
+                { id: 'back_squat', sets: 5, reps: '5', rest: 90, notes: 'A1 — 5×5 force, enchaîner avec A2' },
+                { id: 'box_jump', sets: 5, reps: '5', rest: 90, notes: 'A2 — Contrast training (PAP)' },
+              ]},
+            { name: 'Superset B — Hinge + Unilateral',
+              exercises: [
+                { id: 'deadlift', sets: 3, reps: '5', rest: 90, notes: 'B1 — Force hip hinge' },
+                { id: 'bulgarian_split', sets: 3, reps: '8/jambe', rest: 60, notes: 'B2 — Transfert lunges' },
+              ]},
+            { name: 'Superset C — Machine + Prehab',
+              exercises: [
+                { id: 'leg_press', sets: 3, reps: '10', rest: 60, notes: 'C1 — Volume additionnel' },
+                { id: 'calf_raise', sets: 3, reps: '15', rest: 30, notes: 'C2 — Propulsion + prehab' },
+              ]},
+            { name: 'Conditioning — Sled',
+              exercises: [
+                { id: 'sled_push_heavy', sets: 4, reps: '20m', rest: 120, notes: 'Force lourde, pas courts, 45° inclinaison' },
+                { id: 'tibialis_raise', sets: 3, reps: '20', rest: 30, notes: 'Prehab Achille' },
+              ]},
+          ],
+          finisher: '',
+          cooldown: 'Étirements quads, ischios, mollets, hanches — 5 min',
         },
         {
-          label: 'Push-Pull — Force haut + Carries',
-          focus: 'Bench/OHP + Pull-ups/Row + Farmers carry',
-          slots: [
-            { category: 'upper_push', pick: 2, prefer: ['bench_press','ohp'] },
-            { category: 'upper_pull', pick: 1, prefer: ['pull_ups'] },
-            { category: 'functional', pick: 1, prefer: ['farmers_carry'] },
-            { category: 'core', pick: 1, prefer: ['copenhagen_plank'] },
-          ]
+          label: 'Push-Pull — Supersets + Carries',
+          focus: 'Bench/OHP + Row/Pull-ups supersetés + farmers carry',
+          warmup: '5 min SkiErg + mobilité épaules/thoracique + séries progressives bench (50%, 70%)',
+          blocks: [
+            { name: 'Superset A — Push/Pull horizontal',
+              exercises: [
+                { id: 'bench_press', sets: 5, reps: '5', rest: 60, notes: 'A1 — 5×5 force, enchaîner' },
+                { id: 'barbell_row', sets: 5, reps: '6', rest: 60, notes: 'A2 — Tirage antagoniste' },
+              ]},
+            { name: 'Superset B — Push/Pull vertical',
+              exercises: [
+                { id: 'ohp', sets: 4, reps: '6', rest: 60, notes: 'B1 — Transfert wall balls' },
+                { id: 'pull_ups', sets: 4, reps: 'max', rest: 60, notes: 'B2 — Tirage vertical' },
+              ]},
+            { name: 'Superset C — Accessoires + Core',
+              exercises: [
+                { id: 'dips', sets: 3, reps: 'max', rest: 45, notes: 'C1 — Push endurance' },
+                { id: 'copenhagen_plank', sets: 3, reps: '30s/côté', rest: 30, notes: 'C2 — Adducteurs + core' },
+              ]},
+            { name: 'Conditioning — Carries',
+              exercises: [
+                { id: 'farmers_carry', sets: 4, reps: '80m', rest: 90, notes: 'Race weight ou +4kg, pas courts/rapides' },
+              ]},
+          ],
+          finisher: '',
+          cooldown: 'Étirements épaules, pecs, dos, poignets — 5 min',
         },
         {
-          label: 'Endurance — Sandbag + Box + Wall Balls',
-          focus: 'Haute reps, sandbag lunges, box step-overs, wall balls',
-          slots: [
-            { category: 'functional', pick: 2, prefer: ['sandbag_lunge','box_step_over'] },
-            { category: 'explosive', pick: 1, prefer: ['wall_ball'] },
-            { category: 'explosive', pick: 1, prefer: ['kb_swing'] },
-            { category: 'lower', pick: 1, prefer: ['calf_raise'] },
-          ]
+          label: 'Endurance Hyrox — Sandbag + Circuits',
+          focus: 'Sandbag, wall balls, box, KB — haute reps en supersets',
+          warmup: '5 min rameur léger + mobilité + 15 air squats',
+          blocks: [
+            { name: 'Superset A — Sandbag + Wall Balls',
+              exercises: [
+                { id: 'sandbag_lunge', sets: 3, reps: '40m', rest: 45, notes: 'A1 — Foulée longue, rester droit' },
+                { id: 'wall_ball', sets: 3, reps: '25', rest: 45, notes: 'A2 — Jambes > bras, rythme constant' },
+              ]},
+            { name: 'Superset B — KB + Box',
+              exercises: [
+                { id: 'kb_swing', sets: 4, reps: '20', rest: 45, notes: 'B1 — Hip hinge explosif' },
+                { id: 'box_step_over', sets: 4, reps: '12', rest: 45, notes: 'B2 — Mouvement continu' },
+              ]},
+            { name: 'Circuit C — Conditioning Hyrox (3 tours)',
+              exercises: [
+                { id: 'sandbag_over_shoulder', sets: 3, reps: '8', rest: 0, notes: 'C1 — Explosif, alterner côtés' },
+                { id: 'sandbag_carry', sets: 3, reps: '30m', rest: 0, notes: 'C2 — Bear hug, pas rapides' },
+                { id: 'hanging_leg_raise', sets: 3, reps: '12', rest: 60, notes: 'C3 — Core, repos après circuit' },
+              ]},
+          ],
+          finisher: '',
+          cooldown: 'Foam rolling + étirements 5 min',
         },
         {
-          label: 'Poids du corps + Race Simulation',
-          focus: 'Burpee BJ, bear crawl, jump lunges, circuit Hyrox',
-          slots: [
-            { category: 'functional', pick: 2, prefer: ['burpee_broad_jump','bear_crawl'] },
-            { category: 'functional', pick: 1, prefer: ['jump_lunge'] },
-            { category: 'explosive', pick: 1, prefer: ['thruster'] },
-            { category: 'functional', pick: 1, prefer: ['broad_jump'] },
-          ]
+          label: 'Poids du corps + Circuit Race',
+          focus: 'BBJ, bear crawl, jump lunges + circuit simulation Hyrox',
+          warmup: '5 min jumping jacks + mountain climbers + mobilité',
+          blocks: [
+            { name: 'Circuit A — Bodyweight (3 tours)',
+              exercises: [
+                { id: 'burpee_broad_jump', sets: 3, reps: '20m', rest: 0, notes: 'A1 — Step-up technique, bras agressifs' },
+                { id: 'bear_crawl', sets: 3, reps: '20m', rest: 0, notes: 'A2 — Dos plat, genoux 2cm du sol' },
+                { id: 'hand_release_pushup', sets: 3, reps: '15', rest: 60, notes: 'A3 — Repos après le circuit' },
+              ]},
+            { name: 'Superset B — Impulsion',
+              exercises: [
+                { id: 'jump_lunge', sets: 3, reps: '10/jambe', rest: 45, notes: 'B1 — Atterrir en douceur' },
+                { id: 'box_jump_over', sets: 3, reps: '10', rest: 45, notes: 'B2 — Rythme soutenu' },
+              ]},
+            { name: 'Circuit C — Race Simulation (3 tours)',
+              exercises: [
+                { id: 'thruster', sets: 3, reps: '10', rest: 0, notes: 'C1 — Squat + press fluide' },
+                { id: 'farmers_carry', sets: 3, reps: '40m', rest: 0, notes: 'C2 — Direct après thrusters' },
+                { id: 'wall_ball', sets: 3, reps: '15', rest: 0, notes: 'C3 — Enchaîner' },
+                { id: 'broad_jump', sets: 3, reps: '10', rest: 90, notes: 'C4 — Repos après le circuit' },
+              ]},
+          ],
+          finisher: 'AMRAP 6 min : 8 Burpee BJ + 12 Wall Balls + 40m Farmers Carry',
+          cooldown: 'Étirements complets + respiration — 8 min',
         },
       ]
     },
     5: {
-      name: 'Hyrox Prépa Complète 5x',
+      name: 'Hyrox Supersets 5x',
       days: [
         {
-          label: 'Force bas — Salle + Sled',
-          focus: 'Squat/DL lourds + leg press + calf raises + sled',
-          slots: [
-            { category: 'lower', pick: 2, prefer: ['back_squat','deadlift'] },
-            { category: 'lower', pick: 1, prefer: ['leg_press'] },
-            { category: 'lower', pick: 1, prefer: ['calf_raise'] },
-            { category: 'functional', pick: 1, prefer: ['sled_push_heavy'] },
-          ]
+          label: 'Force bas — Supersets + Sled',
+          focus: 'Squat 5×5, DL, Leg Press supersetés + sled push',
+          warmup: '5 min rameur + mobilité hanches/chevilles + séries progressives (50%, 70%)',
+          blocks: [
+            { name: 'Superset A — Squat + Explosif',
+              exercises: [
+                { id: 'back_squat', sets: 5, reps: '5', rest: 90, notes: 'A1 — 5×5, enchaîner avec A2' },
+                { id: 'box_jump', sets: 5, reps: '5', rest: 90, notes: 'A2 — Contrast training' },
+              ]},
+            { name: 'Superset B — Hinge + Unilatéral',
+              exercises: [
+                { id: 'deadlift', sets: 3, reps: '5', rest: 90, notes: 'B1' },
+                { id: 'single_leg_rdl', sets: 3, reps: '8/jambe', rest: 60, notes: 'B2 — Équilibre + prehab' },
+              ]},
+            { name: 'Superset C — Machine + Prehab',
+              exercises: [
+                { id: 'leg_press', sets: 3, reps: '10', rest: 60, notes: 'C1' },
+                { id: 'calf_raise', sets: 3, reps: '15', rest: 30, notes: 'C2' },
+              ]},
+            { name: 'Conditioning — Sled + Prehab',
+              exercises: [
+                { id: 'sled_push_heavy', sets: 4, reps: '20m', rest: 120, notes: '45° inclinaison, pas courts' },
+                { id: 'tibialis_raise', sets: 3, reps: '20', rest: 30, notes: 'Prehab Achille quotidien' },
+              ]},
+          ],
+          finisher: '',
+          cooldown: 'Étirements quads, ischios, mollets — 5 min',
         },
         {
-          label: 'Force haut — Push-Pull + Carries',
-          focus: 'Bench/OHP + Row/Pull-ups + Farmers carry',
-          slots: [
-            { category: 'upper_push', pick: 2, prefer: ['bench_press','ohp'] },
-            { category: 'upper_pull', pick: 2, prefer: ['pull_ups','heavy_kb_row'] },
-            { category: 'functional', pick: 1, prefer: ['farmers_carry'] },
-          ]
+          label: 'Push-Pull — Supersets + Carries',
+          focus: 'Bench 5×5 + OHP/Row/Pull-ups + farmers carry',
+          warmup: '5 min SkiErg + mobilité épaules/thoracique + séries progressives bench',
+          blocks: [
+            { name: 'Superset A — Push/Pull horizontal',
+              exercises: [
+                { id: 'bench_press', sets: 5, reps: '5', rest: 60, notes: 'A1 — 5×5 force' },
+                { id: 'barbell_row', sets: 5, reps: '6', rest: 60, notes: 'A2 — Antagoniste' },
+              ]},
+            { name: 'Superset B — Push/Pull vertical',
+              exercises: [
+                { id: 'ohp', sets: 4, reps: '6', rest: 60, notes: 'B1 — Transfert wall balls' },
+                { id: 'pull_ups', sets: 4, reps: 'max', rest: 60, notes: 'B2' },
+              ]},
+            { name: 'Conditioning — Carries variés',
+              exercises: [
+                { id: 'farmers_carry', sets: 3, reps: '80m', rest: 90, notes: 'Race weight ou +4kg' },
+                { id: 'suitcase_carry', sets: 3, reps: '30m/côté', rest: 60, notes: 'Anti-latéral, obliques' },
+                { id: 'copenhagen_plank', sets: 3, reps: '30s/côté', rest: 30, notes: 'Core' },
+              ]},
+          ],
+          finisher: '',
+          cooldown: 'Étirements épaules, pecs, dos — 5 min',
         },
         {
-          label: 'Endurance — Sandbag + Box + Wall Balls',
-          focus: 'Sandbag lunges/carry, box step-overs, wall balls haute reps',
-          slots: [
-            { category: 'functional', pick: 2, prefer: ['sandbag_lunge','sandbag_over_shoulder'] },
-            { category: 'functional', pick: 1, prefer: ['box_step_over'] },
-            { category: 'explosive', pick: 1, prefer: ['wall_ball'] },
-            { category: 'core', pick: 1, prefer: ['copenhagen_plank'] },
-          ]
+          label: 'Endurance Hyrox — Sandbag + Circuits',
+          focus: 'Sandbag lunges, wall balls, KB, box — haute reps supersetées',
+          warmup: '5 min rameur + 15 air squats + mobilité',
+          blocks: [
+            { name: 'Superset A — Sandbag + Wall Balls',
+              exercises: [
+                { id: 'sandbag_lunge', sets: 3, reps: '40m', rest: 45, notes: 'A1 — Foulée 0.9-1.1m' },
+                { id: 'wall_ball', sets: 3, reps: '25', rest: 45, notes: 'A2 — Rythme > puissance' },
+              ]},
+            { name: 'Superset B — KB + Box',
+              exercises: [
+                { id: 'kb_swing', sets: 4, reps: '20', rest: 45, notes: 'B1 — Explosif hanche' },
+                { id: 'box_step_over', sets: 4, reps: '12', rest: 45, notes: 'B2 — Continu' },
+              ]},
+            { name: 'Conditioning C — 400m Row + Sandbag (3 tours)',
+              exercises: [
+                { id: 'sandbag_carry', sets: 3, reps: '60m', rest: 0, notes: 'C1 — Après le rowing, enchaîner direct' },
+                { id: 'sandbag_over_shoulder', sets: 3, reps: '8', rest: 0, notes: 'C2 — Explosif' },
+                { id: 'dead_bug', sets: 3, reps: '10', rest: 60, notes: 'C3 — Core, repos après circuit' },
+              ]},
+          ],
+          finisher: 'Conditioning : 3 tours — 400m Rameur + 30m Sandbag Carry + 10 Sandbag Over Shoulder',
+          cooldown: 'Foam rolling + étirements 5 min',
         },
         {
           label: 'Poids du corps + Impulsion',
-          focus: 'Burpee BJ, bear crawl, jump lunges, box jumps, pistol squats',
-          slots: [
-            { category: 'functional', pick: 2, prefer: ['burpee_broad_jump','bear_crawl'] },
-            { category: 'functional', pick: 1, prefer: ['jump_lunge'] },
-            { category: 'functional', pick: 1, prefer: ['box_jump_over'] },
-            { category: 'functional', pick: 1, prefer: ['hand_release_pushup'] },
-          ]
+          focus: 'Circuits bodyweight, BBJ, bear crawl, box jumps',
+          warmup: '5 min jumping jacks + mountain climbers + mobilité dynamique',
+          blocks: [
+            { name: 'Circuit A — Bodyweight Hyrox (3 tours)',
+              exercises: [
+                { id: 'burpee_broad_jump', sets: 3, reps: '20m', rest: 0, notes: 'A1 — Step-up technique' },
+                { id: 'bear_crawl', sets: 3, reps: '20m', rest: 0, notes: 'A2 — 4 pattes, dos plat' },
+                { id: 'mountain_climber', sets: 3, reps: '20', rest: 0, notes: 'A3 — Rapide' },
+                { id: 'hand_release_pushup', sets: 3, reps: '15', rest: 60, notes: 'A4 — Repos après circuit' },
+              ]},
+            { name: 'Superset B — Impulsion jambes',
+              exercises: [
+                { id: 'jump_lunge', sets: 3, reps: '10/jambe', rest: 45, notes: 'B1 — Puissance unijambiste' },
+                { id: 'box_jump_over', sets: 3, reps: '10', rest: 45, notes: 'B2 — Rythme course' },
+              ]},
+            { name: 'Superset C — Explosif + Core',
+              exercises: [
+                { id: 'devil_press', sets: 3, reps: '8', rest: 60, notes: 'C1 — Burpee + snatch DB' },
+                { id: 'plank', sets: 3, reps: '45s', rest: 30, notes: 'C2 — Stabilité' },
+              ]},
+          ],
+          finisher: '',
+          cooldown: 'Étirements complets — 8 min',
         },
         {
-          label: 'Race Simulation',
-          focus: 'Circuit : sled + thrusters + KB swings + sandbag carry + burpees',
-          slots: [
-            { category: 'explosive', pick: 1, prefer: ['thruster'] },
-            { category: 'functional', pick: 1, prefer: ['sled_pull_heavy'] },
-            { category: 'explosive', pick: 1, prefer: ['kb_swing'] },
-            { category: 'functional', pick: 1, prefer: ['sandbag_carry'] },
-            { category: 'functional', pick: 1, prefer: ['devil_press'] },
-          ]
+          label: 'Circuit Race Simulation',
+          focus: 'Simulation stations Hyrox en circuit avec transitions',
+          warmup: '5 min vélo/rameur + mobilité complète + activation',
+          blocks: [
+            { name: 'Circuit A — Stations Hyrox (4 tours)',
+              exercises: [
+                { id: 'sled_push_heavy', sets: 4, reps: '15m', rest: 0, notes: 'A1 — Enchaîner' },
+                { id: 'wall_ball', sets: 4, reps: '20', rest: 0, notes: 'A2 — Direct' },
+                { id: 'farmers_carry', sets: 4, reps: '40m', rest: 0, notes: 'A3 — Pas de pause' },
+                { id: 'sandbag_lunge', sets: 4, reps: '20m', rest: 120, notes: 'A4 — Repos après le circuit' },
+              ]},
+            { name: 'Circuit B — Finisher Bodyweight (3 tours)',
+              exercises: [
+                { id: 'burpee_broad_jump', sets: 3, reps: '10', rest: 0, notes: 'B1' },
+                { id: 'thruster', sets: 3, reps: '10', rest: 0, notes: 'B2' },
+                { id: 'kb_swing', sets: 3, reps: '15', rest: 90, notes: 'B3 — Repos après circuit' },
+              ]},
+          ],
+          finisher: '',
+          cooldown: 'Étirements complets + respiration — 10 min',
         },
       ]
     }
@@ -680,8 +875,6 @@ const MuscuExercises = (() => {
     const template = getTemplate(profile.daysPerWeek || 4);
     const isDeload = weekNum > 1 && weekNum % 4 === 0;
     const prs = MuscuStorage.getPRs();
-    const objectives = MuscuStorage.getObjectives();
-    const recentSessions = MuscuStorage.getRecentSessions(10);
 
     const plan = {
       week: weekNum,
@@ -690,16 +883,28 @@ const MuscuExercises = (() => {
       generatedAt: new Date().toISOString(),
       days: template.days.map((day, dayIndex) => {
         const exercises = [];
-        day.slots.forEach(slot => {
-          const pool = getByCategory(slot.category);
-          const picked = _pickExercises(pool, slot.pick, slot.prefer || []);
-          picked.forEach(ex => {
-            const prescription = _prescribe(ex, weekNum, isDeload, prs, objectives, recentSessions, day.focus);
+        (day.blocks || []).forEach(block => {
+          block.exercises.forEach(exDef => {
+            const info = getById(exDef.id);
+            const pr = prs[exDef.id];
+            let suggestedWeight = null;
+            if (pr && pr.history && pr.history.length > 0) {
+              const avg = pr.history.slice(-3).reduce((s, e) => s + e.weight, 0) / Math.min(3, pr.history.length);
+              suggestedWeight = Math.round(avg / 2.5) * 2.5;
+            }
+            if (isDeload && suggestedWeight) suggestedWeight = Math.round(suggestedWeight * 0.7 / 2.5) * 2.5;
+
             exercises.push({
-              exerciseId: ex.id,
-              name: ex.name,
-              category: ex.category,
-              ...prescription,
+              exerciseId: exDef.id,
+              name: info ? info.name : exDef.id,
+              category: info ? info.category : 'functional',
+              sets: isDeload ? Math.max(2, exDef.sets - 1) : exDef.sets,
+              reps: exDef.reps,
+              suggestedWeight,
+              restSec: exDef.rest || 60,
+              notes: exDef.notes || '',
+              blockName: block.name,
+              isDeload,
             });
           });
         });
@@ -707,12 +912,14 @@ const MuscuExercises = (() => {
           dayIndex,
           label: day.label,
           focus: day.focus,
+          warmup: day.warmup || '',
+          finisher: day.finisher || '',
+          cooldown: day.cooldown || '',
           exercises,
           status: 'pending',
         };
       }),
     };
-
     return plan;
   }
 
