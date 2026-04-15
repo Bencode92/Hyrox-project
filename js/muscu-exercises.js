@@ -515,36 +515,35 @@ const MuscuExercises = (() => {
 
   const TEMPLATES = {
     3: {
-      name: 'Full Body 3x',
+      name: 'Hyrox Fonctionnel 3x',
       days: [
         {
-          label: 'Full Body A — Force',
-          focus: 'Compound lourd',
+          label: 'Force + Sled',
+          focus: 'DL/Squat + Sled lourd + Sandbag',
           slots: [
-            { category: 'lower', pick: 2, prefer: ['back_squat','rdl'] },
-            { category: 'upper_push', pick: 1, prefer: ['bench_press'] },
-            { category: 'upper_pull', pick: 1, prefer: ['barbell_row'] },
-            { category: 'core', pick: 1, prefer: ['plank'] },
+            { category: 'lower', pick: 1, prefer: ['deadlift'] },
+            { category: 'functional', pick: 2, prefer: ['sled_push_heavy','sandbag_lunge'] },
+            { category: 'explosive', pick: 1, prefer: ['kb_swing'] },
+            { category: 'core', pick: 1, prefer: ['copenhagen_plank'] },
           ]
         },
         {
-          label: 'Full Body B — Hyrox',
-          focus: 'Exercices spécifiques Hyrox',
+          label: 'Push-Pull + Carries + Box',
+          focus: 'OHP/Pull-ups + Farmers carry + Box work',
           slots: [
-            { category: 'explosive', pick: 2, prefer: ['thruster','kb_swing'] },
-            { category: 'lower', pick: 1, prefer: ['walking_lunge'] },
-            { category: 'upper_pull', pick: 1, prefer: ['pull_ups'] },
-            { category: 'core', pick: 1, prefer: ['hanging_leg_raise'] },
-          ]
-        },
-        {
-          label: 'Full Body C — Volume',
-          focus: 'Volume modéré, accessoires',
-          slots: [
-            { category: 'lower', pick: 2, prefer: ['front_squat','hip_thrust'] },
             { category: 'upper_push', pick: 1, prefer: ['ohp'] },
-            { category: 'upper_pull', pick: 1, prefer: ['lat_pulldown'] },
-            { category: 'core', pick: 1, prefer: ['pallof_press'] },
+            { category: 'upper_pull', pick: 1, prefer: ['pull_ups'] },
+            { category: 'functional', pick: 2, prefer: ['farmers_carry','box_step_over'] },
+            { category: 'explosive', pick: 1, prefer: ['wall_ball'] },
+          ]
+        },
+        {
+          label: 'Hyrox Race Day',
+          focus: 'Circuit stations Hyrox + poids du corps',
+          slots: [
+            { category: 'functional', pick: 3, prefer: ['burpee_broad_jump','sandbag_carry','bear_crawl'] },
+            { category: 'explosive', pick: 1, prefer: ['thruster'] },
+            { category: 'functional', pick: 1, prefer: ['jump_lunge'] },
           ]
         },
       ]
@@ -553,90 +552,103 @@ const MuscuExercises = (() => {
       name: 'Hyrox Fonctionnel 4x',
       days: [
         {
-          label: 'Force + Sandbag',
-          focus: 'Force lourde bas du corps + travail sandbag',
+          label: 'Force bas + Sled',
+          focus: 'DL/Squat 75-80% + Sled lourd 4×20m',
           slots: [
-            { category: 'lower', pick: 2, prefer: ['back_squat','deadlift'] },
-            { category: 'functional', pick: 2, prefer: ['sandbag_lunge','sandbag_over_shoulder'] },
-            { category: 'core', pick: 1, prefer: ['plank'] },
+            { category: 'lower', pick: 1, prefer: ['deadlift'] },
+            { category: 'functional', pick: 1, prefer: ['sled_push_heavy'] },
+            { category: 'functional', pick: 1, prefer: ['sandbag_squat'] },
+            { category: 'lower', pick: 1, prefer: ['single_leg_rdl'] },
+            { category: 'core', pick: 1, prefer: ['copenhagen_plank'] },
           ]
         },
         {
-          label: 'Push-Pull + Box',
-          focus: 'Force haut du corps + box work + carries',
+          label: 'Push-Pull + Carries + Box',
+          focus: 'OHP/Row + Farmers 4×60m + Box step-overs',
           slots: [
             { category: 'upper_push', pick: 1, prefer: ['ohp'] },
             { category: 'upper_pull', pick: 1, prefer: ['pull_ups'] },
-            { category: 'functional', pick: 2, prefer: ['box_step_over','farmers_carry'] },
-            { category: 'core', pick: 1, prefer: ['hanging_leg_raise'] },
+            { category: 'functional', pick: 2, prefer: ['farmers_carry','box_step_over'] },
+            { category: 'explosive', pick: 1, prefer: ['wall_ball'] },
           ]
         },
         {
           label: 'Impulsion + Poids du corps',
-          focus: 'Plyométrie, broad jumps, endurance poids du corps',
+          focus: 'Burpee BJ + Jump lunges + Bear crawl + Broad jumps',
           slots: [
-            { category: 'functional', pick: 3, prefer: ['burpee_broad_jump','jump_lunge','bear_crawl'] },
-            { category: 'explosive', pick: 1, prefer: ['box_jump'] },
+            { category: 'functional', pick: 2, prefer: ['burpee_broad_jump','bear_crawl'] },
+            { category: 'functional', pick: 1, prefer: ['jump_lunge'] },
+            { category: 'functional', pick: 1, prefer: ['box_jump_over'] },
             { category: 'functional', pick: 1, prefer: ['hand_release_pushup'] },
           ]
         },
         {
-          label: 'Hyrox Race Simulation',
-          focus: 'Circuit complet épreuves Hyrox',
+          label: 'Race Simulation',
+          focus: 'Sled + Wall balls + Sandbag lunges + KB swings',
           slots: [
-            { category: 'functional', pick: 2, prefer: ['sled_push_heavy','sled_pull_heavy'] },
+            { category: 'functional', pick: 1, prefer: ['sandbag_lunge'] },
             { category: 'explosive', pick: 1, prefer: ['wall_ball'] },
-            { category: 'functional', pick: 1, prefer: ['sandbag_carry'] },
             { category: 'explosive', pick: 1, prefer: ['kb_swing'] },
+            { category: 'functional', pick: 1, prefer: ['sandbag_over_shoulder'] },
+            { category: 'functional', pick: 1, prefer: ['broad_jump'] },
           ]
         },
       ]
     },
     5: {
-      name: 'Push/Pull/Legs/Hyrox 5x',
+      name: 'Hyrox Prépa 5x',
       days: [
         {
-          label: 'Legs — Force',
-          focus: 'Charge lourde bas du corps',
+          label: 'Force bas + Sled',
+          focus: 'DL/Squat 75-80% + Sled lourd + Prehab',
           slots: [
-            { category: 'lower', pick: 4, prefer: ['back_squat','rdl','leg_press','calf_raise'] },
+            { category: 'lower', pick: 1, prefer: ['back_squat'] },
+            { category: 'lower', pick: 1, prefer: ['deadlift'] },
+            { category: 'functional', pick: 1, prefer: ['sled_push_heavy'] },
+            { category: 'lower', pick: 1, prefer: ['tibialis_raise'] },
             { category: 'core', pick: 1, prefer: ['plank'] },
           ]
         },
         {
-          label: 'Push — Force',
-          focus: 'Poussée lourde',
+          label: 'Push-Pull + Carries',
+          focus: 'OHP/Row + Farmers carry + Wall balls',
           slots: [
-            { category: 'upper_push', pick: 3, prefer: ['bench_press','ohp','dips'] },
-            { category: 'upper_push', pick: 1, prefer: ['lateral_raise'] },
-            { category: 'core', pick: 1, prefer: ['side_plank'] },
-          ]
-        },
-        {
-          label: 'Pull — Force',
-          focus: 'Tirage lourd',
-          slots: [
-            { category: 'upper_pull', pick: 3, prefer: ['barbell_row','pull_ups','face_pull'] },
-            { category: 'upper_pull', pick: 1, prefer: ['bicep_curl'] },
+            { category: 'upper_push', pick: 1, prefer: ['ohp'] },
+            { category: 'upper_pull', pick: 1, prefer: ['heavy_kb_row'] },
+            { category: 'functional', pick: 1, prefer: ['farmers_carry'] },
+            { category: 'explosive', pick: 1, prefer: ['wall_ball'] },
             { category: 'core', pick: 1, prefer: ['hanging_leg_raise'] },
           ]
         },
         {
-          label: 'Hyrox Spécifique',
-          focus: 'Simulation exercices Hyrox',
+          label: 'Impulsion + Poids du corps',
+          focus: 'Burpee BJ + Jump lunges + Bear crawl',
           slots: [
-            { category: 'explosive', pick: 4, prefer: ['thruster','farmers_carry','kb_swing','burpee'] },
-            { category: 'core', pick: 1, prefer: ['dead_bug'] },
+            { category: 'functional', pick: 2, prefer: ['burpee_broad_jump','jump_lunge'] },
+            { category: 'functional', pick: 1, prefer: ['bear_crawl'] },
+            { category: 'functional', pick: 1, prefer: ['box_jump_over'] },
+            { category: 'functional', pick: 1, prefer: ['mountain_climber'] },
           ]
         },
         {
-          label: 'Full Body — Volume',
-          focus: 'Accessoires & points faibles',
+          label: 'Sandbag + Box Work',
+          focus: 'Sandbag lunges/carry/clean + Box step-overs',
           slots: [
-            { category: 'lower', pick: 2, prefer: ['bulgarian_split','hip_thrust'] },
-            { category: 'upper_push', pick: 1, prefer: ['incline_db_press'] },
-            { category: 'upper_pull', pick: 1, prefer: ['db_row'] },
-            { category: 'explosive', pick: 1, prefer: ['wall_ball'] },
+            { category: 'functional', pick: 2, prefer: ['sandbag_lunge','sandbag_over_shoulder'] },
+            { category: 'functional', pick: 1, prefer: ['box_step_over'] },
+            { category: 'functional', pick: 1, prefer: ['sandbag_carry'] },
+            { category: 'core', pick: 1, prefer: ['copenhagen_plank'] },
+          ]
+        },
+        {
+          label: 'Race Simulation',
+          focus: 'Circuit complet : sled + wall balls + carries + burpees',
+          slots: [
+            { category: 'explosive', pick: 1, prefer: ['thruster'] },
+            { category: 'functional', pick: 1, prefer: ['sled_pull_heavy'] },
+            { category: 'explosive', pick: 1, prefer: ['kb_swing'] },
+            { category: 'functional', pick: 1, prefer: ['devil_press'] },
+            { category: 'functional', pick: 1, prefer: ['broad_jump'] },
           ]
         },
       ]
