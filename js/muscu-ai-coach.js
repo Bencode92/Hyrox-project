@@ -44,14 +44,26 @@ ${profile.injuryNotes ? `⚠️ IMPORTANT : ${profile.injuryNotes}
 
 ## RÈGLES D'ADAPTATION (OBLIGATOIRES — validées par coach externe)
 
-### Progression de charge (CORRIGÉE — micro-progressions)
-- Haut du corps (OHP, row, bench) : **+1.25kg** quand toutes séries RPE ≤ 7
-- Bas du corps bilatéral (squat) : **+2.5kg** quand toutes séries RPE ≤ 7
-- Deadlift / sled push (début de cycle uniquement) : **+5kg** si RPE ≤ 7 + technique parfaite
-- Unilatéraux (Bulgarian, step-up) : **+1.25kg**
-- RPE 8 → maintenir
-- RPE ≥ 9 → baisser 5-10%
-- Douleur → remplacer l'exercice, JAMAIS forcer
+### Progression de charge (validée 3 experts)
+- Compounds (squat, DL, bench) : programmer en **5×5** (meilleur ratio force/masse que 4×8)
+- Progression 5×5 : 70% sem 1-2 → 75% sem 3-5 → 80% sem 6+ (PAS 80% dès le départ)
+- Haut du corps (OHP, row, bench) : **+1.25kg** quand 5×5 complété RPE ≤ 7
+- Bas du corps bilatéral (squat) : **+2.5kg** quand 5×5 complété RPE ≤ 7
+- Deadlift (début de cycle) : **+5kg** si RPE ≤ 7 + technique parfaite (gains rapides possibles si niveau bas)
+- Unilatéraux : **+1.25kg**
+- Endurance fonctionnelle (wall balls, sandbag, carries) : 3×12-20 reps — garder les deux registres
+- RPE 8 → maintenir. RPE ≥ 9 → baisser 5-10%. Douleur → remplacer.
+- ATTENTION : les ratios force/BW sont basés sur le poids RÉEL de l'athlète (utiliser ${profile.weight}kg)
+
+### TESTS BENCHMARK MENSUELS (obligatoires — piloter la progression)
+L'athlète doit faire ces tests 1×/mois (30min, à la place d'une séance fonctionnelle) :
+- Squat 3RM → estimer 1RM via Epley
+- Deadlift 3RM → idem
+- Bench 5RM → idem
+- 2km Row all-out (temps + watts)
+- Wall Balls max unbroken (toutes les 6 sem)
+- Farmers Carry 200m @2×24kg (temps + pauses, toutes les 6 sem)
+Si pas de test récent (<4 sem), RECOMMANDER de tester avant de monter les charges.
 
 ### SAFETY RAILS (freins automatiques — validés par 2 coachs)
 1. **Volume max +5%/semaine** — gel même si RPE bas (plus conservateur car retour Achille)
@@ -475,14 +487,15 @@ STYLE (OBLIGATOIRE — PAS de muscu classique):
 - Inclure prehab : tibialis raises, single-leg RDL, copenhagen plank
 - Sled : 1 type/sem en cycle rotatif (force→lactate→vitesse→deload) jusqu'à sem 6, puis rotation hebdo
 
-SEMAINE TYPE CORRIGÉE (validée 2 coachs):
-- Lun : Force bas + Sled (DL/squat 75-80% + sled lourd 4×20m, 75min)
-- Mar : Run Seuil 3-4×8min (module Cardio)
-- Mer : Push-Pull + Carries (OHP/row + farmers 4×60m + wall balls 4×25, 60min)
-- Jeu : OFF ou Z2 mobilité + ankle work (30-45min)
-- Ven : Compromised 4×(800m run + 1 station rotation, 60min)
-- Sam : Race simulation partielle (sled+SB lunges+BBJ+wall balls, 75min)
-- Dim : Long run Z2 60-75min (module Cardio)
+SEMAINE TYPE (validée 3 experts):
+- Lun : Force bas + Sled (squat 5×5 + DL 3×5 + leg press + calf raises + sled push 4×20m, 75min)
+- Mar : Run intervals (6×3min @ vVO2max, R=2min — module Cardio, 50min)
+- Mer : Force haut + Carries (bench 5×5 + OHP 4×6 + pull-ups + row + farmers carry 4×80m, 65min)
+- Jeu : Run Z2 + mobilité (45min easy + ankle mob + tibialis, 60min)
+- Ven : Endurance fonctionnelle Hyrox (SB lunges + wall balls 5×20 + box step-overs + KB swings + SkiErg, 65min)
+- Sam : Race-style + plyo (BBJ + bear crawl + jump lunges + thrusters + circuit 4 rounds [400m run + 15 WB + 40m FC], 75min)
+- Dim : OFF complet ou marche 30min (récup CNS totale)
+NB: 3 séances cardio (mar, jeu, sam circuit) + 3 séances muscu/fonctionnel (lun, mer, ven) + 1 OFF
 
 JSON COMPACT uniquement (pas de texte avant/après):
 {"days":[{"label":"...","focus":"...","warmup":"...","blocks":[{"name":"Bloc A — Force fonctionnelle","exercises":[{"exerciseId":"back_squat","name":"Back Squat","sets":4,"reps":"6","weight":"70kg","rest":"90s","notes":"Superset avec bear crawl"}]}],"finisher":"Circuit: 10 burpee BJ + 15 wall balls + 40m farmers carry x3","cooldown":"..."}]}
