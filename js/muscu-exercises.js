@@ -530,7 +530,7 @@ const MuscuExercises = (() => {
             { name: 'Superset B — Push/Pull',
               exercises: [
                 { id: 'bench_press', sets: 4, reps: '6', rest: 60, notes: 'B1 — Enchaîner avec B2' },
-                { id: 'pull_ups', sets: 4, reps: 'max', rest: 60, notes: 'B2 — Tirage antagoniste' },
+                { id: 'pull_ups', sets: 4, reps: '8', rest: 60, notes: 'B2 — Tirage antagoniste' },
               ]},
             { name: 'Conditioning — Sled',
               exercises: [
@@ -643,11 +643,11 @@ const MuscuExercises = (() => {
             { name: 'Superset B — Push/Pull vertical',
               exercises: [
                 { id: 'ohp', sets: 4, reps: '6', rest: 60, notes: 'B1 — Transfert wall balls' },
-                { id: 'pull_ups', sets: 4, reps: 'max', rest: 60, notes: 'B2 — Tirage vertical' },
+                { id: 'pull_ups', sets: 4, reps: '8', rest: 60, notes: 'B2 — Tirage vertical' },
               ]},
             { name: 'Superset C — Accessoires + Core',
               exercises: [
-                { id: 'dips', sets: 3, reps: 'max', rest: 45, notes: 'C1 — Push endurance' },
+                { id: 'dips', sets: 3, reps: '12', rest: 45, notes: 'C1 — Push endurance' },
                 { id: 'copenhagen_plank', sets: 3, reps: '30s/côté', rest: 30, notes: 'C2 — Adducteurs + core' },
               ]},
             { name: 'Conditioning — Carries',
@@ -757,7 +757,7 @@ const MuscuExercises = (() => {
             { name: 'Superset B — Push/Pull vertical',
               exercises: [
                 { id: 'ohp', sets: 4, reps: '8', rest: 60, notes: 'B1 — Transfert wall balls, 8 reps endurance épaules' },
-                { id: 'pull_ups', sets: 4, reps: 'max', rest: 60, notes: 'B2 — Tirage vertical' },
+                { id: 'pull_ups', sets: 4, reps: '8', rest: 60, notes: 'B2 — Tirage vertical' },
               ]},
             { name: 'Superset C — Wall Balls + Carries',
               exercises: [
