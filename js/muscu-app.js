@@ -202,8 +202,56 @@ const MuscuApp = (() => {
     document.getElementById('dash-prs').textContent = Object.keys(prs).length;
 
     _renderWeekPlan(plan);
+    _renderAbsCard(weekNum);
     _renderPRCards(prs, objectives);
     _renderObjectivesProgress(prs, objectives);
+  }
+
+  function _renderAbsCard(weekNum) {
+    const container = document.getElementById('dash-abs-content');
+    if (!container) return;
+    const today = new Date().toISOString().slice(0, 10);
+    const session = MuscuExercises.getAbsSession(today, weekNum);
+
+    // Already done today?
+    const sessions = MuscuStorage.getSessions();
+    const doneToday = sessions.some(s => s.type === 'abs' && s.date === today);
+
+    // Last 7 days streak
+    const last7 = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const ds = d.toISOString().slice(0, 10);
+      const done = sessions.some(s => s.type === 'abs' && s.date === ds);
+      last7.push({ date: ds, done, day: ['L','M','M','J','V','S','D'][(d.getDay() + 6) % 7] });
+    }
+
+    const previewExos = session.exercises.map(ex => {
+      const work = ex.work.sec ? `${ex.work.sec}s` : `${ex.work.reps}r${ex.work.perSide ? '/côté' : ''}`;
+      return `<span class="abs-exo-pill">${ex.name} <em>${work}</em></span>`;
+    }).join('');
+
+    const streakHtml = last7.map(d => `
+      <div class="streak-dot ${d.done ? 'streak-done' : ''} ${d.date === today ? 'streak-today' : ''}" title="${d.date}">
+        <span>${d.day}</span>
+      </div>`).join('');
+
+    container.innerHTML = `
+      <div class="abs-card-header">
+        <div>
+          <div class="abs-card-title">🔥 Abdos du jour — ${session.dayLabel}</div>
+          <div class="abs-card-theme">${session.theme}</div>
+        </div>
+        <div class="abs-card-phase">${session.phase}</div>
+      </div>
+      <div class="abs-card-format text-muted text-sm">${session.format}</div>
+      <div class="abs-card-exos">${previewExos}</div>
+      <div class="abs-streak">${streakHtml}</div>
+      ${doneToday
+        ? `<button class="btn btn-secondary" onclick="MuscuApp.showAbsSession()">✓ Fait — Revoir / refaire</button>`
+        : `<button class="btn btn-abs" onclick="MuscuApp.showAbsSession()">▶ Lancer la session (≈ 10 min)</button>`}
+    `;
   }
 
   function _getPhaseLabel(weekNum) {
@@ -520,18 +568,35 @@ const MuscuApp = (() => {
 
   function _prefillLog(day, dayIndex) {
     logDayIndex = dayIndex;
-    logExercises = day.exercises.map(ex => ({
-      exerciseId: ex.exerciseId,
-      name: ex.name,
-      category: ex.category,
-      targetSets: ex.sets,
-      targetReps: ex.reps,
-      suggestedWeight: ex.suggestedWeight,
-      sets: [],
-    }));
+    logExercises = day.exercises.map(ex => {
+      // Smart suggestion based on last session
+      const suggestion = MuscuStorage.suggestNextLoad(ex.exerciseId, typeof ex.reps === 'number' ? ex.reps : null);
+      const startWeight = suggestion ? suggestion.weight : ex.suggestedWeight;
+      return {
+        exerciseId: ex.exerciseId,
+        name: ex.name,
+        category: ex.category,
+        targetSets: ex.sets,
+        targetReps: ex.reps,
+        suggestedWeight: ex.suggestedWeight,
+        smartSuggestion: suggestion,
+        restSec: ex.restSec || _defaultRestFor(ex.category),
+        isFinisher: !!ex.isFinisher,
+        blockName: ex.blockName || '',
+        notes: ex.notes || '',
+        sets: [{ weight: startWeight || '', reps: typeof ex.reps === 'number' ? ex.reps : '', rpe: '', validated: false }],
+      };
+    });
     document.getElementById('log-date').value = new Date().toISOString().slice(0, 10);
     document.getElementById('log-session-label').textContent = day.label;
     _renderLogExercises();
+  }
+
+  function _defaultRestFor(category) {
+    if (category === 'core') return 45;
+    if (category === 'lower' || category === 'upper_push' || category === 'upper_pull') return 90;
+    if (category === 'explosive') return 60;
+    return 60;
   }
 
   function _renderLogExercises() {
@@ -544,33 +609,65 @@ const MuscuApp = (() => {
         </div>`;
       return;
     }
+    let currentBlock = '';
     container.innerHTML = logExercises.map((ex, exIdx) => {
       const catInfo = MuscuExercises.getCategoryInfo(ex.category);
       const info = MuscuExercises.getById(ex.exerciseId);
-      const setsHtml = ex.sets.map((set, setIdx) => `
-        <div class="log-set-row">
+
+      // Block header (e.g. "🔥 Finisher Poignet + Abdos")
+      let blockHtml = '';
+      if (ex.blockName && ex.blockName !== currentBlock) {
+        currentBlock = ex.blockName;
+        blockHtml = `<div class="log-block-header ${ex.isFinisher ? 'log-block-finisher' : ''}">${currentBlock}</div>`;
+      }
+
+      // Smart suggestion banner
+      const s = ex.smartSuggestion;
+      let suggestionHtml = '';
+      if (s) {
+        const arrow = s.trend === 'up' ? '↑' : s.trend === 'down' ? '↓' : s.trend === 'pain' ? '⚠️' : '→';
+        const deltaStr = s.delta > 0 ? `+${s.delta}kg` : s.delta < 0 ? `${s.delta}kg` : 'maintien';
+        suggestionHtml = `
+          <div class="smart-suggestion smart-${s.trend}">
+            <span class="ss-arrow">${arrow}</span>
+            <span class="ss-main"><strong>${s.weight}kg</strong> suggérés (${deltaStr})</span>
+            <span class="ss-reason">${s.reason}</span>
+          </div>`;
+      }
+
+      const setsHtml = ex.sets.map((set, setIdx) => {
+        const validatedCls = set.validated ? 'set-validated' : '';
+        return `
+        <div class="log-set-row ${validatedCls}">
           <span class="set-num">${setIdx + 1}</span>
           <input type="number" class="input-sm" placeholder="kg" value="${set.weight || ''}"
-                 onchange="MuscuApp.updateSet(${exIdx},${setIdx},'weight',this.value)" step="2.5" min="0">
+                 onchange="MuscuApp.updateSet(${exIdx},${setIdx},'weight',this.value)" step="2.5" min="0" ${set.validated ? 'disabled' : ''}>
           <span class="text-muted">×</span>
           <input type="number" class="input-sm" placeholder="reps" value="${set.reps || ''}"
-                 onchange="MuscuApp.updateSet(${exIdx},${setIdx},'reps',this.value)" min="1">
-          <select class="input-sm rpe-select" onchange="MuscuApp.updateSet(${exIdx},${setIdx},'rpe',this.value)">
+                 onchange="MuscuApp.updateSet(${exIdx},${setIdx},'reps',this.value)" min="1" ${set.validated ? 'disabled' : ''}>
+          <select class="input-sm rpe-select" onchange="MuscuApp.updateSet(${exIdx},${setIdx},'rpe',this.value)" ${set.validated ? 'disabled' : ''}>
             <option value="">RPE</option>
             ${[5,6,7,8,9,10].map(r => `<option value="${r}" ${set.rpe == r ? 'selected' : ''}>${r}</option>`).join('')}
           </select>
+          ${set.validated
+            ? `<button class="btn-icon btn-validated" onclick="MuscuApp.unvalidateSet(${exIdx},${setIdx})" title="Annuler la validation">✓</button>`
+            : `<button class="btn-icon btn-validate" onclick="MuscuApp.validateSet(${exIdx},${setIdx})" title="Valider et démarrer le chrono">✓</button>`}
           <button class="btn-icon btn-delete" onclick="MuscuApp.removeSet(${exIdx},${setIdx})">✕</button>
-        </div>`).join('');
+        </div>`;
+      }).join('');
 
-      return `
-        <div class="log-exercise-card">
+      return `${blockHtml}
+        <div class="log-exercise-card ${ex.isFinisher ? 'log-ex-finisher' : ''}">
           <div class="log-ex-header">
             <span class="cat-dot" style="background:${catInfo.color}"></span>
             <strong>${ex.name}</strong>
             <span class="text-muted text-sm">${ex.targetSets || '?'}×${ex.targetReps || '?'} ${ex.suggestedWeight ? '@ ' + ex.suggestedWeight + 'kg' : ''}</span>
+            <span class="rest-pill" title="Repos entre séries">⏱ ${ex.restSec || 60}s</span>
             ${info && info.videoUrl ? `<a href="${info.videoUrl}" target="_blank" class="video-link-sm" title="Tuto vidéo">▶</a>` : ''}
             <button class="btn-icon btn-delete" onclick="MuscuApp.removeExercise(${exIdx})">🗑</button>
           </div>
+          ${suggestionHtml}
+          ${ex.notes ? `<div class="exercise-note text-muted text-sm">${ex.notes}</div>` : ''}
           <div class="log-sets">${setsHtml}</div>
           <button class="btn btn-sm btn-ghost" onclick="MuscuApp.addSet(${exIdx})">+ Série</button>
         </div>`;
@@ -584,6 +681,7 @@ const MuscuApp = (() => {
       weight: lastSet ? lastSet.weight : (ex.suggestedWeight || ''),
       reps: lastSet ? lastSet.reps : (typeof ex.targetReps === 'number' ? ex.targetReps : ''),
       rpe: '',
+      validated: false,
     });
     _renderLogExercises();
   }
@@ -593,6 +691,37 @@ const MuscuApp = (() => {
     logExercises[exIdx].sets[setIdx][field] = field === 'rpe' ? (value ? parseInt(value) : '') : parseFloat(value) || '';
   }
   function removeExercise(exIdx) { logExercises.splice(exIdx, 1); _renderLogExercises(); }
+
+  // ── Validate set + start rest timer ───────────────────────
+  function validateSet(exIdx, setIdx) {
+    const ex = logExercises[exIdx];
+    const set = ex.sets[setIdx];
+    if (!set.weight || !set.reps) {
+      _toast('Renseigne poids et reps avant de valider', 'error');
+      return;
+    }
+    set.validated = true;
+    _renderLogExercises();
+
+    // Auto-add next set if it was the last one and we're below target
+    const targetSets = ex.targetSets || 3;
+    if (setIdx === ex.sets.length - 1 && ex.sets.length < targetSets + 2) {
+      ex.sets.push({
+        weight: set.weight,
+        reps: set.reps,
+        rpe: '',
+        validated: false,
+      });
+      _renderLogExercises();
+    }
+
+    _startRestTimer(ex.restSec || _defaultRestFor(ex.category), ex.name);
+  }
+
+  function unvalidateSet(exIdx, setIdx) {
+    logExercises[exIdx].sets[setIdx].validated = false;
+    _renderLogExercises();
+  }
 
   // ── Add Exercise Modal ────────────────────────────────────
   function showAddExercise() {
@@ -637,14 +766,21 @@ const MuscuApp = (() => {
     const ex = MuscuExercises.getById(id);
     if (!ex) return;
     const pr = MuscuStorage.getPRs()[id];
+    const suggestion = MuscuStorage.suggestNextLoad(id, 10);
+    const startWeight = suggestion ? suggestion.weight : (pr ? Math.round(pr.bestWeight / 2.5) * 2.5 : null);
     logExercises.push({
       exerciseId: ex.id,
       name: ex.name,
       category: ex.category,
       targetSets: 3,
       targetReps: 10,
-      suggestedWeight: pr ? Math.round(pr.bestWeight / 2.5) * 2.5 : null,
-      sets: [{ weight: pr ? Math.round(pr.bestWeight / 2.5) * 2.5 : '', reps: '', rpe: '' }],
+      suggestedWeight: startWeight,
+      smartSuggestion: suggestion,
+      restSec: _defaultRestFor(ex.category),
+      isFinisher: false,
+      blockName: '',
+      notes: '',
+      sets: [{ weight: startWeight || '', reps: '', rpe: '', validated: false }],
     });
     closeAddExercise();
     _renderLogExercises();
@@ -711,6 +847,7 @@ const MuscuApp = (() => {
 
     logExercises = [];
     logDayIndex = null;
+    _stopRestTimer();
   }
 
   // ════════════════════════════════════════════════════════════
@@ -950,6 +1087,7 @@ const MuscuApp = (() => {
     const profile = MuscuStorage.getProfile();
     document.getElementById('set-worker-url').value = settings.workerUrl || '';
     document.getElementById('set-ai-model').value = settings.aiModel || 'claude-sonnet-4-20250514';
+    document.getElementById('set-finisher').checked = settings.finisherEnabled !== false;
     document.getElementById('set-weight').value = profile.weight || '';
     document.getElementById('set-days').value = profile.daysPerWeek || 4;
     document.getElementById('set-level').value = profile.level || 'intermediate';
@@ -959,9 +1097,18 @@ const MuscuApp = (() => {
 
   function saveSettings() {
     const settings = MuscuStorage.getSettings();
+    const prevFinisher = settings.finisherEnabled !== false;
     settings.workerUrl = document.getElementById('set-worker-url').value.trim();
     settings.aiModel = document.getElementById('set-ai-model').value;
+    settings.finisherEnabled = document.getElementById('set-finisher').checked;
     MuscuStorage.saveSettings(settings);
+
+    // If finisher toggle changed, regenerate plan to reflect it
+    if (prevFinisher !== settings.finisherEnabled) {
+      const weekNum = MuscuStorage.getWeekNumber();
+      const newPlan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), weekNum);
+      MuscuStorage.saveWeekPlan(newPlan);
+    }
     const profile = MuscuStorage.getProfile();
     profile.weight = parseFloat(document.getElementById('set-weight').value) || profile.weight;
     profile.daysPerWeek = parseInt(document.getElementById('set-days').value) || profile.daysPerWeek;
@@ -1043,6 +1190,395 @@ const MuscuApp = (() => {
   }
 
   // ════════════════════════════════════════════════════════════
+  //  ABS SESSION (programme quotidien rotatif)
+  // ════════════════════════════════════════════════════════════
+  let _absState = null;
+
+  function showAbsSession() {
+    const weekNum = MuscuStorage.getWeekNumber();
+    const today = new Date().toISOString().slice(0, 10);
+    const session = MuscuExercises.getAbsSession(today, weekNum);
+    _absState = {
+      session,
+      round: 1,
+      exoIdx: 0,
+      phase: 'ready',         // 'ready' | 'work' | 'rest' | 'round_rest' | 'done'
+      timerEndsAt: null,
+      timerId: null,
+      startedAt: null,
+      amrapEndsAt: null,
+      amrapRoundsCompleted: 0,
+    };
+    document.getElementById('abs-modal-title').textContent = `Abdos — ${session.dayLabel}`;
+    document.getElementById('abs-session-modal').style.display = 'flex';
+    _renderAbsSession();
+  }
+
+  function closeAbsSession() {
+    if (_absState && _absState.phase !== 'ready' && _absState.phase !== 'done') {
+      if (!confirm('Quitter la session en cours ? Les progrès ne seront pas sauvés.')) return;
+    }
+    _stopAbsTimer();
+    _absState = null;
+    document.getElementById('abs-session-modal').style.display = 'none';
+  }
+
+  function _stopAbsTimer() {
+    if (_absState && _absState.timerId) {
+      clearInterval(_absState.timerId);
+      _absState.timerId = null;
+    }
+  }
+
+  function _renderAbsSession() {
+    if (!_absState) return;
+    const body = document.getElementById('abs-session-body');
+    const s = _absState.session;
+
+    if (_absState.phase === 'ready') {
+      body.innerHTML = `
+        <div class="abs-intro">
+          <div class="abs-intro-theme">${s.theme}</div>
+          <div class="abs-intro-focus text-muted">${s.focus}</div>
+          <div class="abs-intro-format">${s.format}</div>
+          <div class="abs-intro-phase">Phase : <strong>${s.phase}</strong></div>
+        </div>
+        <div class="abs-intro-list">
+          ${s.exercises.map((ex, i) => {
+            const w = ex.work.sec ? `${ex.work.sec}s` : `${ex.work.reps}r${ex.work.perSide ? '/côté' : ''}`;
+            return `<div class="abs-intro-row"><span class="abs-num">${i+1}</span><strong>${ex.name}</strong><span class="abs-work">${w}</span></div>`;
+          }).join('')}
+        </div>
+        <button class="btn btn-abs btn-abs-start" onclick="MuscuApp.startAbsSession()">▶ Démarrer</button>
+        <button class="btn btn-secondary" onclick="MuscuApp.closeAbsSession()" style="margin-top:8px">Annuler</button>
+      `;
+      return;
+    }
+
+    if (_absState.phase === 'done') {
+      const durationMin = _absState.startedAt
+        ? Math.round((Date.now() - _absState.startedAt) / 60000)
+        : '?';
+      const summary = s.rounds === 'AMRAP'
+        ? `${_absState.amrapRoundsCompleted} tours complets en 8 min`
+        : `${s.rounds} tours terminés`;
+      body.innerHTML = `
+        <div class="abs-done">
+          <div class="abs-done-icon">🎉</div>
+          <h3>Session terminée !</h3>
+          <p class="text-muted">${summary} · ${durationMin} min</p>
+          <p class="abs-done-encourage">Tu progresses jour après jour. Continue.</p>
+          <button class="btn btn-abs" onclick="MuscuApp.finishAbsSession()">Sauvegarder</button>
+        </div>
+      `;
+      return;
+    }
+
+    // Work or rest
+    const ex = s.exercises[_absState.exoIdx];
+    const totalExos = s.exercises.length;
+    const totalRounds = s.rounds === 'AMRAP' ? '∞' : s.rounds;
+    const remainingMs = _absState.timerEndsAt ? _absState.timerEndsAt - Date.now() : 0;
+    const remSec = Math.max(0, Math.ceil(remainingMs / 1000));
+    const mm = String(Math.floor(remSec / 60)).padStart(1, '0');
+    const ss = String(remSec % 60).padStart(2, '0');
+
+    // AMRAP overall countdown
+    let amrapHtml = '';
+    if (s.rounds === 'AMRAP' && _absState.amrapEndsAt) {
+      const amrapRem = Math.max(0, Math.ceil((_absState.amrapEndsAt - Date.now()) / 1000));
+      const amm = String(Math.floor(amrapRem / 60)).padStart(1, '0');
+      const ass = String(amrapRem % 60).padStart(2, '0');
+      amrapHtml = `<div class="abs-amrap-clock">AMRAP ${amm}:${ass} · ${_absState.amrapRoundsCompleted} tours</div>`;
+    }
+
+    if (_absState.phase === 'work') {
+      const info = MuscuExercises.getById(ex.exerciseId);
+      const w = ex.work;
+      const workDisplay = w.sec
+        ? `<div class="abs-timer-big">${mm}:${ss}</div>`
+        : `<div class="abs-reps-big">${w.reps}${w.perSide ? '/côté' : ''} reps</div>`;
+      const actionBtn = w.sec
+        ? `<button class="btn btn-abs btn-abs-next" onclick="MuscuApp.absSkipToRest()">Skip</button>`
+        : `<button class="btn btn-abs btn-abs-next" onclick="MuscuApp.absMarkDone()">✓ Fait — repos</button>`;
+
+      body.innerHTML = `
+        ${amrapHtml}
+        <div class="abs-progress">
+          <span>Tour ${_absState.round}/${totalRounds}</span>
+          <span>Exo ${_absState.exoIdx + 1}/${totalExos}</span>
+        </div>
+        <div class="abs-current-exo">
+          <div class="abs-exo-name">${ex.name}</div>
+          ${ex.notes ? `<div class="abs-exo-notes text-muted">${ex.notes}</div>` : ''}
+          ${info && info.videoUrl ? `<a href="${info.videoUrl}" target="_blank" class="abs-video">▶ Tuto vidéo</a>` : ''}
+        </div>
+        ${workDisplay}
+        ${actionBtn}
+        <button class="btn btn-ghost btn-sm" onclick="MuscuApp.absSkipExo()" style="margin-top:6px">Passer cet exo</button>
+      `;
+      return;
+    }
+
+    if (_absState.phase === 'rest' || _absState.phase === 'round_rest') {
+      const nextExo = _absState.phase === 'round_rest'
+        ? s.exercises[0]
+        : s.exercises[_absState.exoIdx];
+      const nextLabel = _absState.phase === 'round_rest'
+        ? `Tour ${_absState.round} — ${nextExo.name}`
+        : `Prochain : ${nextExo.name}`;
+      body.innerHTML = `
+        ${amrapHtml}
+        <div class="abs-progress">
+          <span>Tour ${_absState.round}/${totalRounds}</span>
+          <span>${_absState.phase === 'round_rest' ? 'Repos entre tours' : 'Repos'}</span>
+        </div>
+        <div class="abs-rest-label">REPOS</div>
+        <div class="abs-timer-big abs-rest-timer">${mm}:${ss}</div>
+        <div class="abs-next text-muted">${nextLabel}</div>
+        <button class="btn btn-abs btn-abs-next" onclick="MuscuApp.absSkipRest()">Skip repos</button>
+      `;
+      return;
+    }
+  }
+
+  function startAbsSession() {
+    if (!_absState) return;
+    _absState.startedAt = Date.now();
+    if (_absState.session.rounds === 'AMRAP') {
+      _absState.amrapEndsAt = Date.now() + (_absState.session.duration || 480) * 1000;
+    }
+    _absStartCurrentExo();
+  }
+
+  function _absStartCurrentExo() {
+    const ex = _absState.session.exercises[_absState.exoIdx];
+    _absState.phase = 'work';
+    _stopAbsTimer();
+    if (ex.work.sec) {
+      const sec = ex.work.perSide ? ex.work.sec * 2 : ex.work.sec;
+      _absState.timerEndsAt = Date.now() + sec * 1000;
+      _absState.timerId = setInterval(_absTick, 250);
+    } else {
+      _absState.timerEndsAt = null;
+    }
+    _renderAbsSession();
+  }
+
+  function _absTick() {
+    if (!_absState) return;
+    // AMRAP global timeout
+    if (_absState.session.rounds === 'AMRAP' && _absState.amrapEndsAt && Date.now() >= _absState.amrapEndsAt) {
+      _stopAbsTimer();
+      _absState.phase = 'done';
+      _playBeep();
+      _renderAbsSession();
+      return;
+    }
+    if (_absState.timerEndsAt && Date.now() >= _absState.timerEndsAt) {
+      if (_absState.phase === 'work') {
+        _playBeep();
+        if (navigator.vibrate) navigator.vibrate(150);
+        _absStartRest();
+      } else if (_absState.phase === 'rest' || _absState.phase === 'round_rest') {
+        _playBeep();
+        if (navigator.vibrate) navigator.vibrate(80);
+        _absAdvanceFromRest();
+      }
+      return;
+    }
+    _renderAbsSession();
+  }
+
+  function _absStartRest() {
+    const ex = _absState.session.exercises[_absState.exoIdx];
+    const lastInRound = _absState.exoIdx === _absState.session.exercises.length - 1;
+    const restSec = ex.rest || 15;
+    _stopAbsTimer();
+    if (restSec <= 0) {
+      _absAdvanceFromRest();
+      return;
+    }
+    _absState.phase = lastInRound ? 'round_rest' : 'rest';
+    _absState.timerEndsAt = Date.now() + restSec * 1000;
+    _absState.timerId = setInterval(_absTick, 250);
+    _renderAbsSession();
+  }
+
+  function _absAdvanceFromRest() {
+    _stopAbsTimer();
+    const lastInRound = _absState.exoIdx === _absState.session.exercises.length - 1;
+    if (lastInRound) {
+      // Round complete
+      if (_absState.session.rounds === 'AMRAP') {
+        _absState.amrapRoundsCompleted++;
+        _absState.exoIdx = 0;
+        _absState.round++;
+        _absStartCurrentExo();
+      } else if (_absState.round >= _absState.session.rounds) {
+        _absState.phase = 'done';
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
+        _playBeep();
+        _renderAbsSession();
+      } else {
+        _absState.round++;
+        _absState.exoIdx = 0;
+        _absStartCurrentExo();
+      }
+    } else {
+      _absState.exoIdx++;
+      _absStartCurrentExo();
+    }
+  }
+
+  function absMarkDone() { _absStartRest(); }
+  function absSkipToRest() { _absStartRest(); }
+  function absSkipRest() { _absAdvanceFromRest(); }
+  function absSkipExo() {
+    _stopAbsTimer();
+    const lastInRound = _absState.exoIdx === _absState.session.exercises.length - 1;
+    if (lastInRound) { _absAdvanceFromRest(); }
+    else { _absState.exoIdx++; _absStartCurrentExo(); }
+  }
+
+  function finishAbsSession() {
+    if (!_absState) return;
+    const s = _absState.session;
+    const completed = s.rounds === 'AMRAP'
+      ? `AMRAP ${_absState.amrapRoundsCompleted} tours`
+      : `${s.rounds} tours`;
+    MuscuStorage.saveSession({
+      date: s.date,
+      type: 'abs',
+      theme: s.theme,
+      phase: s.phase,
+      rounds: s.rounds === 'AMRAP' ? _absState.amrapRoundsCompleted : s.rounds,
+      format: s.format,
+      durationMin: Math.round((Date.now() - _absState.startedAt) / 60000),
+      exercises: s.exercises.map(ex => ({
+        exerciseId: ex.exerciseId,
+        sets: [], // Abs sessions track at session level, not per-set
+      })),
+      notes: completed,
+    });
+    _toast('Session abdos sauvegardée — 🔥', 'success');
+    document.getElementById('abs-session-modal').style.display = 'none';
+    _absState = null;
+    renderDashboard();
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  REST TIMER (chrono inter-séries)
+  // ════════════════════════════════════════════════════════════
+  let _restState = null; // { endsAt, duration, exName, intervalId }
+
+  function _startRestTimer(durationSec, exName) {
+    _stopRestTimer();
+    _restState = {
+      endsAt: Date.now() + durationSec * 1000,
+      duration: durationSec,
+      exName: exName || '',
+      intervalId: null,
+    };
+    _renderRestTimer();
+    _restState.intervalId = setInterval(_tickRestTimer, 250);
+  }
+
+  function _tickRestTimer() {
+    if (!_restState) return;
+    const remainingMs = _restState.endsAt - Date.now();
+    if (remainingMs <= 0) {
+      _onRestComplete();
+    } else {
+      _renderRestTimer();
+    }
+  }
+
+  function _renderRestTimer() {
+    if (!_restState) return;
+    let el = document.getElementById('rest-timer-bar');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'rest-timer-bar';
+      el.className = 'rest-timer-bar';
+      document.body.appendChild(el);
+    }
+    const remainingMs = Math.max(0, _restState.endsAt - Date.now());
+    const remSec = Math.ceil(remainingMs / 1000);
+    const mm = String(Math.floor(remSec / 60)).padStart(1, '0');
+    const ss = String(remSec % 60).padStart(2, '0');
+    const pct = Math.max(0, Math.min(100, (remainingMs / (_restState.duration * 1000)) * 100));
+
+    el.innerHTML = `
+      <div class="rest-progress" style="width:${pct}%"></div>
+      <div class="rest-content">
+        <div class="rest-label">
+          <span class="rest-icon">⏱</span>
+          <span class="rest-time">${mm}:${ss}</span>
+          <span class="rest-ex text-muted text-sm">${_escapeHtml(_restState.exName)}</span>
+        </div>
+        <div class="rest-actions">
+          <button class="btn-rest" onclick="MuscuApp.addRestTime(15)">+15s</button>
+          <button class="btn-rest" onclick="MuscuApp.addRestTime(-15)">−15s</button>
+          <button class="btn-rest btn-rest-skip" onclick="MuscuApp.skipRest()">Skip</button>
+        </div>
+      </div>`;
+  }
+
+  function _onRestComplete() {
+    _playBeep();
+    if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+    _toast('Repos terminé — let\'s go !', 'success');
+    _stopRestTimer();
+  }
+
+  function _stopRestTimer() {
+    if (_restState && _restState.intervalId) clearInterval(_restState.intervalId);
+    _restState = null;
+    const el = document.getElementById('rest-timer-bar');
+    if (el) el.remove();
+  }
+
+  function skipRest() { _stopRestTimer(); }
+  function addRestTime(deltaSec) {
+    if (!_restState) return;
+    _restState.endsAt += deltaSec * 1000;
+    if (_restState.endsAt <= Date.now()) { _onRestComplete(); return; }
+    _restState.duration = Math.max(_restState.duration, Math.ceil((_restState.endsAt - Date.now()) / 1000));
+    _renderRestTimer();
+  }
+
+  function _playBeep() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.65);
+      // Second beep
+      setTimeout(() => {
+        try {
+          const o2 = ctx.createOscillator();
+          const g2 = ctx.createGain();
+          o2.connect(g2); g2.connect(ctx.destination);
+          o2.frequency.value = 1320;
+          g2.gain.setValueAtTime(0.001, ctx.currentTime);
+          g2.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime + 0.02);
+          g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+          o2.start(ctx.currentTime);
+          o2.stop(ctx.currentTime + 0.45);
+        } catch (e) {}
+      }, 250);
+    } catch (e) {}
+  }
+
+  // ════════════════════════════════════════════════════════════
   //  FEEDBACK (post-session)
   // ════════════════════════════════════════════════════════════
   let _lastSavedSession = null;
@@ -1103,6 +1639,9 @@ const MuscuApp = (() => {
     renderDashboard, renderLog, renderHistory, renderCoach, renderExerciseBank,
     showDayDetail, closeDayDetail,
     addSet, removeSet, updateSet, removeExercise,
+    validateSet, unvalidateSet, skipRest, addRestTime,
+    showAbsSession, closeAbsSession, startAbsSession, absMarkDone,
+    absSkipToRest, absSkipRest, absSkipExo, finishAbsSession,
     showAddExercise, closeAddExercise, filterExercises, pickExercise,
     saveSession, updateRpeDisplay,
     setHistoryFilter, showSessionDetail, closeSessionDetail, deleteSessionConfirm,

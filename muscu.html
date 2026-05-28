@@ -72,6 +72,11 @@
         <div id="dash-plan"></div>
       </div>
 
+      <!-- Abs of the day -->
+      <div class="card abs-card" id="dash-abs-card">
+        <div id="dash-abs-content"></div>
+      </div>
+
       <!-- PRs -->
       <div class="card">
         <div class="card-title">Records personnels (1RM)</div>
@@ -382,6 +387,17 @@
         </select>
         <span class="text-muted text-sm" style="margin-top:4px;display:block">Opus = meilleur mais plus cher. Ton Worker doit le supporter.</span>
       </div>
+
+      <div class="input-group toggle-row">
+        <label for="set-finisher">
+          <span>🔥 Finisher Poignet + Avant-bras auto</span>
+          <span class="text-muted text-sm" style="display:block">Farmers carry, wrist curl, dead hang en fin de séance (~5 min). Les abdos = programme séparé quotidien.</span>
+        </label>
+        <label class="switch">
+          <input type="checkbox" id="set-finisher" checked>
+          <span class="slider-toggle"></span>
+        </label>
+      </div>
       <div class="input-group">
         <label>Poids (kg)</label>
         <input type="number" id="set-weight" step="0.5">
@@ -450,6 +466,17 @@
 
       <button class="btn" onclick="MuscuApp.saveFeedback()">Envoyer le feedback</button>
       <button class="btn btn-secondary" onclick="MuscuApp.skipFeedback()" style="margin-top:6px">Passer</button>
+    </div>
+  </div>
+
+  <!-- Abs Session Modal -->
+  <div class="modal" id="abs-session-modal">
+    <div class="modal-content abs-session-content">
+      <div class="modal-header">
+        <h2 id="abs-modal-title">Abdos du jour</h2>
+        <button class="modal-close" onclick="MuscuApp.closeAbsSession()">×</button>
+      </div>
+      <div id="abs-session-body"></div>
     </div>
   </div>
 

@@ -227,6 +227,54 @@ const MuscuExercises = (() => {
       cues: ['Sur le coude, corps en ligne droite', 'Hanches hautes, ne pas s\'affaisser', 'Serrer les fessiers et les obliques', 'Tenir 30-45s par côté', 'Variante : lever la jambe du haut'],
       mistakes: ['Hanches qui tombent', 'Corps pas aligné', 'Respiration bloquée'] },
 
+    { id: 'v_up', name: 'V-Ups', category: 'core', subcategory: 'abs', equipment: 'bodyweight',
+      hyrox: ['all'], primary: ['abdominaux'], secondary: ['fléchisseurs hanches'],
+      videoUrl: 'https://www.youtube.com/watch?v=iP2fjvG0g3w',
+      cues: ['Allongé sur le dos, bras tendus derrière la tête', 'Lever simultanément jambes et torse en forme de V', 'Toucher les pieds avec les mains', 'Contrôler la descente, pas se laisser tomber', 'Excellent transfert vers les sit-ups Hyrox'],
+      mistakes: ['Mouvement balistique', 'Pieds qui plient', 'Tirer avec le cou'] },
+
+    { id: 'hollow_hold', name: 'Hollow Body Hold', category: 'core', subcategory: 'stability', equipment: 'bodyweight',
+      hyrox: ['all'], primary: ['abdominaux','core'], secondary: [],
+      videoUrl: 'https://www.youtube.com/watch?v=LlDNef_Ztsc',
+      cues: ['Allongé, bas du dos PLAQUÉ au sol (pas d\'espace)', 'Lever jambes et épaules de quelques cm', 'Bras tendus derrière la tête (ou sur le torse pour faciliter)', 'Trembler = c\'est bon signe', 'Tenir 20-40s, fondation des abdos gym'],
+      mistakes: ['Bas du dos qui décolle', 'Jambes trop hautes', 'Respiration bloquée'] },
+
+    { id: 'dragon_flag', name: 'Dragon Flag', category: 'core', subcategory: 'abs', equipment: 'bench',
+      hyrox: [], primary: ['abdominaux','core'], secondary: ['dos'],
+      videoUrl: 'https://www.youtube.com/watch?v=pvz7k1ehu_Y',
+      cues: ['Allongé sur banc, agripper derrière la tête', 'Lever tout le corps (épaules → pieds) en ligne droite', 'Descendre LENTEMENT en gardant la ligne', 'Ne pas plier les hanches', 'Avancé — progresser avec genoux pliés d\'abord'],
+      mistakes: ['Plier les hanches', 'Descendre trop vite', 'Cambrer le dos'] },
+
+    { id: 'bicycle_crunch', name: 'Bicycle Crunch', category: 'core', subcategory: 'rotation', equipment: 'bodyweight',
+      hyrox: ['rowing'], primary: ['abdominaux','obliques'], secondary: [],
+      videoUrl: 'https://www.youtube.com/watch?v=Iwyvozckjak',
+      cues: ['Allongé, mains derrière la tête (ne pas tirer)', 'Coude vers genou opposé en alternance', 'Jambe opposée tendue parallèle au sol', 'Mouvement contrôlé, pas la vitesse', 'Bas du dos plaqué au sol'],
+      mistakes: ['Tirer sur la nuque', 'Mouvement trop rapide', 'Jambes qui rebondissent'] },
+
+    { id: 'flutter_kicks', name: 'Flutter Kicks', category: 'core', subcategory: 'abs', equipment: 'bodyweight',
+      hyrox: ['all'], primary: ['abdominaux','fléchisseurs hanches'], secondary: [],
+      videoUrl: 'https://www.youtube.com/watch?v=eEbCJBb5KCw',
+      cues: ['Allongé, mains sous les fessiers ou sur les côtés', 'Lever les pieds à ~20cm du sol', 'Alternance verticale rapide des jambes', 'Bas du dos plaqué', 'Tenir le temps prescrit (20-40s)'],
+      mistakes: ['Bas du dos qui décolle', 'Jambes trop hautes (perte de tension)', 'Bloquer la respiration'] },
+
+    { id: 'mountain_climber', name: 'Mountain Climbers', category: 'core', subcategory: 'dynamic', equipment: 'bodyweight',
+      hyrox: ['burpees','all'], primary: ['core','abdominaux'], secondary: ['épaules','quadriceps'],
+      videoUrl: 'https://www.youtube.com/watch?v=nmwgirgXLYM',
+      cues: ['Position planche haute, mains sous épaules', 'Ramener les genoux vers la poitrine en alternance', 'Rythme rapide mais hanches stables', 'Hybride core + cardio', 'Excellent finisher'],
+      mistakes: ['Hanches qui montent', 'Pieds qui touchent fort le sol', 'Épaules en avant des mains'] },
+
+    { id: 'cable_woodchopper', name: 'Cable Woodchopper', category: 'core', subcategory: 'rotation', equipment: 'cable',
+      hyrox: ['all'], primary: ['obliques','core'], secondary: ['épaules','dos'],
+      videoUrl: 'https://www.youtube.com/watch?v=N6_8jpFjQUw',
+      cues: ['Câble en haut, debout de côté', 'Tirer en diagonale du haut vers la hanche opposée', 'Rotation depuis le tronc, pas les bras', 'Pivoter sur le pied arrière', 'Hauteur basse = travailler dos haut → bas'],
+      mistakes: ['Tirer avec les bras seulement', 'Pas de pivot des pieds', 'Charge trop lourde'] },
+
+    { id: 'toes_to_bar', name: 'Toes to Bar', category: 'core', subcategory: 'abs', equipment: 'bodyweight',
+      hyrox: ['all'], primary: ['abdominaux','dos','grip'], secondary: ['avant-bras'],
+      videoUrl: 'https://www.youtube.com/watch?v=6gOLF_tFLEU',
+      cues: ['Suspendu à la barre, kip ou strict', 'Lever les jambes tendues jusqu\'à toucher la barre avec les pieds', 'Contracter dos haut + core simultanément', 'Mouvement complet, pas de demi-rep', 'Variante facile : knee-to-elbow'],
+      mistakes: ['Trop de balancier', 'Genoux pliés (kipping non maîtrisé)', 'Grip qui lâche avant les abdos'] },
+
     // ─── EXPLOSIVE / HYROX-SPECIFIC ─────────────────────────
     { id: 'box_jump', name: 'Box Jumps', category: 'explosive', subcategory: 'plyo', equipment: 'box',
       hyrox: ['burpees','sled_push'], primary: ['quadriceps','fessiers'], secondary: ['mollets'],
@@ -874,6 +922,168 @@ const MuscuExercises = (() => {
     return TEMPLATES[daysPerWeek] || TEMPLATES[4];
   }
 
+  // ── Finisher block (auto-injected end of each day) ───────────
+  // Travail poignet/avant-bras uniquement (~5 min). Abdos = programme séparé quotidien.
+  const FINISHER_BLOCK = {
+    blockName: '🔥 Finisher Poignet + Avant-bras',
+    exercises: [
+      { id: 'farmers_carry', sets: 2, reps: '30m', rest: 30, notes: 'Grip max, race weight ou +4kg' },
+      { id: 'wrist_curl',    sets: 2, reps: 15,    rest: 30, notes: 'Avant-bras, mouvement lent et contrôlé' },
+      { id: 'dead_hang',     sets: 2, reps: '30s', rest: 45, notes: 'Grip statique — fin de séance' },
+    ],
+  };
+
+  function getFinisherBlock() { return FINISHER_BLOCK; }
+
+  // ── 7-day rotating ABS program ───────────────────────────────
+  // Format: circuit 3 rounds, ~8-10 min. Progresses by week phase.
+  // Day index 0=Mon, 1=Tue, ... 6=Sun
+  const ABS_PROGRAM = [
+    {
+      day: 0, theme: 'Lower abs + 🛞 Roulette',
+      focus: 'Bas du ventre, transverse, anti-extension — intensif',
+      format: '4 tours · 10s repos entre exos · 45s entre tours · ~10 min',
+      rounds: 4,
+      exercises: [
+        { id: 'ab_wheel',           work: { reps: 10, scale: { reps: 6 } }, rest: 10, notes: '🛞 Genoux, amplitude max, dos NEUTRE' },
+        { id: 'hanging_leg_raise',  work: { reps: 12, scale: { reps: 8 } }, rest: 10, notes: 'Rouler le bassin en haut, pas de balancier' },
+        { id: 'flutter_kicks',      work: { sec: 40 }, rest: 10, notes: 'Bas du dos PLAQUÉ, jambes ~20cm sol' },
+        { id: 'plank',              work: { sec: 60 }, rest: 45, notes: 'Gainage strict — fin de tour' },
+      ],
+    },
+    {
+      day: 1, theme: 'Gainage anti-rotation',
+      focus: 'Stabilité latérale, copenhagen, transferts portage Hyrox',
+      format: '4 tours · 10s repos · 45s entre tours · ~10 min',
+      rounds: 4,
+      exercises: [
+        { id: 'pallof_press',       work: { reps: 12, perSide: true }, rest: 10, notes: 'Résister à la rotation — tenir 2s bras tendus' },
+        { id: 'side_plank',         work: { sec: 40, perSide: true }, rest: 10, notes: 'Par côté · hanches HAUTES, ligne droite' },
+        { id: 'copenhagen_plank',   work: { sec: 25, perSide: true, scale: { id: 'side_plank', sec: 30, perSide: true } }, rest: 10, notes: 'Par côté · jambe haut sur banc · pour adducteurs+obliques' },
+        { id: 'bicycle_crunch',     work: { reps: 24 }, rest: 45, notes: 'Coude → genou opposé · contrôlé — fin de tour' },
+      ],
+    },
+    {
+      day: 2, theme: 'Hollow + abdo gym',
+      focus: 'Force statique gymnastique, V-ups, hollow',
+      format: '4 tours · 10s repos · 45s entre tours · ~10 min',
+      rounds: 4,
+      exercises: [
+        { id: 'hollow_hold',        work: { sec: 40, scale: { sec: 25 } }, rest: 10, notes: 'Bas du dos PLAQUÉ — trembler = signal correct' },
+        { id: 'v_up',               work: { reps: 15, scale: { reps: 10 } }, rest: 10, notes: 'Toucher pieds · descente lente' },
+        { id: 'dead_bug',           work: { reps: 12, perSide: true }, rest: 10, notes: 'TRÈS lent · dos plaqué' },
+        { id: 'ab_wheel',           work: { reps: 8 }, rest: 45, notes: '🛞 Lent — fin de tour' },
+      ],
+    },
+    {
+      day: 3, theme: 'Anti-extension lourd',
+      focus: 'Roulette + plank lesté + leg raises strict',
+      format: '4 tours · 10s repos · 45s entre tours · ~10 min',
+      rounds: 4,
+      exercises: [
+        { id: 'ab_wheel',           work: { reps: 12, scale: { reps: 8 } }, rest: 10, notes: '🛞 Pleine amplitude, contrôle parfait' },
+        { id: 'hollow_hold',        work: { sec: 45 }, rest: 10, notes: 'Bas du dos plaqué — ne pas céder' },
+        { id: 'plank',              work: { sec: 75 }, rest: 10, notes: 'Plank lesté (sac, plaque) si possible' },
+        { id: 'hanging_leg_raise',  work: { reps: 10 }, rest: 45, notes: 'STRICT · zéro balancier — fin de tour' },
+      ],
+    },
+    {
+      day: 4, theme: 'Dynamic AMRAP 10 min',
+      focus: 'Endurance core + cardio · conditionnement Hyrox',
+      format: 'AMRAP 10 min — enchaîner sans repos, compter les tours',
+      rounds: 'AMRAP',
+      duration: 600,
+      exercises: [
+        { id: 'mountain_climber',   work: { reps: 40 }, rest: 0, notes: '20 par jambe · rapide mais hanches stables' },
+        { id: 'v_up',               work: { reps: 12 }, rest: 0, notes: 'Toucher pieds' },
+        { id: 'flutter_kicks',      work: { sec: 30 }, rest: 0, notes: 'Bas du dos plaqué' },
+        { id: 'bicycle_crunch',     work: { reps: 24 }, rest: 0, notes: 'Coude → genou opposé' },
+        { id: 'plank',              work: { sec: 30 }, rest: 0, notes: 'Reset core — fin du tour' },
+      ],
+    },
+    {
+      day: 5, theme: 'Mix complet + roulette',
+      focus: 'Tour de tout : haut/bas/obliques/anti-rotation',
+      format: '4 tours · 10s repos · 45s entre tours · ~10 min',
+      rounds: 4,
+      exercises: [
+        { id: 'ab_wheel',           work: { reps: 10 }, rest: 10, notes: '🛞 Amplitude max' },
+        { id: 'pallof_press',       work: { reps: 12, perSide: true }, rest: 10, notes: 'Tenir 2s · résister' },
+        { id: 'toes_to_bar',        work: { reps: 10, scale: { id: 'hanging_leg_raise', reps: 12 } }, rest: 10, notes: 'Strict, pas de kip · scale = leg raise' },
+        { id: 'side_plank',         work: { sec: 35, perSide: true }, rest: 45, notes: 'Par côté · gainage — fin de tour' },
+      ],
+    },
+    {
+      day: 6, theme: 'Gainage récup contrôlée',
+      focus: 'Statique long, respiration, fondation profonde',
+      format: '3 tours · 20s repos · 45s entre tours · ~10 min',
+      rounds: 3,
+      exercises: [
+        { id: 'plank',              work: { sec: 75 }, rest: 20, notes: 'Respiration calme · ligne parfaite' },
+        { id: 'hollow_hold',        work: { sec: 40 }, rest: 20, notes: 'Tension contrôlée' },
+        { id: 'side_plank',         work: { sec: 35, perSide: true }, rest: 20, notes: 'Par côté · hanches hautes' },
+        { id: 'dead_bug',           work: { reps: 12, perSide: true }, rest: 45, notes: 'TRÈS lent — fin de tour' },
+      ],
+    },
+  ];
+
+  /**
+   * Get the abs session for a given date + week number.
+   * Progresses reps/duration based on weekNum phase.
+   */
+  function getAbsSession(date, weekNum) {
+    const d = date ? new Date(date) : new Date();
+    // JS: Sun=0, Mon=1, ..., Sat=6. We want Mon=0 ... Sun=6.
+    const dayIdx = (d.getDay() + 6) % 7;
+    const base = ABS_PROGRAM[dayIdx];
+    const phase = _getAbsPhase(weekNum || 1);
+
+    const exercises = base.exercises.map(ex => {
+      const info = getById(ex.id);
+      const work = _progressAbsWork(ex.work, phase);
+      return {
+        exerciseId: ex.id,
+        name: info ? info.name : ex.id,
+        category: info ? info.category : 'core',
+        videoUrl: info ? info.videoUrl : null,
+        work,
+        rest: ex.rest,
+        notes: ex.notes || '',
+      };
+    });
+
+    return {
+      dayIdx,
+      dayLabel: ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'][dayIdx],
+      theme: base.theme,
+      focus: base.focus,
+      format: base.format,
+      rounds: base.rounds,
+      duration: base.duration || null,
+      phase: phase.label,
+      exercises,
+      date: d.toISOString().slice(0, 10),
+    };
+  }
+
+  function _getAbsPhase(weekNum) {
+    if (weekNum <= 2) return { label: 'Adaptation', repMul: 1.0, secMul: 1.0 };
+    if (weekNum <= 5) return { label: 'Construction', repMul: 1.2, secMul: 1.15 };
+    if (weekNum <= 8) return { label: 'Force', repMul: 1.4, secMul: 1.3 };
+    return { label: 'Maintenance avancée', repMul: 1.5, secMul: 1.4 };
+  }
+
+  function _progressAbsWork(work, phase) {
+    const result = { ...work };
+    if (typeof work.reps === 'number') {
+      result.reps = Math.round(work.reps * phase.repMul);
+    }
+    if (typeof work.sec === 'number') {
+      result.sec = Math.round(work.sec * phase.secMul / 5) * 5; // round to 5s
+    }
+    return result;
+  }
+
   /**
    * Generate a week plan based on profile, week number, and past performance
    */
@@ -881,6 +1091,11 @@ const MuscuExercises = (() => {
     const template = getTemplate(profile.daysPerWeek || 4);
     const isDeload = weekNum > 1 && weekNum % 4 === 0;
     const prs = MuscuStorage.getPRs();
+
+    // Finisher toggle (default ON)
+    const settings = (typeof MuscuStorage !== 'undefined' && MuscuStorage.getSettings)
+      ? MuscuStorage.getSettings() : {};
+    const finisherEnabled = settings.finisherEnabled !== false;
 
     const plan = {
       week: weekNum,
@@ -914,6 +1129,27 @@ const MuscuExercises = (() => {
             });
           });
         });
+
+        // Inject finisher (poignet/avant-bras + abdos) at end of each day
+        if (finisherEnabled) {
+          FINISHER_BLOCK.exercises.forEach(exDef => {
+            const info = getById(exDef.id);
+            exercises.push({
+              exerciseId: exDef.id,
+              name: info ? info.name : exDef.id,
+              category: info ? info.category : 'core',
+              sets: isDeload ? Math.max(1, exDef.sets - 1) : exDef.sets,
+              reps: exDef.reps,
+              suggestedWeight: null,
+              restSec: exDef.rest || 45,
+              notes: exDef.notes || '',
+              blockName: FINISHER_BLOCK.blockName,
+              isFinisher: true,
+              isDeload,
+            });
+          });
+        }
+
         return {
           dayIndex,
           label: day.label,
@@ -1051,7 +1287,8 @@ const MuscuExercises = (() => {
 
   return {
     getAll, getById, getByCategory, getCategoryInfo, getCategories,
-    search, getTemplate, generateWeekPlan, getHyroxRelevance,
+    search, getTemplate, generateWeekPlan, getHyroxRelevance, getFinisherBlock,
+    getAbsSession,
     HYROX_STATIONS, DB,
   };
 })();

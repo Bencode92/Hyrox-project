@@ -171,6 +171,89 @@ const MuscuStorage = (() => {
     return Math.round(weight * (1 + reps / 30));
   }
 
+  // ── Next-load suggestion (RPE-based progression) ──────────
+  // Compound lifts get +2.5kg, isolation/accessory get +1.25kg.
+  const COMPOUND_IDS = new Set([
+    'back_squat','front_squat','deadlift','rdl','sumo_deadlift',
+    'bench_press','ohp','barbell_row','hip_thrust','thruster',
+    'power_clean','clean_press','push_press','romanian_deadlift',
+  ]);
+
+  function _isCompound(id) { return COMPOUND_IDS.has(id); }
+
+  /**
+   * Suggest next load for an exercise based on last logged session.
+   * Returns { weight, delta, reason, trend, lastWeight, lastRpe } or null if no history.
+   * Logic:
+   *   - Pain in last session             → -2.5kg, trend 'pain'
+   *   - RPE moy ≤ 7 & reps ≥ targetReps  → +2.5 (compound) / +1.25 (iso)
+   *   - RPE moy 7-8.5                    → maintien
+   *   - RPE moy ≥ 9 or reps shortfall    → -2.5 (compound) / -1.25 (iso)
+   */
+  function suggestNextLoad(exerciseId, targetReps) {
+    const sessions = getSessionsByExercise(exerciseId);
+    if (!sessions.length) return null;
+    const last = sessions[sessions.length - 1];
+    const exData = (last.exercises || []).find(e => e.exerciseId === exerciseId);
+    if (!exData || !exData.sets || !exData.sets.length) return null;
+
+    const workingSets = exData.sets.filter(s => s.weight > 0 && s.reps > 0);
+    if (!workingSets.length) return null;
+
+    const weights = workingSets.map(s => s.weight);
+    const lastWeight = Math.max(...weights);
+    const reps = workingSets.map(s => s.reps);
+    const avgReps = reps.reduce((a, b) => a + b, 0) / reps.length;
+
+    const rpeSets = workingSets.filter(s => s.rpe);
+    const lastRpe = rpeSets.length
+      ? rpeSets.reduce((s, r) => s + r.rpe, 0) / rpeSets.length
+      : (exData.rpe || last.globalRpe || null);
+
+    const hasPain = !!(last.painNotes && last.painNotes.trim());
+    const step = _isCompound(exerciseId) ? 2.5 : 1.25;
+    const targetNum = typeof targetReps === 'number' ? targetReps : null;
+    const repsHit = targetNum ? avgReps >= targetNum - 0.5 : true;
+
+    let delta = 0;
+    let trend = 'flat';
+    let reason = 'Maintien (RPE optimal)';
+
+    if (hasPain) {
+      delta = -step;
+      trend = 'pain';
+      reason = 'Douleur signalée — charge allégée';
+    } else if (lastRpe && lastRpe >= 9) {
+      delta = -step;
+      trend = 'down';
+      reason = `RPE ${lastRpe.toFixed(1)} trop élevé — déload`;
+    } else if (!repsHit) {
+      delta = -step;
+      trend = 'down';
+      reason = `Reps cible non atteintes (${avgReps.toFixed(0)}/${targetNum})`;
+    } else if (lastRpe && lastRpe <= 7) {
+      delta = step;
+      trend = 'up';
+      reason = `RPE ${lastRpe.toFixed(1)} confortable — progression`;
+    } else if (!lastRpe) {
+      // No RPE recorded → conservative micro-progression if reps hit
+      delta = repsHit ? step : 0;
+      trend = repsHit ? 'up' : 'flat';
+      reason = repsHit ? 'Progression conservatrice (pas de RPE)' : 'Maintien';
+    }
+
+    const weight = Math.max(0, Math.round((lastWeight + delta) / 2.5) * 2.5);
+    return {
+      weight,
+      delta: weight - lastWeight,
+      reason,
+      trend,
+      lastWeight,
+      lastRpe: lastRpe ? Math.round(lastRpe * 10) / 10 : null,
+      lastDate: last.date,
+    };
+  }
+
   function resetAll() {
     Object.values(KEYS).forEach(k => localStorage.removeItem(k));
   }
@@ -202,7 +285,7 @@ const MuscuStorage = (() => {
   return {
     getProfile, saveProfile,
     getSessions, saveSession, deleteSession, getSessionsByExercise, getRecentSessions,
-    getPRs, estimate1RM,
+    getPRs, estimate1RM, suggestNextLoad,
     getObjectives, setObjective, removeObjective,
     getWeekPlan, saveWeekPlan, clearWeekPlan,
     getSettings, saveSettings,
