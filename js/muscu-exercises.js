@@ -874,6 +874,20 @@ const MuscuExercises = (() => {
     return TEMPLATES[daysPerWeek] || TEMPLATES[4];
   }
 
+  // ── Finisher block (auto-injected end of each day) ───────────
+  // Travail poignet/avant-bras + abdos (8-10 min)
+  const FINISHER_BLOCK = {
+    blockName: '🔥 Finisher Poignet + Abdos',
+    exercises: [
+      { id: 'farmers_carry', sets: 2, reps: '30m', rest: 30, notes: 'Grip max, race weight ou +4kg' },
+      { id: 'wrist_curl',    sets: 2, reps: 15,    rest: 30, notes: 'Avant-bras, mouvement lent et contrôlé' },
+      { id: 'ab_wheel',      sets: 3, reps: 8,     rest: 45, notes: '🛞 Roulette — amplitude max, dos neutre' },
+      { id: 'hanging_leg_raise', sets: 2, reps: 10, rest: 45, notes: 'Rouler le bassin en haut' },
+    ],
+  };
+
+  function getFinisherBlock() { return FINISHER_BLOCK; }
+
   /**
    * Generate a week plan based on profile, week number, and past performance
    */
@@ -881,6 +895,11 @@ const MuscuExercises = (() => {
     const template = getTemplate(profile.daysPerWeek || 4);
     const isDeload = weekNum > 1 && weekNum % 4 === 0;
     const prs = MuscuStorage.getPRs();
+
+    // Finisher toggle (default ON)
+    const settings = (typeof MuscuStorage !== 'undefined' && MuscuStorage.getSettings)
+      ? MuscuStorage.getSettings() : {};
+    const finisherEnabled = settings.finisherEnabled !== false;
 
     const plan = {
       week: weekNum,
@@ -914,6 +933,27 @@ const MuscuExercises = (() => {
             });
           });
         });
+
+        // Inject finisher (poignet/avant-bras + abdos) at end of each day
+        if (finisherEnabled) {
+          FINISHER_BLOCK.exercises.forEach(exDef => {
+            const info = getById(exDef.id);
+            exercises.push({
+              exerciseId: exDef.id,
+              name: info ? info.name : exDef.id,
+              category: info ? info.category : 'core',
+              sets: isDeload ? Math.max(1, exDef.sets - 1) : exDef.sets,
+              reps: exDef.reps,
+              suggestedWeight: null,
+              restSec: exDef.rest || 45,
+              notes: exDef.notes || '',
+              blockName: FINISHER_BLOCK.blockName,
+              isFinisher: true,
+              isDeload,
+            });
+          });
+        }
+
         return {
           dayIndex,
           label: day.label,
@@ -1051,7 +1091,7 @@ const MuscuExercises = (() => {
 
   return {
     getAll, getById, getByCategory, getCategoryInfo, getCategories,
-    search, getTemplate, generateWeekPlan, getHyroxRelevance,
+    search, getTemplate, generateWeekPlan, getHyroxRelevance, getFinisherBlock,
     HYROX_STATIONS, DB,
   };
 })();
