@@ -294,25 +294,67 @@ const MuscuApp = (() => {
   function _renderWeekPlan(plan) {
     const container = document.getElementById('dash-plan');
     if (!plan || !plan.days) { container.innerHTML = '<p class="text-muted">Aucun plan</p>'; return; }
-    let html = '';
-    if (plan.aiGenerated) {
-      html += '<div class="ai-plan-badge">🤖 Plan créé par le Coach IA</div>';
-    }
-    html += plan.days.map((day, i) => {
-      const statusClass = day.status === 'done' ? 'plan-done' : day.status === 'skipped' ? 'plan-skipped' : '';
-      const statusIcon = day.status === 'done' ? '✓' : day.status === 'skipped' ? '✕' : (i + 1);
-      const catInfo = MuscuExercises.getCategoryInfo(day.exercises[0]?.category || 'lower');
-      const finisherBadge = day.finisher ? '<span class="finisher-mini">⚡ Finisher</span>' : '';
-      return `
-        <div class="plan-day-card ${statusClass}" onclick="MuscuApp.showDayDetail(${i})">
-          <div class="plan-day-num" style="background:${catInfo.color}20;color:${catInfo.color}">${statusIcon}</div>
-          <div class="plan-day-info">
-            <strong>${day.label}</strong>
-            <span class="text-muted text-sm">${day.exercises.length} exercices — ${day.focus} ${finisherBadge}</span>
-          </div>
+
+    // Find next pending day (skip done + skipped)
+    const nextIdx = plan.days.findIndex(d => d.status !== 'done' && d.status !== 'skipped');
+    const doneCount = plan.days.filter(d => d.status === 'done').length;
+    const skippedCount = plan.days.filter(d => d.status === 'skipped').length;
+    const totalDays = plan.days.length;
+
+    if (nextIdx === -1) {
+      container.innerHTML = `
+        <div class="all-done-card">
+          <div class="all-done-icon">🎉</div>
+          <div class="all-done-title">Toutes les séances de la semaine sont faites</div>
+          <div class="all-done-stats text-muted text-sm">${doneCount} validée${doneCount > 1 ? 's' : ''}${skippedCount ? ` · ${skippedCount} skip` : ''} sur ${totalDays}</div>
         </div>`;
+      return;
+    }
+
+    const day = plan.days[nextIdx];
+    const catInfo = MuscuExercises.getCategoryInfo(day.exercises[0]?.category || 'lower');
+    const preview = day.exercises.slice(0, 5).map(e => {
+      const star = e.isFinisher ? '🔥' : '•';
+      return `<div class="hero-preview-row">${star} <strong>${e.name}</strong> <span class="text-muted">${e.sets}×${e.reps}</span></div>`;
     }).join('');
-    container.innerHTML = html;
+    const moreCount = Math.max(0, day.exercises.length - 5);
+    const aiBadge = plan.aiGenerated ? '<span class="hero-ai-badge">🤖 IA</span>' : '';
+
+    container.innerHTML = `
+      <div class="next-session-hero" style="--cat-color:${catInfo.color}">
+        <div class="hero-top">
+          <div class="hero-day-num">${nextIdx + 1}</div>
+          <div class="hero-info">
+            <div class="hero-day-label">${day.label} ${aiBadge}</div>
+            <div class="hero-day-focus text-muted">${day.focus}</div>
+          </div>
+          <div class="hero-exos-count">${day.exercises.length}<span>exos</span></div>
+        </div>
+        <div class="hero-preview">
+          ${preview}
+          ${moreCount ? `<div class="text-muted text-sm" style="padding-left:14px;margin-top:4px">+ ${moreCount} autres…</div>` : ''}
+        </div>
+        <button class="btn btn-hero-start" onclick="MuscuApp.startWorkout(${nextIdx})">▶ COMMENCER LA SÉANCE</button>
+        <div class="hero-actions-row">
+          <button class="btn btn-sm btn-ghost" onclick="MuscuApp.showDayDetail(${nextIdx})">Détail complet</button>
+          <button class="btn btn-sm btn-ghost" onclick="MuscuApp.skipDay(${nextIdx})">Skip ce jour</button>
+        </div>
+      </div>
+      <div class="hero-week-progress text-muted text-sm">
+        <span class="hero-progress-dot ${doneCount > 0 ? 'on' : ''}"></span>
+        Semaine : ${doneCount}/${totalDays} séances faites${skippedCount ? ` · ${skippedCount} skip` : ''}
+      </div>
+    `;
+  }
+
+  function skipDay(dayIdx) {
+    if (!confirm('Marquer ce jour comme passé ? La séance suivante apparaîtra.')) return;
+    const plan = MuscuStorage.getWeekPlan();
+    if (!plan || !plan.days[dayIdx]) return;
+    plan.days[dayIdx].status = 'skipped';
+    MuscuStorage.saveWeekPlan(plan);
+    renderDashboard();
+    _toast('Jour skippé', 'info');
   }
 
   function _renderPRCards(prs, objectives) {
@@ -1966,6 +2008,7 @@ const MuscuApp = (() => {
     showDayDetail, closeDayDetail,
     addSet, removeSet, updateSet, removeExercise,
     validateSet, unvalidateSet, skipRest, addRestTime,
+    skipDay,
     showAbsSession, closeAbsSession, startAbsSession, absMarkDone,
     absSkipToRest, absSkipRest, absSkipExo, finishAbsSession,
     // Workout in progress (mode séance guidée)
