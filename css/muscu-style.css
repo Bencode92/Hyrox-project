@@ -1386,6 +1386,22 @@ textarea { resize: vertical; min-height: 60px; }
   background: rgba(0,212,170,0.25);
   border-color: #00d4aa;
 }
+.streak-dot.streak-rest {
+  background: rgba(255,255,255,0.02);
+  border-style: dashed;
+  color: rgba(255,255,255,0.4);
+}
+
+/* Rest day card variants */
+.abs-card-title.abs-card-recup { color: #00a8ff; }
+.abs-card-title.abs-card-off-total { color: #8892a8; }
+.abs-rest-tip {
+  background: rgba(255,255,255,0.03);
+  border-left: 2px solid rgba(0,168,255,0.4);
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin: 10px 0;
+}
 
 /* Big "lancer" button */
 .btn-abs {

@@ -213,29 +213,50 @@ const MuscuApp = (() => {
     const today = new Date().toISOString().slice(0, 10);
     const session = MuscuExercises.getAbsSession(today, weekNum);
 
-    // Already done today?
+    // Last 7 days streak (also marks rest days)
     const sessions = MuscuStorage.getSessions();
-    const doneToday = sessions.some(s => s.type === 'abs' && s.date === today);
-
-    // Last 7 days streak
     const last7 = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
       const ds = d.toISOString().slice(0, 10);
       const done = sessions.some(s => s.type === 'abs' && s.date === ds);
-      last7.push({ date: ds, done, day: ['L','M','M','J','V','S','D'][(d.getDay() + 6) % 7] });
+      const dayAbs = MuscuExercises.getAbsSession(ds, weekNum);
+      last7.push({
+        date: ds, done,
+        isRest: !!dayAbs.rest,
+        day: ['L','M','M','J','V','S','D'][(d.getDay() + 6) % 7],
+      });
+    }
+    const streakHtml = last7.map(d => `
+      <div class="streak-dot ${d.done ? 'streak-done' : ''} ${d.isRest ? 'streak-rest' : ''} ${d.date === today ? 'streak-today' : ''}" title="${d.date}">
+        <span>${d.day}</span>
+      </div>`).join('');
+
+    // ── REST DAY ──
+    if (session.rest) {
+      const icon = session.kind === 'off_total' ? '🛌' : '☕';
+      const cardCls = session.kind === 'off_total' ? 'abs-card-off-total' : 'abs-card-recup';
+      container.innerHTML = `
+        <div class="abs-card-header">
+          <div>
+            <div class="abs-card-title ${cardCls}">${icon} ${session.theme} — ${session.dayLabel}</div>
+            <div class="abs-card-theme">${session.focus}</div>
+          </div>
+          <div class="abs-card-phase">${session.phase}</div>
+        </div>
+        ${session.tip ? `<div class="abs-rest-tip text-muted text-sm">💡 ${session.tip}</div>` : ''}
+        <div class="abs-streak">${streakHtml}</div>
+      `;
+      return;
     }
 
+    // ── WORKING DAY ──
+    const doneToday = sessions.some(s => s.type === 'abs' && s.date === today);
     const previewExos = session.exercises.map(ex => {
       const work = ex.work.sec ? `${ex.work.sec}s` : `${ex.work.reps}r${ex.work.perSide ? '/côté' : ''}`;
       return `<span class="abs-exo-pill">${ex.name} <em>${work}</em></span>`;
     }).join('');
-
-    const streakHtml = last7.map(d => `
-      <div class="streak-dot ${d.done ? 'streak-done' : ''} ${d.date === today ? 'streak-today' : ''}" title="${d.date}">
-        <span>${d.day}</span>
-      </div>`).join('');
 
     container.innerHTML = `
       <div class="abs-card-header">
@@ -1198,6 +1219,10 @@ const MuscuApp = (() => {
     const weekNum = MuscuStorage.getWeekNumber();
     const today = new Date().toISOString().slice(0, 10);
     const session = MuscuExercises.getAbsSession(today, weekNum);
+    if (session.rest) {
+      _toast(session.kind === 'off_total' ? 'OFF total aujourd\'hui — récupère 🛌' : 'Repos abdo aujourd\'hui — la récup fait partie du programme ☕', 'info');
+      return;
+    }
     _absState = {
       session,
       round: 1,

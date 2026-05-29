@@ -135,6 +135,37 @@ const MuscuExercises = (() => {
       cues: ['Coudes collés au corps', 'Pousser vers le bas jusqu\'à extension complète', 'Contrôler la remontée', 'Ne bouger que les avant-bras'],
       mistakes: ['Coudes qui bougent', 'Pencher le torse en avant', 'Charge trop lourde'] },
 
+    // ── Pecs bas / chest lower-focus (expert priority) ─────────
+    { id: 'decline_bench', name: 'Decline Bench Press', category: 'upper_push', subcategory: 'chest', equipment: 'barbell',
+      hyrox: ['burpees','sled_push'], primary: ['pectoraux (bas)','triceps'], secondary: ['épaules'],
+      videoUrl: 'https://www.youtube.com/watch?v=LfyQBUKR8SE',
+      cues: ['Banc décliné 15-30°', 'Barre descend vers le bas de la poitrine', 'Omoplates serrées comme au bench plat', 'Coudes ~45° du corps', 'Cible PRIORITAIREMENT le bas du pec'],
+      mistakes: ['Inclinaison trop forte (perte d\'amplitude)', 'Coudes qui s\'écartent à 90°', 'Pousser depuis les pieds'] },
+
+    { id: 'decline_db_press', name: 'Decline DB Press', category: 'upper_push', subcategory: 'chest', equipment: 'dumbbells',
+      hyrox: ['burpees'], primary: ['pectoraux (bas)','triceps'], secondary: ['épaules'],
+      videoUrl: 'https://www.youtube.com/watch?v=LlPDPyiOZqI',
+      cues: ['Banc décliné 15-30°', 'DB descendent au niveau des pecs bas', 'Rapprocher légèrement les DB en haut (squeeze)', 'Excellent volume bas du pec sans barre'],
+      mistakes: ['Coudes trop bas', 'DB qui claquent', 'Amplitude raccourcie'] },
+
+    { id: 'weighted_dips', name: 'Dips Pondérées (Pecs)', category: 'upper_push', subcategory: 'chest', equipment: 'dip_belt',
+      hyrox: ['burpees','sled_push'], primary: ['pectoraux (bas)','triceps'], secondary: ['épaules'],
+      videoUrl: 'https://www.youtube.com/watch?v=l41SoWZiowI',
+      cues: ['Ceinture lestée 5-30 kg', 'PENCHER LE TORSE EN AVANT 20-30° → cible pec bas', 'Coudes ~45°, descendre jusqu\'à 90°', 'Pousser fort, squeeze des pecs en haut', 'Le compound roi du bas du pec avec contrôle de charge'],
+      mistakes: ['Torse droit (devient triceps)', 'Descendre trop bas (stress épaule)', 'Charge avant maîtrise du BW'] },
+
+    { id: 'cable_crossover_high', name: 'Cable Crossover Haut→Bas', category: 'upper_push', subcategory: 'chest', equipment: 'cable',
+      hyrox: [], primary: ['pectoraux (bas)'], secondary: ['épaules antérieures'],
+      videoUrl: 'https://www.youtube.com/watch?v=taI4XduLpTk',
+      cues: ['Poulies en HAUT, prise neutre', 'Légère inclinaison du torse vers l\'avant', 'Tirer les poignées vers le bas et vers le centre (croiser au niveau des cuisses)', 'Squeeze 2s en bas', 'ISOLATION pure du bas du pec — finisher idéal'],
+      mistakes: ['Poulies au milieu (perte du ciblage bas)', 'Bras pliés', 'Mouvement balistique'] },
+
+    { id: 'incline_bench', name: 'Incline Bench Press', category: 'upper_push', subcategory: 'chest', equipment: 'barbell',
+      hyrox: ['burpees','sled_push'], primary: ['pectoraux (haut)','épaules','triceps'], secondary: [],
+      videoUrl: 'https://www.youtube.com/watch?v=jPLdzuHckI8',
+      cues: ['Banc incliné 30-45°', 'Barre descend en haut de la poitrine (clavicules)', 'Omoplates serrées comme au bench plat', 'Compound pour haut du pec — équilibre la balance avec le décliné'],
+      mistakes: ['Inclinaison trop haute (devient OHP)', 'Pieds qui dérapent', 'Rebond sur la poitrine'] },
+
     // ─── UPPER PULL ─────────────────────────────────────────
     { id: 'barbell_row', name: 'Barbell Row', category: 'upper_pull', subcategory: 'back', equipment: 'barbell',
       hyrox: ['sled_pull','rowing'], primary: ['dos','biceps'], secondary: ['core','avant-bras'],
@@ -147,6 +178,12 @@ const MuscuExercises = (() => {
       videoUrl: 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
       cues: ['Prise pronation (paumes vers l\'avant), largeur épaules+', 'Initier en tirant les omoplates vers le bas', 'Menton au-dessus de la barre', 'Descente contrôlée (pas se laisser tomber)', 'Si impossible : commencer par les négatifs (descente lente)', 'Ajouter du poids quand >12 reps'],
       mistakes: ['Kipping (élan des hanches)', 'Amplitude incomplète', 'Ne pas descendre bras tendus'] },
+
+    { id: 'weighted_chin_up', name: 'Chin-Up Pondérée', category: 'upper_pull', subcategory: 'back', equipment: 'dip_belt',
+      hyrox: ['sled_pull'], primary: ['dos','biceps'], secondary: ['avant-bras','core'],
+      videoUrl: 'https://www.youtube.com/watch?v=brhRXlOhsAM',
+      cues: ['Prise supination (paumes vers soi), largeur épaules', 'Ceinture lestée 5-25 kg', 'Menton au-dessus de la barre, contrôle complet', 'Plus de biceps que pull-up classique', 'Compound clé pour la force de tirage Hyrox lourde'],
+      mistakes: ['Kipping', 'Amplitude incomplète', 'Charge avant maîtrise du BW à 10 reps'] },
 
     { id: 'lat_pulldown', name: 'Lat Pulldown', category: 'upper_pull', subcategory: 'back', equipment: 'machine',
       hyrox: ['sled_pull','skierg'], primary: ['dos','biceps'], secondary: [],
@@ -938,6 +975,12 @@ const MuscuExercises = (() => {
   // ── 7-day rotating ABS program ───────────────────────────────
   // Format: circuit 3 rounds, ~8-10 min. Progresses by week phase.
   // Day index 0=Mon, 1=Tue, ... 6=Sun
+  // Static-hold exercises capped at 60s even in Force phase
+  // (expert: au-delà de 60s = endurance posturale, pas force)
+  const STATIC_HOLD_IDS = new Set(['plank','hollow_hold','side_plank','copenhagen_plank']);
+  const STATIC_CAP_SEC = 60;
+
+  // 4 working days + 3 rest days (Tue/Thu récup, Sun full OFF)
   const ABS_PROGRAM = [
     {
       day: 0, theme: 'Lower abs + 🛞 Roulette',
@@ -952,40 +995,28 @@ const MuscuExercises = (() => {
       ],
     },
     {
-      day: 1, theme: 'Gainage anti-rotation',
-      focus: 'Stabilité latérale, copenhagen, transferts portage Hyrox',
+      day: 1, rest: true, kind: 'récup',
+      theme: 'Repos abdo — récup',
+      focus: 'Pas de session abdo aujourd\'hui · récup active facultative (5 min dead bug + plank doux)',
+      tip: 'Mobilité hanches/bassin si l\'envie y est. Sinon repos complet.',
+    },
+    {
+      day: 2, theme: 'Obliques + Hollow',
+      focus: 'Anti-rotation, copenhagen, hollow gym',
       format: '4 tours · 10s repos · 45s entre tours · ~10 min',
       rounds: 4,
       exercises: [
         { id: 'pallof_press',       work: { reps: 12, perSide: true }, rest: 10, notes: 'Résister à la rotation — tenir 2s bras tendus' },
         { id: 'side_plank',         work: { sec: 40, perSide: true }, rest: 10, notes: 'Par côté · hanches HAUTES, ligne droite' },
-        { id: 'copenhagen_plank',   work: { sec: 25, perSide: true, scale: { id: 'side_plank', sec: 30, perSide: true } }, rest: 10, notes: 'Par côté · jambe haut sur banc · pour adducteurs+obliques' },
-        { id: 'bicycle_crunch',     work: { reps: 24 }, rest: 45, notes: 'Coude → genou opposé · contrôlé — fin de tour' },
+        { id: 'copenhagen_plank',   work: { sec: 25, perSide: true, scale: { id: 'side_plank', sec: 35, perSide: true } }, rest: 10, notes: 'Par côté · INTRODUIRE en sem 3+ — sinon scale side plank' },
+        { id: 'hollow_hold',        work: { sec: 40, scale: { sec: 25 } }, rest: 45, notes: 'Bas du dos PLAQUÉ — fin de tour' },
       ],
     },
     {
-      day: 2, theme: 'Hollow + abdo gym',
-      focus: 'Force statique gymnastique, V-ups, hollow',
-      format: '4 tours · 10s repos · 45s entre tours · ~10 min',
-      rounds: 4,
-      exercises: [
-        { id: 'hollow_hold',        work: { sec: 40, scale: { sec: 25 } }, rest: 10, notes: 'Bas du dos PLAQUÉ — trembler = signal correct' },
-        { id: 'v_up',               work: { reps: 15, scale: { reps: 10 } }, rest: 10, notes: 'Toucher pieds · descente lente' },
-        { id: 'dead_bug',           work: { reps: 12, perSide: true }, rest: 10, notes: 'TRÈS lent · dos plaqué' },
-        { id: 'ab_wheel',           work: { reps: 8 }, rest: 45, notes: '🛞 Lent — fin de tour' },
-      ],
-    },
-    {
-      day: 3, theme: 'Anti-extension lourd',
-      focus: 'Roulette + plank lesté + leg raises strict',
-      format: '4 tours · 10s repos · 45s entre tours · ~10 min',
-      rounds: 4,
-      exercises: [
-        { id: 'ab_wheel',           work: { reps: 12, scale: { reps: 8 } }, rest: 10, notes: '🛞 Pleine amplitude, contrôle parfait' },
-        { id: 'hollow_hold',        work: { sec: 45 }, rest: 10, notes: 'Bas du dos plaqué — ne pas céder' },
-        { id: 'plank',              work: { sec: 75 }, rest: 10, notes: 'Plank lesté (sac, plaque) si possible' },
-        { id: 'hanging_leg_raise',  work: { reps: 10 }, rest: 45, notes: 'STRICT · zéro balancier — fin de tour' },
-      ],
+      day: 3, rest: true, kind: 'récup',
+      theme: 'Repos abdo — récup',
+      focus: 'Pas de session abdo aujourd\'hui · facultatif : 5 min dead bug + bird dog en douceur',
+      tip: 'La récup fait partie du programme. Profite.',
     },
     {
       day: 4, theme: 'Dynamic AMRAP 10 min',
@@ -1002,28 +1033,22 @@ const MuscuExercises = (() => {
       ],
     },
     {
-      day: 5, theme: 'Mix complet + roulette',
-      focus: 'Tour de tout : haut/bas/obliques/anti-rotation',
+      day: 5, theme: 'Anti-extension lourd + Roulette',
+      focus: 'Roulette intense, plank lesté, hanging strict',
       format: '4 tours · 10s repos · 45s entre tours · ~10 min',
       rounds: 4,
       exercises: [
-        { id: 'ab_wheel',           work: { reps: 10 }, rest: 10, notes: '🛞 Amplitude max' },
-        { id: 'pallof_press',       work: { reps: 12, perSide: true }, rest: 10, notes: 'Tenir 2s · résister' },
-        { id: 'toes_to_bar',        work: { reps: 10, scale: { id: 'hanging_leg_raise', reps: 12 } }, rest: 10, notes: 'Strict, pas de kip · scale = leg raise' },
-        { id: 'side_plank',         work: { sec: 35, perSide: true }, rest: 45, notes: 'Par côté · gainage — fin de tour' },
+        { id: 'ab_wheel',           work: { reps: 12, scale: { reps: 8 } }, rest: 10, notes: '🛞 Pleine amplitude, contrôle parfait' },
+        { id: 'hollow_hold',        work: { sec: 45 }, rest: 10, notes: 'Bas du dos plaqué — ne pas céder' },
+        { id: 'plank',              work: { sec: 60 }, rest: 10, notes: 'Plank lesté (sac, plaque) si possible — CAP 60s' },
+        { id: 'hanging_leg_raise',  work: { reps: 10 }, rest: 45, notes: 'STRICT · zéro balancier — fin de tour' },
       ],
     },
     {
-      day: 6, theme: 'Gainage récup contrôlée',
-      focus: 'Statique long, respiration, fondation profonde',
-      format: '3 tours · 20s repos · 45s entre tours · ~10 min',
-      rounds: 3,
-      exercises: [
-        { id: 'plank',              work: { sec: 75 }, rest: 20, notes: 'Respiration calme · ligne parfaite' },
-        { id: 'hollow_hold',        work: { sec: 40 }, rest: 20, notes: 'Tension contrôlée' },
-        { id: 'side_plank',         work: { sec: 35, perSide: true }, rest: 20, notes: 'Par côté · hanches hautes' },
-        { id: 'dead_bug',           work: { reps: 12, perSide: true }, rest: 45, notes: 'TRÈS lent — fin de tour' },
-      ],
+      day: 6, rest: true, kind: 'off_total',
+      theme: 'OFF TOTAL',
+      focus: 'Jour de repos complet · zéro abdos · récupère.',
+      tip: 'Sommeil, hydratation, repas costauds. C\'est ici qu\'on construit.',
     },
   ];
 
@@ -1038,9 +1063,25 @@ const MuscuExercises = (() => {
     const base = ABS_PROGRAM[dayIdx];
     const phase = _getAbsPhase(weekNum || 1);
 
+    // Rest day → return rest info
+    if (base.rest) {
+      return {
+        dayIdx,
+        dayLabel: ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'][dayIdx],
+        rest: true,
+        kind: base.kind,             // 'récup' | 'off_total'
+        theme: base.theme,
+        focus: base.focus,
+        tip: base.tip || '',
+        phase: phase.label,
+        date: d.toISOString().slice(0, 10),
+        exercises: [],
+      };
+    }
+
     const exercises = base.exercises.map(ex => {
       const info = getById(ex.id);
-      const work = _progressAbsWork(ex.work, phase);
+      const work = _progressAbsWork(ex.work, phase, ex.id);
       return {
         exerciseId: ex.id,
         name: info ? info.name : ex.id,
@@ -1073,13 +1114,18 @@ const MuscuExercises = (() => {
     return { label: 'Maintenance avancée', repMul: 1.5, secMul: 1.4 };
   }
 
-  function _progressAbsWork(work, phase) {
+  function _progressAbsWork(work, phase, exerciseId) {
     const result = { ...work };
     if (typeof work.reps === 'number') {
       result.reps = Math.round(work.reps * phase.repMul);
     }
     if (typeof work.sec === 'number') {
-      result.sec = Math.round(work.sec * phase.secMul / 5) * 5; // round to 5s
+      let sec = Math.round(work.sec * phase.secMul / 5) * 5; // round to 5s
+      // Expert cap: static holds cap at 60s (au-delà = endurance posturale, pas force)
+      if (exerciseId && STATIC_HOLD_IDS.has(exerciseId)) {
+        sec = Math.min(sec, STATIC_CAP_SEC);
+      }
+      result.sec = sec;
     }
     return result;
   }

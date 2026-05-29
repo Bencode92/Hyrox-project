@@ -177,6 +177,9 @@ const MuscuStorage = (() => {
     'back_squat','front_squat','deadlift','rdl','sumo_deadlift',
     'bench_press','ohp','barbell_row','hip_thrust','thruster',
     'power_clean','clean_press','push_press','romanian_deadlift',
+    // Expert review additions
+    'incline_bench','decline_bench','decline_db_press',
+    'dips','weighted_dips','pull_ups','weighted_chin_up',
   ]);
 
   function _isCompound(id) { return COMPOUND_IDS.has(id); }
