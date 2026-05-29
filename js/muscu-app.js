@@ -1725,24 +1725,50 @@ const MuscuApp = (() => {
         </div>`;
     }
 
-    // Sets already done
-    const setsHtml = ex.sets.map((set, setIdx) => `
-      <div class="log-set-row ${set.validated ? 'set-validated' : ''}">
-        <span class="set-num">${setIdx + 1}</span>
-        <input type="number" class="input-sm" placeholder="kg" value="${set.weight || ''}"
-               onchange="MuscuApp.workoutUpdateSet(${setIdx},'weight',this.value)" step="2.5" min="0" ${set.validated ? 'disabled' : ''}>
-        <span class="text-muted">×</span>
-        <input type="number" class="input-sm" placeholder="reps" value="${set.reps || ''}"
-               onchange="MuscuApp.workoutUpdateSet(${setIdx},'reps',this.value)" min="1" ${set.validated ? 'disabled' : ''}>
-        <select class="input-sm rpe-select" onchange="MuscuApp.workoutUpdateSet(${setIdx},'rpe',this.value)" ${set.validated ? 'disabled' : ''}>
-          <option value="">RPE</option>
-          ${[5,6,7,8,9,10].map(r => `<option value="${r}" ${set.rpe == r ? 'selected' : ''}>${r}</option>`).join('')}
-        </select>
-        ${set.validated
-          ? `<button class="btn-icon btn-validated">✓</button>`
-          : `<button class="btn-icon btn-validate" onclick="MuscuApp.workoutValidateSet(${setIdx})" title="Valider + chrono">✓</button>`}
-      </div>
-    `).join('');
+    // Sets: validated = compact summary, active = full form + big REPOS button
+    const restSec = ex.restSec || _defaultRestFor(ex.category);
+    const setsHtml = ex.sets.map((set, setIdx) => {
+      if (set.validated) {
+        return `
+          <div class="workout-set-done">
+            <span class="ws-done-num">${setIdx + 1}</span>
+            <span class="ws-done-icon">✓</span>
+            <span class="ws-done-data"><strong>${set.weight}kg</strong> × <strong>${set.reps}</strong>${set.rpe ? ` · RPE ${set.rpe}` : ''}</span>
+            <button class="ws-done-edit" onclick="MuscuApp.workoutUnvalidate(${setIdx})" title="Modifier">✎</button>
+          </div>`;
+      }
+      // Active set
+      return `
+        <div class="workout-set-active">
+          <div class="ws-active-header">
+            <span class="ws-active-num">Série ${setIdx + 1}</span>
+            <button class="ws-active-remove" onclick="MuscuApp.workoutRemoveSet(${setIdx})" title="Supprimer">✕</button>
+          </div>
+          <div class="ws-active-inputs">
+            <div class="ws-input-group">
+              <label>Poids</label>
+              <input type="number" placeholder="kg" value="${set.weight || ''}"
+                     onchange="MuscuApp.workoutUpdateSet(${setIdx},'weight',this.value)" step="2.5" min="0" inputmode="decimal">
+            </div>
+            <div class="ws-input-group">
+              <label>Reps</label>
+              <input type="number" placeholder="reps" value="${set.reps || ''}"
+                     onchange="MuscuApp.workoutUpdateSet(${setIdx},'reps',this.value)" min="1" inputmode="numeric">
+            </div>
+            <div class="ws-input-group">
+              <label>RPE</label>
+              <select onchange="MuscuApp.workoutUpdateSet(${setIdx},'rpe',this.value)">
+                <option value="">—</option>
+                ${[5,6,7,8,9,10].map(r => `<option value="${r}" ${set.rpe == r ? 'selected' : ''}>${r}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-rest-big" onclick="MuscuApp.workoutValidateSet(${setIdx})">
+            <span class="rest-big-icon">⏱</span>
+            <span class="rest-big-label">REPOS · ${restSec}s</span>
+          </button>
+        </div>`;
+    }).join('');
 
     const targetSets = ex.targetSets || 3;
     const setsDone = ex.sets.filter(s => s.validated).length;
@@ -1831,6 +1857,23 @@ const MuscuApp = (() => {
       rpe: '',
       validated: false,
     });
+    _renderWorkout();
+  }
+
+  function workoutUnvalidate(setIdx) {
+    const ex = _workout.exoData[_workout.exoIdx];
+    if (!ex.sets[setIdx]) return;
+    ex.sets[setIdx].validated = false;
+    _stopRestTimer();
+    _renderWorkout();
+  }
+
+  function workoutRemoveSet(setIdx) {
+    const ex = _workout.exoData[_workout.exoIdx];
+    ex.sets.splice(setIdx, 1);
+    if (ex.sets.length === 0) {
+      ex.sets.push({ weight: ex.startWeight || '', reps: typeof ex.targetReps === 'number' ? ex.targetReps : '', rpe: '', validated: false });
+    }
     _renderWorkout();
   }
 
@@ -2013,6 +2056,7 @@ const MuscuApp = (() => {
     absSkipToRest, absSkipRest, absSkipExo, finishAbsSession,
     // Workout in progress (mode séance guidée)
     startWorkout, workoutUpdateSet, workoutValidateSet, workoutAddSet,
+    workoutUnvalidate, workoutRemoveSet,
     workoutNextExo, workoutSkipExo, workoutFinish, workoutCancel,
     showAddExercise, closeAddExercise, filterExercises, pickExercise,
     saveSession, updateRpeDisplay,
