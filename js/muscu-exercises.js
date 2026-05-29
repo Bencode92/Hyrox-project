@@ -989,6 +989,11 @@ const MuscuExercises = (() => {
 
   function getFinisherBlock() { return FINISHER_BLOCK; }
 
+  // Bump when templates change so saved plans auto-regenerate on load.
+  // v2 (2026-05-29) : add Focus Pec Bas blocks to push days (4j + 5j templates)
+  const TEMPLATES_VERSION = 2;
+  function getTemplatesVersion() { return TEMPLATES_VERSION; }
+
   // ── 7-day rotating ABS program ───────────────────────────────
   // Format: circuit 3 rounds, ~8-10 min. Progresses by week phase.
   // Day index 0=Mon, 1=Tue, ... 6=Sun
@@ -1164,6 +1169,7 @@ const MuscuExercises = (() => {
       week: weekNum,
       isDeload,
       templateName: template.name,
+      templatesVersion: TEMPLATES_VERSION,
       generatedAt: new Date().toISOString(),
       days: template.days.map((day, dayIndex) => {
         const exercises = [];
@@ -1351,7 +1357,7 @@ const MuscuExercises = (() => {
   return {
     getAll, getById, getByCategory, getCategoryInfo, getCategories,
     search, getTemplate, generateWeekPlan, getHyroxRelevance, getFinisherBlock,
-    getAbsSession,
+    getAbsSession, getTemplatesVersion,
     HYROX_STATIONS, DB,
   };
 })();

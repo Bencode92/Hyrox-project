@@ -188,6 +188,14 @@ const MuscuApp = (() => {
       return;
     }
 
+    // Templates have evolved since this plan was generated → auto-regenerate
+    const currentVersion = MuscuExercises.getTemplatesVersion ? MuscuExercises.getTemplatesVersion() : 0;
+    if (plan && (plan.templatesVersion || 0) < currentVersion) {
+      _toast('Programme mis à jour (focus pec bas intégré) — régénération...', 'info');
+      _autoRegenPlan(weekNum);
+      return;
+    }
+
     document.getElementById('dash-week').textContent = `Semaine ${weekNum}`;
     document.getElementById('dash-phase').textContent = _getPhaseLabel(weekNum);
     document.getElementById('dash-deload').style.display = isDeload ? 'inline-block' : 'none';
