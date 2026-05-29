@@ -152,6 +152,18 @@ ${trends.painAnalysis}
 - Burpee BJ : cardio RPE 9 rapide mais jambes ont encore de la capacité → ne pas confondre
 - "Enseigner à distinguer échec LOCAL de fatigue GLOBALE. Entraîner le facteur limitant, pas contourner."
 
+### FOCUS UTILISATEUR — PRIORITÉ PEC BAS
+- L'athlète a un **focus actuel sur le bas du pec** (tracé visible, esthétique).
+- Sur CHAQUE jour push, inclure OBLIGATOIREMENT au moins 2 exos ciblés bas pec :
+  1. **weighted_dips** (cue: torse penché 20-30° → cible le bas du pec)
+  2. **decline_bench** ou **decline_db_press** (banc décliné 15-30°)
+  3. **cable_crossover_high** (poulies hautes, tirer vers le bas — isolation pure)
+- Prioriser ces 3 exos par rapport au bench plat classique en assistance.
+- Si l'athlète n'a pas accès à decline → remplacer par 2× weighted_dips ou un autre exo de la liste ci-dessus.
+- Garder bench_press comme compound horizontal principal (force globale).
+- Volume cible bas du pec : 8-12 séries efficaces / semaine (réparties sur 1-2 jours push).
+- Le finisher poignet/avant-bras (farmers + wrist + dead hang) reste à la fin.
+
 ### PROGRAMMATION FONCTIONNELLE
 - Sled work : 20-25% du temps de stations (haute demande neuro, limiter fréquence)
 - Carries : 25-30% (bon transfert course, fréquence tolérable)

@@ -716,8 +716,8 @@ const MuscuExercises = (() => {
           cooldown: 'Étirements quads, ischios, mollets, hanches — 5 min',
         },
         {
-          label: 'Push-Pull — Supersets + Carries',
-          focus: 'Bench/OHP + Row/Pull-ups supersetés + farmers carry',
+          label: 'Push-Pull — Supersets + Focus Pec Bas',
+          focus: 'Bench 5×5 + OHP/Pull-ups + FOCUS BAS DU PEC (decline DB + dips lestées + cable haut→bas) + carries',
           warmup: '5 min SkiErg + mobilité épaules/thoracique + séries progressives bench (50%, 70%)',
           blocks: [
             { name: 'Superset A — Push/Pull horizontal',
@@ -730,18 +730,26 @@ const MuscuExercises = (() => {
                 { id: 'ohp', sets: 4, reps: '6', rest: 60, notes: 'B1 — Transfert wall balls' },
                 { id: 'pull_ups', sets: 4, reps: '8', rest: 60, notes: 'B2 — Tirage vertical' },
               ]},
-            { name: 'Superset C — Accessoires + Core',
+            { name: '💪 Focus Pec Bas — Dips lestées + Decline DB',
               exercises: [
-                { id: 'dips', sets: 3, reps: '12', rest: 45, notes: 'C1 — Push endurance' },
-                { id: 'copenhagen_plank', sets: 3, reps: '30s/côté', rest: 30, notes: 'C2 — Adducteurs + core' },
+                { id: 'weighted_dips', sets: 4, reps: '8', rest: 75, notes: 'PEC : TORSE PENCHÉ 20-30° pour cibler le bas du pec, ajouter charge progressivement' },
+                { id: 'decline_db_press', sets: 3, reps: '10', rest: 60, notes: 'Banc décliné 15-30° · volume bas du pec' },
+              ]},
+            { name: 'Isolation — Cable Crossover Haut→Bas',
+              exercises: [
+                { id: 'cable_crossover_high', sets: 3, reps: '12-15', rest: 45, notes: 'ISOLATION pure bas du pec · poulies HAUTES, tirer vers le bas, squeeze 2s' },
+              ]},
+            { name: 'Accessoire — Core',
+              exercises: [
+                { id: 'copenhagen_plank', sets: 3, reps: '30s/côté', rest: 30, notes: 'Adducteurs + core' },
               ]},
             { name: 'Conditioning — Carries',
               exercises: [
-                { id: 'farmers_carry', sets: 4, reps: '80m', rest: 90, notes: 'Race weight ou +4kg, pas courts/rapides' },
+                { id: 'farmers_carry', sets: 3, reps: '60m', rest: 90, notes: 'Race weight ou +4kg, pas courts/rapides' },
               ]},
           ],
           finisher: '',
-          cooldown: 'Étirements épaules, pecs, dos, poignets — 5 min',
+          cooldown: 'Étirements épaules, pecs (focus), dos, poignets — 5 min',
         },
         {
           label: 'Endurance Hyrox — Sandbag + Circuits',
@@ -830,8 +838,8 @@ const MuscuExercises = (() => {
           cooldown: 'Étirements quads, ischios, mollets, hanches — 5 min',
         },
         {
-          label: 'Push-Pull — Supersets + Carries',
-          focus: 'Bench 5×5 + OHP/Row/Pull-ups + wall balls + carries',
+          label: 'Push-Pull — Supersets + Focus Pec Bas',
+          focus: 'Bench 5×5 + OHP/Pull-ups + FOCUS BAS DU PEC (dips lestées + decline DB + cable haut→bas) + wall balls/carries',
           warmup: '5 min SkiErg + mobilité épaules/thoracique + séries progressives bench (50%, 70%)',
           blocks: [
             { name: 'Superset A — Push/Pull horizontal',
@@ -844,10 +852,19 @@ const MuscuExercises = (() => {
                 { id: 'ohp', sets: 4, reps: '8', rest: 60, notes: 'B1 — Transfert wall balls, 8 reps endurance épaules' },
                 { id: 'pull_ups', sets: 4, reps: '8', rest: 60, notes: 'B2 — Tirage vertical' },
               ]},
-            { name: 'Superset C — Wall Balls + Carries',
+            { name: '💪 Focus Pec Bas — Dips lestées + Decline DB',
               exercises: [
-                { id: 'wall_ball', sets: 3, reps: '20', rest: 30, notes: 'C1 — Enchaîner direct avec carries' },
-                { id: 'farmers_carry', sets: 3, reps: '80m', rest: 60, notes: 'C2 — Race weight, pas courts/rapides' },
+                { id: 'weighted_dips', sets: 4, reps: '8', rest: 75, notes: 'TORSE PENCHÉ 20-30° pour cibler le bas du pec, ajouter charge progressivement' },
+                { id: 'decline_db_press', sets: 3, reps: '10', rest: 60, notes: 'Banc décliné 15-30° · volume bas du pec' },
+              ]},
+            { name: 'Isolation — Cable Crossover Haut→Bas',
+              exercises: [
+                { id: 'cable_crossover_high', sets: 3, reps: '12-15', rest: 45, notes: 'ISOLATION pure bas du pec · poulies HAUTES, squeeze 2s en bas' },
+              ]},
+            { name: 'Superset Hyrox — Wall Balls + Carries',
+              exercises: [
+                { id: 'wall_ball', sets: 3, reps: '15', rest: 30, notes: 'Volume réduit (focus pec absorbe le push)' },
+                { id: 'farmers_carry', sets: 3, reps: '60m', rest: 60, notes: 'Race weight' },
               ]},
             { name: 'Core',
               exercises: [
@@ -855,7 +872,7 @@ const MuscuExercises = (() => {
               ]},
           ],
           finisher: '',
-          cooldown: 'Étirements épaules, pecs, dos — 5 min',
+          cooldown: 'Étirements épaules, pecs (focus), dos — 5 min',
         },
         {
           label: 'Endurance Hyrox — Sandbag + Circuits',
