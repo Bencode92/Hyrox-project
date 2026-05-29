@@ -8,6 +8,9 @@ const MuscuApp = (() => {
 
   // ── Init ──────────────────────────────────────────────────
   function init() {
+    // Migrate older profiles to add missing fields (height, focusZone)
+    if (MuscuStorage.migrateProfile) MuscuStorage.migrateProfile();
+
     const profile = MuscuStorage.getProfile();
     if (!profile.createdAt) {
       _showOnboarding();
@@ -59,9 +62,11 @@ const MuscuApp = (() => {
   function saveOnboarding() {
     const profile = {
       name: document.getElementById('ob-name').value.trim() || 'Athlète',
-      weight: parseFloat(document.getElementById('ob-weight').value) || 75,
+      weight: parseFloat(document.getElementById('ob-weight').value) || 80,
+      height: parseInt(document.getElementById('ob-height').value) || 183,
       daysPerWeek: parseInt(document.getElementById('ob-days').value) || 4,
       level: document.getElementById('ob-level').value || 'intermediate',
+      focusZone: document.getElementById('ob-focus').value.trim(),
       injuryNotes: document.getElementById('ob-injury').value.trim(),
       createdAt: new Date().toISOString(),
     };
@@ -1158,8 +1163,10 @@ const MuscuApp = (() => {
     document.getElementById('set-ai-model').value = settings.aiModel || 'claude-sonnet-4-20250514';
     document.getElementById('set-finisher').checked = settings.finisherEnabled !== false;
     document.getElementById('set-weight').value = profile.weight || '';
+    document.getElementById('set-height').value = profile.height || '';
     document.getElementById('set-days').value = profile.daysPerWeek || 4;
     document.getElementById('set-level').value = profile.level || 'intermediate';
+    document.getElementById('set-focus').value = profile.focusZone || '';
     document.getElementById('set-injury').value = profile.injuryNotes || '';
     modal.style.display = 'flex';
   }
@@ -1180,8 +1187,10 @@ const MuscuApp = (() => {
     }
     const profile = MuscuStorage.getProfile();
     profile.weight = parseFloat(document.getElementById('set-weight').value) || profile.weight;
+    profile.height = parseInt(document.getElementById('set-height').value) || profile.height;
     profile.daysPerWeek = parseInt(document.getElementById('set-days').value) || profile.daysPerWeek;
     profile.level = document.getElementById('set-level').value || profile.level;
+    profile.focusZone = document.getElementById('set-focus').value.trim();
     profile.injuryNotes = document.getElementById('set-injury').value.trim();
     MuscuStorage.saveProfile(profile);
     document.getElementById('settings-modal').style.display = 'none';

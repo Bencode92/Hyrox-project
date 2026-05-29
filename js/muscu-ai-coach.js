@@ -31,10 +31,13 @@ PHILOSOPHIE :
 ## Contexte athlète
 - Nom : ${profile.name || 'Athlète'}
 - Poids corporel : ${profile.weight || '?'} kg
+- Taille : ${profile.height || '?'} cm${profile.weight && profile.height ? ` (IMC ≈ ${Math.round(profile.weight / Math.pow(profile.height/100, 2) * 10) / 10})` : ''}
 - Niveau : ${_levelLabel(profile.level)}
 - Jours/semaine dispo : ${profile.daysPerWeek || 4}
 - Semaine du programme : ${weekNum}
 - Phase : ${_phaseLabel(weekNum)}
+${profile.focusZone ? `- ⭐ ZONE FOCUS / FAIBLESSE CIBLÉE : ${profile.focusZone}
+  → Prioriser systématiquement le travail de cette zone dans le programme (volume, fréquence, exos ciblés).` : ''}
 
 ## BLESSURES & PRÉCAUTIONS
 ${profile.injuryNotes ? `⚠️ IMPORTANT : ${profile.injuryNotes}

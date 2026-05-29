@@ -30,7 +30,9 @@ const MuscuStorage = (() => {
   function getProfile() {
     return _get(KEYS.profile, {
       name: '',
-      weight: 75,
+      weight: 80,
+      height: 183,         // cm
+      focusZone: '',       // ex: "Pecs (bas surtout)"
       daysPerWeek: 4,
       level: 'intermediate', // beginner, intermediate, advanced
       injuryNotes: '',
@@ -41,6 +43,20 @@ const MuscuStorage = (() => {
   function saveProfile(p) {
     if (!p.createdAt) p.createdAt = new Date().toISOString();
     _set(KEYS.profile, p);
+  }
+
+  // Migrate older profiles: add missing fields with sensible defaults.
+  // Called once on init in muscu-app.js.
+  function migrateProfile() {
+    const raw = localStorage.getItem(KEYS.profile);
+    if (!raw) return; // No profile yet — onboarding will create it
+    try {
+      const p = JSON.parse(raw);
+      let changed = false;
+      if (p.height == null)    { p.height = 183; changed = true; }
+      if (p.focusZone == null) { p.focusZone = 'Pecs (bas surtout) — faiblesse marquée'; changed = true; }
+      if (changed) _set(KEYS.profile, p);
+    } catch {}
   }
 
   // ── Sessions ──────────────────────────────────────────────
@@ -286,7 +302,7 @@ const MuscuStorage = (() => {
 
   // ── Public API ────────────────────────────────────────────
   return {
-    getProfile, saveProfile,
+    getProfile, saveProfile, migrateProfile,
     getSessions, saveSession, deleteSession, getSessionsByExercise, getRecentSessions,
     getPRs, estimate1RM, suggestNextLoad,
     getObjectives, setObjective, removeObjective,
