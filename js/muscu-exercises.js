@@ -1354,10 +1354,50 @@ const MuscuExercises = (() => {
     return ex.hyrox.map(h => HYROX_STATIONS[h] || h);
   }
 
+  /**
+   * Find best alternative exercises for the given id.
+   * Scoring : same category +10, same subcategory +5, primary-muscle overlap +3 each,
+   * secondary-muscle overlap +1 each, hyrox tag overlap +2 each.
+   * Returns top-N sorted by score (excludes self).
+   */
+  function findAlternatives(exerciseId, limit) {
+    const target = getById(exerciseId);
+    if (!target) return [];
+    const N = limit || 6;
+    const scored = DB
+      .filter(e => e.id !== exerciseId)
+      .map(e => {
+        let score = 0;
+        if (e.category === target.category) score += 10;
+        if (e.subcategory && e.subcategory === target.subcategory) score += 5;
+        // Primary overlap
+        const primOverlap = (e.primary || []).filter(m => (target.primary || []).includes(m));
+        score += primOverlap.length * 3;
+        // Secondary overlap
+        const secOverlap = (e.secondary || []).filter(m => (target.secondary || []).includes(m));
+        score += secOverlap.length * 1;
+        // Hyrox overlap
+        const hyroxOverlap = (e.hyrox || []).filter(h => (target.hyrox || []).includes(h));
+        score += hyroxOverlap.length * 2;
+        // Different equipment = slight bonus (variety)
+        if (e.equipment && target.equipment && e.equipment !== target.equipment) score += 0.5;
+        // Build short reason text
+        const reasons = [];
+        if (primOverlap.length) reasons.push(`mêmes muscles : ${primOverlap.join(', ')}`);
+        if (e.subcategory && e.subcategory === target.subcategory) reasons.push(`même type (${e.subcategory})`);
+        else if (e.category === target.category) reasons.push(`même catégorie`);
+        return { exo: e, score, reason: reasons.join(' · ') };
+      })
+      .filter(x => x.score >= 10) // must at least match category
+      .sort((a, b) => b.score - a.score)
+      .slice(0, N);
+    return scored;
+  }
+
   return {
     getAll, getById, getByCategory, getCategoryInfo, getCategories,
     search, getTemplate, generateWeekPlan, getHyroxRelevance, getFinisherBlock,
-    getAbsSession, getTemplatesVersion,
+    getAbsSession, getTemplatesVersion, findAlternatives,
     HYROX_STATIONS, DB,
   };
 })();

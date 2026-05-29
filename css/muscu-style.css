@@ -1679,6 +1679,59 @@ textarea { resize: vertical; min-height: 60px; }
 .rest-big-icon { font-size: 22px; }
 .rest-big-label { font-weight: 800; }
 
+/* Swap button in workout exo header */
+.btn-swap {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-swap:hover {
+  background: rgba(255,168,61,0.15);
+  border-color: #ffa83d;
+  transform: rotate(180deg);
+}
+
+/* Swap modal cards */
+.swap-alt-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.swap-alt-card:hover {
+  background: rgba(0,212,170,0.06);
+  border-color: rgba(0,212,170,0.3);
+  transform: translateX(2px);
+}
+.swap-alt-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.swap-alt-header strong {
+  color: #fff;
+  font-size: 14px;
+  flex: 1;
+}
+.swap-alt-meta {
+  margin-bottom: 6px;
+}
+.swap-alt-reason {
+  color: #00d4aa;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 /* Bottom actions */
 .workout-actions {
   display: flex;

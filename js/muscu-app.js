@@ -1800,6 +1800,7 @@ const MuscuApp = (() => {
         <div class="workout-exo-header">
           <span class="cat-badge" style="background:${catInfo.color}20;color:${catInfo.color}">${catInfo.icon} ${catInfo.label}</span>
           <h2>${ex.name}</h2>
+          <button class="btn-swap" onclick="MuscuApp.openSwap()" title="Remplacer par un autre exo">🔄</button>
           ${info && info.videoUrl ? `<a href="${info.videoUrl}" target="_blank" class="video-link">▶ Tuto</a>` : ''}
         </div>
         <div class="workout-rx">
@@ -1986,6 +1987,58 @@ const MuscuApp = (() => {
     renderDashboard();
   }
 
+  function openSwap() {
+    if (!_workout) return;
+    const ex = _workout.exoData[_workout.exoIdx];
+    const validatedSets = ex.sets.filter(s => s.validated).length;
+    if (validatedSets > 0) {
+      if (!confirm(`Tu as déjà validé ${validatedSets} série(s) sur cet exo. Remplacer va les conserver mais sur le nouvel exo. Continuer ?`)) return;
+    }
+    const alternatives = MuscuExercises.findAlternatives(ex.exerciseId, 6);
+    if (!alternatives.length) {
+      _toast('Pas d\'alternative trouvée dans la banque', 'info');
+      return;
+    }
+    document.getElementById('swap-current-name').innerHTML = `Actuel : <strong>${ex.name}</strong>`;
+    document.getElementById('swap-alternatives').innerHTML = alternatives.map(({ exo, reason }) => {
+      const cat = MuscuExercises.getCategoryInfo(exo.category);
+      return `
+        <div class="swap-alt-card" onclick="MuscuApp.swapTo('${exo.id}')">
+          <div class="swap-alt-header">
+            <span class="cat-badge" style="background:${cat.color}20;color:${cat.color}">${cat.icon} ${cat.label}</span>
+            <strong>${exo.name}</strong>
+          </div>
+          <div class="swap-alt-meta text-muted text-sm">
+            ${exo.equipment} · ${(exo.primary || []).join(', ')}
+          </div>
+          <div class="swap-alt-reason text-sm">↳ ${reason}</div>
+        </div>`;
+    }).join('');
+    document.getElementById('swap-exo-modal').style.display = 'flex';
+  }
+
+  function closeSwap() {
+    document.getElementById('swap-exo-modal').style.display = 'none';
+  }
+
+  function swapTo(newId) {
+    if (!_workout) return closeSwap();
+    const newExo = MuscuExercises.getById(newId);
+    if (!newExo) return closeSwap();
+    const ex = _workout.exoData[_workout.exoIdx];
+    const oldName = ex.name;
+    // Re-compute smart suggestion for the new exo
+    const suggestion = MuscuStorage.suggestNextLoad(newId, typeof ex.targetReps === 'number' ? ex.targetReps : null);
+    ex.exerciseId = newExo.id;
+    ex.name = newExo.name;
+    ex.category = newExo.category;
+    ex.smartSuggestion = suggestion;
+    ex.swappedFrom = oldName;
+    closeSwap();
+    _renderWorkout();
+    _toast(`${oldName} → ${newExo.name}`, 'success');
+  }
+
   function workoutCancel() {
     if (!_workout) {
       document.getElementById('workout-modal').style.display = 'none';
@@ -2067,6 +2120,7 @@ const MuscuApp = (() => {
     startWorkout, workoutUpdateSet, workoutValidateSet, workoutAddSet,
     workoutUnvalidate, workoutRemoveSet,
     workoutNextExo, workoutSkipExo, workoutFinish, workoutCancel,
+    openSwap, closeSwap, swapTo,
     showAddExercise, closeAddExercise, filterExercises, pickExercise,
     saveSession, updateRpeDisplay,
     setHistoryFilter, showSessionDetail, closeSessionDetail, deleteSessionConfirm,
