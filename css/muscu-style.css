@@ -1490,6 +1490,81 @@ textarea { resize: vertical; min-height: 60px; }
   color: #ff7a3d;
   border-left-color: #ff7a3d;
 }
+.workout-block.workout-block-superset {
+  color: #b48cff;
+  border-left-color: #8b5cf6;
+  background: linear-gradient(90deg, rgba(139,92,246,0.12), transparent 60%);
+  padding: 8px 12px;
+  border-radius: 0 8px 8px 0;
+  font-size: 12px;
+}
+
+/* Superset partners panel */
+.workout-superset-partners {
+  background: rgba(139,92,246,0.05);
+  border: 1px dashed rgba(139,92,246,0.35);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+.ws-partners-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #b48cff;
+  margin-bottom: 8px;
+}
+.ws-partner-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ws-partner-card:last-child { margin-bottom: 0; }
+.ws-partner-card:hover {
+  background: rgba(139,92,246,0.08);
+  border-color: rgba(139,92,246,0.3);
+  transform: translateX(2px);
+}
+.ws-partner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ws-partner-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.ws-partner-info strong {
+  color: #fff;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ws-partner-status {
+  background: rgba(255,255,255,0.05);
+  color: var(--text-2, #8892a8);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.ws-partner-card:has(.ws-partner-status:contains('✓')) {
+  opacity: 0.55;
+}
 
 /* Current exo card */
 .workout-exo-card {

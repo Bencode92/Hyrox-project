@@ -1734,6 +1734,48 @@ const MuscuApp = (() => {
         </div>`;
     }
 
+    // Detect superset (multiple exos in the same blockName)
+    const blockExos = _workout.exoData
+      .map((e, i) => ({ ex: e, idx: i }))
+      .filter(p => p.ex.blockName === ex.blockName && ex.blockName);
+    const isSuperset = blockExos.length > 1 && !ex.isFinisher;
+    const myPos = isSuperset ? blockExos.findIndex(p => p.idx === _workout.exoIdx) : -1;
+    const partners = isSuperset ? blockExos.filter(p => p.idx !== _workout.exoIdx) : [];
+
+    let blockHtml = '';
+    if (ex.blockName) {
+      const cls = ex.isFinisher
+        ? 'workout-block-finisher'
+        : (isSuperset ? 'workout-block-superset' : '');
+      const prefix = isSuperset ? '🔗 ' : '';
+      const meta = isSuperset ? ` · ${myPos + 1}/${blockExos.length}` : '';
+      blockHtml = `<div class="workout-block ${cls}">${prefix}${ex.blockName}${meta}</div>`;
+    }
+
+    let partnersHtml = '';
+    if (isSuperset && partners.length) {
+      const partnerCards = partners.map(p => {
+        const pcat = MuscuExercises.getCategoryInfo(p.ex.category);
+        const setsDone = p.ex.sets.filter(s => s.validated).length;
+        const tot = p.ex.targetSets || 0;
+        const status = setsDone >= tot && tot > 0 ? '✓' : `${setsDone}/${tot}`;
+        return `
+          <div class="ws-partner-card" onclick="MuscuApp.workoutJumpToExo(${p.idx})">
+            <span class="ws-partner-dot" style="background:${pcat.color}"></span>
+            <div class="ws-partner-info">
+              <strong>${p.ex.name}</strong>
+              <span class="text-muted text-sm">${p.ex.targetSets || '?'}×${p.ex.targetReps || '?'}${p.ex.suggestedWeight ? ' @ ' + p.ex.suggestedWeight + 'kg' : ''}</span>
+            </div>
+            <span class="ws-partner-status">${status}</span>
+          </div>`;
+      }).join('');
+      partnersHtml = `
+        <div class="workout-superset-partners">
+          <div class="ws-partners-title">🔗 Superset — enchaîne avec :</div>
+          ${partnerCards}
+        </div>`;
+    }
+
     // Sets: validated = compact summary, active = full form + big REPOS button
     const restSec = ex.restSec || _defaultRestFor(ex.category);
     const setsHtml = ex.sets.map((set, setIdx) => {
@@ -1794,7 +1836,7 @@ const MuscuApp = (() => {
         </div>
       </div>
 
-      ${ex.blockName ? `<div class="workout-block ${ex.isFinisher ? 'workout-block-finisher' : ''}">${ex.blockName}</div>` : ''}
+      ${blockHtml}
 
       <div class="workout-exo-card">
         <div class="workout-exo-header">
@@ -1816,6 +1858,8 @@ const MuscuApp = (() => {
             <ul>${info.cues.slice(0, 3).map(c => `<li>${c}</li>`).join('')}</ul>
           </div>` : ''}
       </div>
+
+      ${partnersHtml}
 
       <div class="workout-sets">
         ${setsHtml || '<p class="text-muted text-sm" style="text-align:center;padding:10px">Ajoute ta première série</p>'}
@@ -1890,6 +1934,14 @@ const MuscuApp = (() => {
   function workoutNextExo() {
     _stopRestTimer();
     _workout.exoIdx++;
+    _renderWorkout();
+  }
+
+  function workoutJumpToExo(idx) {
+    if (!_workout) return;
+    if (idx < 0 || idx >= _workout.exoData.length) return;
+    _stopRestTimer();
+    _workout.exoIdx = idx;
     _renderWorkout();
   }
 
@@ -2119,7 +2171,7 @@ const MuscuApp = (() => {
     // Workout in progress (mode séance guidée)
     startWorkout, workoutUpdateSet, workoutValidateSet, workoutAddSet,
     workoutUnvalidate, workoutRemoveSet,
-    workoutNextExo, workoutSkipExo, workoutFinish, workoutCancel,
+    workoutNextExo, workoutJumpToExo, workoutSkipExo, workoutFinish, workoutCancel,
     openSwap, closeSwap, swapTo,
     showAddExercise, closeAddExercise, filterExercises, pickExercise,
     saveSession, updateRpeDisplay,
