@@ -411,9 +411,7 @@ const MuscuApp = (() => {
     document.getElementById('day-detail-exercises').innerHTML = exHtml;
 
     document.getElementById('day-detail-log-btn').onclick = () => {
-      modal.style.display = 'none';
-      _prefillLog(day, dayIndex);
-      switchTab('log');
+      startWorkout(dayIndex);
     };
     document.getElementById('day-detail-skip-btn').onclick = () => {
       day.status = 'skipped';
@@ -425,7 +423,7 @@ const MuscuApp = (() => {
       document.getElementById('day-detail-log-btn').textContent = 'Déjà enregistrée ✓';
       document.getElementById('day-detail-log-btn').disabled = true;
     } else {
-      document.getElementById('day-detail-log-btn').textContent = 'Enregistrer cette séance';
+      document.getElementById('day-detail-log-btn').textContent = '▶ Commencer la séance';
       document.getElementById('day-detail-log-btn').disabled = false;
     }
     modal.style.display = 'flex';
@@ -1612,6 +1610,301 @@ const MuscuApp = (() => {
   }
 
   // ════════════════════════════════════════════════════════════
+  //  WORKOUT IN PROGRESS — Mode séance guidée
+  // ════════════════════════════════════════════════════════════
+  let _workout = null;  // { dayIdx, day, exoIdx, exoData, startedAt }
+
+  function startWorkout(dayIndex) {
+    const plan = MuscuStorage.getWeekPlan();
+    if (!plan || !plan.days[dayIndex]) return;
+    const day = plan.days[dayIndex];
+
+    // Build per-exo state with smart suggestion & set list
+    const exoData = day.exercises.map(ex => {
+      const suggestion = MuscuStorage.suggestNextLoad(ex.exerciseId, typeof ex.reps === 'number' ? ex.reps : null);
+      const startWeight = suggestion ? suggestion.weight : ex.suggestedWeight;
+      const targetSets = typeof ex.sets === 'number' ? ex.sets : 3;
+      return {
+        exerciseId: ex.exerciseId,
+        name: ex.name,
+        category: ex.category,
+        targetSets,
+        targetReps: ex.reps,
+        suggestedWeight: ex.suggestedWeight,
+        smartSuggestion: suggestion,
+        restSec: ex.restSec || _defaultRestFor(ex.category),
+        isFinisher: !!ex.isFinisher,
+        blockName: ex.blockName || '',
+        notes: ex.notes || '',
+        sets: [],
+        startWeight,
+      };
+    });
+
+    _workout = {
+      dayIdx: dayIndex,
+      day,
+      exoIdx: 0,
+      exoData,
+      startedAt: Date.now(),
+    };
+
+    document.getElementById('day-detail-modal').style.display = 'none';
+    document.getElementById('workout-title').textContent = day.label;
+    document.getElementById('workout-modal').style.display = 'flex';
+    _renderWorkout();
+  }
+
+  function _renderWorkout() {
+    if (!_workout) return;
+    const body = document.getElementById('workout-body');
+    const total = _workout.exoData.length;
+    const ex = _workout.exoData[_workout.exoIdx];
+    const info = MuscuExercises.getById(ex.exerciseId);
+    const catInfo = MuscuExercises.getCategoryInfo(ex.category);
+
+    // Final summary screen?
+    if (_workout.exoIdx >= total) {
+      _renderWorkoutSummary();
+      return;
+    }
+
+    // Smart suggestion banner
+    const s = ex.smartSuggestion;
+    let suggestionHtml = '';
+    if (s) {
+      const arrow = s.trend === 'up' ? '↑' : s.trend === 'down' ? '↓' : s.trend === 'pain' ? '⚠️' : '→';
+      const deltaStr = s.delta > 0 ? `+${s.delta}kg` : s.delta < 0 ? `${s.delta}kg` : 'maintien';
+      suggestionHtml = `
+        <div class="smart-suggestion smart-${s.trend}">
+          <span class="ss-arrow">${arrow}</span>
+          <span class="ss-main"><strong>${s.weight}kg</strong> suggérés (${deltaStr})</span>
+          <span class="ss-reason">${s.reason}</span>
+        </div>`;
+    }
+
+    // Sets already done
+    const setsHtml = ex.sets.map((set, setIdx) => `
+      <div class="log-set-row ${set.validated ? 'set-validated' : ''}">
+        <span class="set-num">${setIdx + 1}</span>
+        <input type="number" class="input-sm" placeholder="kg" value="${set.weight || ''}"
+               onchange="MuscuApp.workoutUpdateSet(${setIdx},'weight',this.value)" step="2.5" min="0" ${set.validated ? 'disabled' : ''}>
+        <span class="text-muted">×</span>
+        <input type="number" class="input-sm" placeholder="reps" value="${set.reps || ''}"
+               onchange="MuscuApp.workoutUpdateSet(${setIdx},'reps',this.value)" min="1" ${set.validated ? 'disabled' : ''}>
+        <select class="input-sm rpe-select" onchange="MuscuApp.workoutUpdateSet(${setIdx},'rpe',this.value)" ${set.validated ? 'disabled' : ''}>
+          <option value="">RPE</option>
+          ${[5,6,7,8,9,10].map(r => `<option value="${r}" ${set.rpe == r ? 'selected' : ''}>${r}</option>`).join('')}
+        </select>
+        ${set.validated
+          ? `<button class="btn-icon btn-validated">✓</button>`
+          : `<button class="btn-icon btn-validate" onclick="MuscuApp.workoutValidateSet(${setIdx})" title="Valider + chrono">✓</button>`}
+      </div>
+    `).join('');
+
+    const targetSets = ex.targetSets || 3;
+    const setsDone = ex.sets.filter(s => s.validated).length;
+    const allSetsDone = setsDone >= targetSets;
+
+    body.innerHTML = `
+      <div class="workout-progress">
+        <div class="workout-progress-bar">
+          <div class="workout-progress-fill" style="width:${((_workout.exoIdx) / total) * 100}%"></div>
+        </div>
+        <div class="workout-progress-text">
+          Exo <strong>${_workout.exoIdx + 1}</strong> / ${total}
+          · Séries <strong>${setsDone}</strong> / ${targetSets}
+        </div>
+      </div>
+
+      ${ex.blockName ? `<div class="workout-block ${ex.isFinisher ? 'workout-block-finisher' : ''}">${ex.blockName}</div>` : ''}
+
+      <div class="workout-exo-card">
+        <div class="workout-exo-header">
+          <span class="cat-badge" style="background:${catInfo.color}20;color:${catInfo.color}">${catInfo.icon} ${catInfo.label}</span>
+          <h2>${ex.name}</h2>
+          ${info && info.videoUrl ? `<a href="${info.videoUrl}" target="_blank" class="video-link">▶ Tuto</a>` : ''}
+        </div>
+        <div class="workout-rx">
+          <span class="rx-pill">${targetSets} × ${ex.targetReps}</span>
+          ${ex.startWeight ? `<span class="rx-pill rx-weight">~${ex.startWeight}kg</span>` : ''}
+          <span class="rx-pill rx-rest">⏱ Repos ${ex.restSec}s</span>
+        </div>
+        ${ex.notes ? `<div class="workout-notes text-muted text-sm">${ex.notes}</div>` : ''}
+        ${suggestionHtml}
+        ${info && info.cues ? `
+          <div class="technique-cues">
+            <div class="cues-title">Points clés :</div>
+            <ul>${info.cues.slice(0, 3).map(c => `<li>${c}</li>`).join('')}</ul>
+          </div>` : ''}
+      </div>
+
+      <div class="workout-sets">
+        ${setsHtml || '<p class="text-muted text-sm" style="text-align:center;padding:10px">Ajoute ta première série</p>'}
+      </div>
+
+      <div class="workout-actions">
+        <button class="btn btn-sm btn-ghost" onclick="MuscuApp.workoutAddSet()">+ Série</button>
+        ${allSetsDone
+          ? `<button class="btn btn-abs" onclick="MuscuApp.workoutNextExo()">Suivant exo →</button>`
+          : `<button class="btn btn-secondary" onclick="MuscuApp.workoutNextExo()">Passer à l'exo suivant</button>`}
+      </div>
+    `;
+
+    // Auto-add a first empty set if none
+    if (ex.sets.length === 0) {
+      ex.sets.push({ weight: ex.startWeight || '', reps: typeof ex.targetReps === 'number' ? ex.targetReps : '', rpe: '', validated: false });
+      _renderWorkout();
+    }
+  }
+
+  function workoutUpdateSet(setIdx, field, value) {
+    const ex = _workout.exoData[_workout.exoIdx];
+    ex.sets[setIdx][field] = field === 'rpe' ? (value ? parseInt(value) : '') : (parseFloat(value) || '');
+  }
+
+  function workoutValidateSet(setIdx) {
+    const ex = _workout.exoData[_workout.exoIdx];
+    const set = ex.sets[setIdx];
+    if (!set.weight || !set.reps) {
+      _toast('Renseigne poids et reps avant de valider', 'error');
+      return;
+    }
+    set.validated = true;
+    // If it's the last set and we haven't reached target, queue a new empty set
+    const targetSets = ex.targetSets || 3;
+    if (setIdx === ex.sets.length - 1 && ex.sets.length < targetSets) {
+      ex.sets.push({ weight: set.weight, reps: set.reps, rpe: '', validated: false });
+    }
+    _renderWorkout();
+    _startRestTimer(ex.restSec || _defaultRestFor(ex.category), ex.name);
+  }
+
+  function workoutAddSet() {
+    const ex = _workout.exoData[_workout.exoIdx];
+    const last = ex.sets[ex.sets.length - 1];
+    ex.sets.push({
+      weight: last ? last.weight : (ex.startWeight || ''),
+      reps: last ? last.reps : (typeof ex.targetReps === 'number' ? ex.targetReps : ''),
+      rpe: '',
+      validated: false,
+    });
+    _renderWorkout();
+  }
+
+  function workoutNextExo() {
+    _stopRestTimer();
+    _workout.exoIdx++;
+    _renderWorkout();
+  }
+
+  function workoutSkipExo() {
+    if (!_workout) return;
+    if (!confirm('Passer cet exo et aller au suivant ?')) return;
+    _stopRestTimer();
+    _workout.exoIdx++;
+    _renderWorkout();
+  }
+
+  function _renderWorkoutSummary() {
+    const body = document.getElementById('workout-body');
+    const durationMin = Math.round((Date.now() - _workout.startedAt) / 60000);
+    const totalSets = _workout.exoData.reduce((s, e) => s + e.sets.filter(x => x.validated).length, 0);
+    const totalVolume = _workout.exoData.reduce((s, e) =>
+      s + e.sets.filter(x => x.validated).reduce((ss, x) => ss + (x.weight || 0) * (x.reps || 0), 0), 0);
+
+    body.innerHTML = `
+      <div class="workout-done">
+        <div class="workout-done-icon">💪</div>
+        <h2>Séance terminée !</h2>
+        <div class="workout-stats">
+          <div class="ws-stat"><div class="ws-val">${durationMin}min</div><div class="ws-label">Durée</div></div>
+          <div class="ws-stat"><div class="ws-val">${totalSets}</div><div class="ws-label">Séries</div></div>
+          <div class="ws-stat"><div class="ws-val">${totalVolume > 1000 ? Math.round(totalVolume/100)/10 + 't' : totalVolume + 'kg'}</div><div class="ws-label">Volume</div></div>
+        </div>
+
+        <div class="input-group" style="margin-top:14px">
+          <label>RPE global de la séance</label>
+          <div class="rpe-slider-group">
+            <input type="range" id="workout-rpe" min="1" max="10" value="7" oninput="document.getElementById('workout-rpe-val').textContent=this.value">
+            <span class="rpe-val" id="workout-rpe-val">7</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Sommeil dernière nuit (h)</label>
+          <input type="number" id="workout-sleep" placeholder="Ex: 7.5" step="0.5" min="0" max="12">
+        </div>
+        <div class="input-group">
+          <label>Douleurs / gênes</label>
+          <input type="text" id="workout-pain" placeholder="Ex: gêne genou droit...">
+        </div>
+        <div class="input-group">
+          <label>Notes</label>
+          <textarea id="workout-notes" placeholder="Sensations, fatigue, observations..."></textarea>
+        </div>
+
+        <button class="btn btn-abs" onclick="MuscuApp.workoutFinish()" style="margin-top:10px">Sauvegarder la séance</button>
+      </div>
+    `;
+  }
+
+  function workoutFinish() {
+    if (!_workout) return;
+    const session = {
+      date: new Date().toISOString().slice(0, 10),
+      type: 'musculation',
+      globalRpe: parseInt(document.getElementById('workout-rpe').value) || 7,
+      sleepHours: parseFloat(document.getElementById('workout-sleep').value) || null,
+      painNotes: document.getElementById('workout-pain').value.trim(),
+      notes: document.getElementById('workout-notes').value.trim(),
+      durationMin: Math.round((Date.now() - _workout.startedAt) / 60000),
+      exercises: _workout.exoData.map(ex => ({
+        exerciseId: ex.exerciseId,
+        sets: ex.sets.filter(s => s.validated).map(s => ({
+          weight: parseFloat(s.weight) || 0,
+          reps: parseInt(s.reps) || 0,
+          rpe: s.rpe || null,
+        })),
+        rpe: null,
+      })),
+    };
+
+    session.exercises.forEach(ex => {
+      const rpeSets = ex.sets.filter(s => s.rpe);
+      if (rpeSets.length) ex.rpe = Math.round(rpeSets.reduce((s, r) => s + r.rpe, 0) / rpeSets.length);
+    });
+
+    MuscuStorage.saveSession(session);
+
+    // Mark plan day done
+    const plan = MuscuStorage.getWeekPlan();
+    if (plan && plan.days[_workout.dayIdx]) {
+      plan.days[_workout.dayIdx].status = 'done';
+      MuscuStorage.saveWeekPlan(plan);
+    }
+
+    _toast('Séance enregistrée — bien joué 💪', 'success');
+    _stopRestTimer();
+    document.getElementById('workout-modal').style.display = 'none';
+    _lastSavedSession = session;
+    _showFeedbackForm(session);
+    _workout = null;
+    renderDashboard();
+  }
+
+  function workoutCancel() {
+    if (!_workout) {
+      document.getElementById('workout-modal').style.display = 'none';
+      return;
+    }
+    const hasData = _workout.exoData.some(e => e.sets.some(s => s.validated));
+    if (hasData && !confirm('Quitter la séance ? Tes progrès seront perdus.')) return;
+    _stopRestTimer();
+    _workout = null;
+    document.getElementById('workout-modal').style.display = 'none';
+  }
+
+  // ════════════════════════════════════════════════════════════
   //  FEEDBACK (post-session)
   // ════════════════════════════════════════════════════════════
   let _lastSavedSession = null;
@@ -1675,6 +1968,9 @@ const MuscuApp = (() => {
     validateSet, unvalidateSet, skipRest, addRestTime,
     showAbsSession, closeAbsSession, startAbsSession, absMarkDone,
     absSkipToRest, absSkipRest, absSkipExo, finishAbsSession,
+    // Workout in progress (mode séance guidée)
+    startWorkout, workoutUpdateSet, workoutValidateSet, workoutAddSet,
+    workoutNextExo, workoutSkipExo, workoutFinish, workoutCancel,
     showAddExercise, closeAddExercise, filterExercises, pickExercise,
     saveSession, updateRpeDisplay,
     setHistoryFilter, showSessionDetail, closeSessionDetail, deleteSessionConfirm,

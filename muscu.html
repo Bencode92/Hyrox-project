@@ -469,6 +469,18 @@
     </div>
   </div>
 
+  <!-- Workout In Progress (guided session) -->
+  <div class="modal" id="workout-modal">
+    <div class="modal-content workout-modal-content">
+      <div class="workout-top-bar">
+        <button class="modal-close" onclick="MuscuApp.workoutCancel()" title="Quitter">×</button>
+        <div class="workout-title" id="workout-title">Séance</div>
+        <button class="workout-skip-ex" onclick="MuscuApp.workoutSkipExo()" title="Skip cet exo">⤴</button>
+      </div>
+      <div id="workout-body"></div>
+    </div>
+  </div>
+
   <!-- Abs Session Modal -->
   <div class="modal" id="abs-session-modal">
     <div class="modal-content abs-session-content">
