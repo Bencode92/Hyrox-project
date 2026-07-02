@@ -730,14 +730,14 @@ const MuscuExercises = (() => {
                 { id: 'ohp', sets: 4, reps: '6', rest: 60, notes: 'B1 — Transfert wall balls' },
                 { id: 'pull_ups', sets: 4, reps: '8', rest: 60, notes: 'B2 — Tirage vertical' },
               ]},
-            { name: '💪 Focus Pec Bas — Dips lestées + Decline DB',
+            { name: '💪 Focus Pec Bas — Decline barbell + Decline DB',
               exercises: [
-                { id: 'weighted_dips', sets: 4, reps: '8', rest: 75, notes: 'PEC : TORSE PENCHÉ 20-30° pour cibler le bas du pec, ajouter charge progressivement' },
-                { id: 'decline_db_press', sets: 3, reps: '10', rest: 60, notes: 'Banc décliné 15-30° · volume bas du pec' },
+                { id: 'decline_bench', sets: 4, reps: '8', rest: 90, notes: 'PEC BAS : banc décliné 15-30° · descendre bas de la poitrine · charge progressive' },
+                { id: 'decline_db_press', sets: 4, reps: '10', rest: 75, notes: 'Volume bas du pec · squeeze en haut · 2s tempo' },
               ]},
             { name: 'Isolation — Cable Crossover Haut→Bas',
               exercises: [
-                { id: 'cable_crossover_high', sets: 3, reps: '12-15', rest: 45, notes: 'ISOLATION pure bas du pec · poulies HAUTES, tirer vers le bas, squeeze 2s' },
+                { id: 'cable_crossover_high', sets: 4, reps: '12-15', rest: 45, notes: 'ISOLATION pure bas du pec · poulies HAUTES · squeeze 2s en bas · volume élevé' },
               ]},
             { name: 'Accessoire — Core',
               exercises: [
@@ -820,8 +820,8 @@ const MuscuExercises = (() => {
               ]},
             { name: '💪 B — Focus Pec Bas (hypertrophie 8-12)',
               exercises: [
-                { id: 'weighted_dips', sets: 4, reps: '8', rest: 120, notes: 'B1 — TORSE PENCHÉ 20-30° · charge progressive' },
-                { id: 'decline_db_press', sets: 3, reps: '10', rest: 90, notes: 'B2 — Banc décliné 15-30° · volume bas du pec' },
+                { id: 'decline_bench', sets: 4, reps: '8', rest: 120, notes: 'B1 — Décliné barbell 15-30° · descendre bas de la poitrine · compound pec bas' },
+                { id: 'decline_db_press', sets: 3, reps: '10', rest: 90, notes: 'B2 — Décliné DB volume · squeeze en haut' },
               ]},
             { name: 'C — OHP force',
               exercises: [
@@ -917,8 +917,12 @@ const MuscuExercises = (() => {
               ]},
             { name: '💪 B — Focus Pec Bas volume (2e passage)',
               exercises: [
-                { id: 'weighted_dips', sets: 4, reps: '10', rest: 90, notes: 'B1 — 10 reps volume · torse penché' },
+                { id: 'decline_db_press', sets: 4, reps: '10', rest: 90, notes: 'B1 — 2e passage semaine · squeeze en haut · volume bas du pec' },
                 { id: 'db_row', sets: 4, reps: '10', rest: 90, notes: 'B2 — Antagoniste dos épaisseur' },
+              ]},
+            { name: '💪 C — Cable Crossover volume (2e passage isolation)',
+              exercises: [
+                { id: 'cable_crossover_high', sets: 3, reps: '15', rest: 45, notes: 'C — Isolation bas du pec · 2e passage semaine · squeeze 3s' },
               ]},
             { name: 'C — Vertical Push + Pull volume',
               exercises: [
@@ -1014,7 +1018,10 @@ const MuscuExercises = (() => {
   // v3 (2026-07-02) : rewrite 5j template as Hybrid Hyrox + Muscle — each muscle
   //   hit 2×/week, force ranges (5×5) + hypertrophy ranges (8-12), Hyrox spé
   //   preserved on J3 (sled, wall balls) + J5 (sandbag, BBJ, thruster, KB).
-  const TEMPLATES_VERSION = 3;
+  // v4 (2026-07-02) : remove all dips (weighted_dips) from templates —
+  //   painful for athlete. Replaced by extra decline_bench + decline_db_press
+  //   volume, plus an added cable_crossover_high block on J4.
+  const TEMPLATES_VERSION = 4;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
@@ -1387,8 +1394,11 @@ const MuscuExercises = (() => {
     const target = getById(exerciseId);
     if (!target) return [];
     const N = limit || 6;
+    const excluded = (typeof MuscuStorage !== 'undefined' && MuscuStorage.getProfile)
+      ? (MuscuStorage.getProfile().excludedExercises || [])
+      : [];
     const scored = DB
-      .filter(e => e.id !== exerciseId)
+      .filter(e => e.id !== exerciseId && !excluded.includes(e.id))
       .map(e => {
         let score = 0;
         if (e.category === target.category) score += 10;

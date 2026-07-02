@@ -53,7 +53,12 @@ ${profile.goal === 'hybrid' ? `
 - **Bodyweight fonctionnel** : garder (dips, pull-ups, push-ups) — apprécié + transfert Hyrox.
 - **Cardio strict** : à mettre HORS séance muscu ou en fin (compromised running).` : ''}
 
-## BLESSURES & PRÉCAUTIONS
+${profile.excludedExercises && profile.excludedExercises.length ? `## ❌ EXOS INTERDITS (ne JAMAIS programmer)
+${profile.excludedExercises.map(id => `- ${id}`).join('\n')}
+→ Si tu es tenté de programmer un de ces exos, remplace-le automatiquement par une alternative ciblant les mêmes muscles.
+→ Pour le bas du pec sans dips : privilégier **decline_bench**, **decline_db_press**, **cable_crossover_high**.
+
+` : ''}## BLESSURES & PRÉCAUTIONS
 ${profile.injuryNotes ? `⚠️ IMPORTANT : ${profile.injuryNotes}
 → Adapter chaque recommandation. Alternative sûre si risque.
 → Technique et contrôle > charge. Jamais de charges max sans validation progressive.
