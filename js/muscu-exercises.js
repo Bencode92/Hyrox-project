@@ -806,149 +806,169 @@ const MuscuExercises = (() => {
       ]
     },
     5: {
-      name: 'Hyrox Supersets 5x',
+      name: 'Hybrid Hyrox + Muscle 5x',
       days: [
+        // ═══ JOUR 1 (LUN) — PUSH FORCE + FOCUS PEC BAS ═══
         {
-          label: 'Force bas — Supersets + Sled',
-          focus: 'Squat 5×5, DL + hip thrust + machines + sled push',
-          warmup: '5 min rameur + mobilité hanches/chevilles + séries progressives squat (50%, 70%)',
-          blocks: [
-            { name: 'Superset A — Squat + Box Jumps',
-              exercises: [
-                { id: 'back_squat', sets: 5, reps: '5', rest: 90, notes: 'A1 — 5×5 force, enchaîner avec A2' },
-                { id: 'box_jump', sets: 5, reps: '8', rest: 60, notes: 'A2 — Impulsion, même nb de sets que A1' },
-              ]},
-            { name: 'Superset B — Hinge + Fessiers',
-              exercises: [
-                { id: 'deadlift', sets: 3, reps: '5', rest: 90, notes: 'B1 — Force hip hinge pour sled pull' },
-                { id: 'hip_thrust', sets: 3, reps: '12', rest: 60, notes: 'B2 — Activation fessiers, transfert sled push' },
-              ]},
-            { name: 'Superset C — Machine + Prehab',
-              exercises: [
-                { id: 'leg_press', sets: 3, reps: '10', rest: 60, notes: 'C1 — Volume additionnel quads' },
-                { id: 'calf_raise', sets: 3, reps: '15', rest: 30, notes: 'C2 — Propulsion + prehab mollet' },
-              ]},
-            { name: 'Conditioning — Sled',
-              exercises: [
-                { id: 'sled_push_heavy', sets: 4, reps: '25m', rest: 120, notes: '2×25m = 50m compétition. 45° inclinaison, pas courts' },
-                { id: 'tibialis_raise', sets: 3, reps: '20', rest: 30, notes: 'Prehab Achille' },
-              ]},
-          ],
-          finisher: '',
-          cooldown: 'Étirements quads, ischios, mollets, hanches — 5 min',
-        },
-        {
-          label: 'Push-Pull — Supersets + Focus Pec Bas',
-          focus: 'Bench 5×5 + OHP/Pull-ups + FOCUS BAS DU PEC (dips lestées + decline DB + cable haut→bas) + wall balls/carries',
+          label: 'Push Force + Focus Pec Bas',
+          focus: 'Bench 5×5 + OHP + FOCUS BAS DU PEC (dips lestées + decline + cable haut→bas) — force 1re moitié, hypertrophie 2e',
           warmup: '5 min SkiErg + mobilité épaules/thoracique + séries progressives bench (50%, 70%)',
           blocks: [
-            { name: 'Superset A — Push/Pull horizontal',
+            { name: 'A — Bench Press (compound force)',
               exercises: [
-                { id: 'bench_press', sets: 5, reps: '5', rest: 60, notes: 'A1 — 5×5 force, enchaîner avec A2' },
-                { id: 'barbell_row', sets: 5, reps: '8', rest: 60, notes: 'A2 — Tirage antagoniste, 8 reps pour le volume dos' },
+                { id: 'bench_press', sets: 5, reps: '5', rest: 150, notes: 'A — 5×5 force · repos 2:30 · double progression : monter reps si RPE ≤ 7' },
               ]},
-            { name: 'Superset B — Push/Pull vertical',
+            { name: '💪 B — Focus Pec Bas (hypertrophie 8-12)',
               exercises: [
-                { id: 'ohp', sets: 4, reps: '8', rest: 60, notes: 'B1 — Transfert wall balls, 8 reps endurance épaules' },
-                { id: 'pull_ups', sets: 4, reps: '8', rest: 60, notes: 'B2 — Tirage vertical' },
+                { id: 'weighted_dips', sets: 4, reps: '8', rest: 120, notes: 'B1 — TORSE PENCHÉ 20-30° · charge progressive' },
+                { id: 'decline_db_press', sets: 3, reps: '10', rest: 90, notes: 'B2 — Banc décliné 15-30° · volume bas du pec' },
               ]},
-            { name: '💪 Focus Pec Bas — Dips lestées + Decline DB',
+            { name: 'C — OHP force',
               exercises: [
-                { id: 'weighted_dips', sets: 4, reps: '8', rest: 75, notes: 'TORSE PENCHÉ 20-30° pour cibler le bas du pec, ajouter charge progressivement' },
-                { id: 'decline_db_press', sets: 3, reps: '10', rest: 60, notes: 'Banc décliné 15-30° · volume bas du pec' },
+                { id: 'ohp', sets: 4, reps: '6', rest: 120, notes: 'C — 4×6 force delts · transfert wall balls' },
               ]},
-            { name: 'Isolation — Cable Crossover Haut→Bas',
+            { name: 'D — Isolation Pec Bas + Delts',
               exercises: [
-                { id: 'cable_crossover_high', sets: 3, reps: '12-15', rest: 45, notes: 'ISOLATION pure bas du pec · poulies HAUTES, squeeze 2s en bas' },
+                { id: 'cable_crossover_high', sets: 3, reps: '12-15', rest: 60, notes: 'D1 — ISOLATION bas du pec · squeeze 2s' },
+                { id: 'lateral_raise', sets: 3, reps: '15', rest: 45, notes: 'D2 — Delts médians · charge légère volume' },
               ]},
-            { name: 'Superset Hyrox — Wall Balls + Carries',
+            { name: 'E — Prehab épaules',
               exercises: [
-                { id: 'wall_ball', sets: 3, reps: '15', rest: 30, notes: 'Volume réduit (focus pec absorbe le push)' },
-                { id: 'farmers_carry', sets: 3, reps: '60m', rest: 60, notes: 'Race weight' },
-              ]},
-            { name: 'Core',
-              exercises: [
-                { id: 'copenhagen_plank', sets: 3, reps: '30s/côté', rest: 30, notes: 'Adducteurs + core' },
+                { id: 'face_pull', sets: 3, reps: '15', rest: 45, notes: 'Santé épaule · rotation externe' },
               ]},
           ],
           finisher: '',
-          cooldown: 'Étirements épaules, pecs (focus), dos — 5 min',
+          cooldown: 'Étirements pecs, épaules, thoracique — 5 min',
         },
+        // ═══ JOUR 2 (MAR) — PULL FORCE + CARRIES ═══
         {
-          label: 'Endurance Hyrox — Sandbag + Circuits',
-          focus: 'Sandbag, wall balls, KB, box — circuits conditioning',
-          warmup: '5 min rameur + 15 air squats + mobilité',
+          label: 'Pull Force + Grip + Carries',
+          focus: 'Deadlift 3×5 + Chin-Up lesté + Row 8-12 + biceps + farmers (grip Hyrox)',
+          warmup: '5 min rameur + activation dos + séries progressives DL (50%, 70%)',
           blocks: [
-            { name: 'Superset A — Sandbag + Wall Balls',
+            { name: 'A — Deadlift (compound force)',
               exercises: [
-                { id: 'sandbag_lunge', sets: 3, reps: '40m', rest: 45, notes: 'A1 — Foulée 0.9-1.1m, rester droit' },
-                { id: 'wall_ball', sets: 3, reps: '25', rest: 45, notes: 'A2 — Rythme > puissance' },
+                { id: 'deadlift', sets: 3, reps: '5', rest: 180, notes: 'A — 3×5 force · repos 3 min · technique parfaite avant charge' },
               ]},
-            { name: 'Superset B — KB + Box',
+            { name: 'B — Vertical Pull (force + hypertrophie)',
               exercises: [
-                { id: 'kb_swing', sets: 4, reps: '20', rest: 45, notes: 'B1 — Hip hinge explosif' },
-                { id: 'box_step_over', sets: 4, reps: '12', rest: 45, notes: 'B2 — Mouvement continu, pas de pause en haut' },
+                { id: 'weighted_chin_up', sets: 4, reps: '6-8', rest: 120, notes: 'B1 — Ceinture lestée · compound clé pour la force de tirage' },
+                { id: 'lat_pulldown', sets: 3, reps: '12', rest: 75, notes: 'B2 — Volume dos, prise large' },
               ]},
-            { name: 'Circuit C — Conditioning Hyrox (3 tours, enchaîner tout)',
+            { name: 'C — Horizontal Row (hypertrophie 8-12)',
               exercises: [
-                { id: 'sandbag_carry', sets: 3, reps: '40m', rest: 0, notes: 'C1 → enchaîner' },
-                { id: 'sandbag_over_shoulder', sets: 3, reps: '10', rest: 0, notes: 'C2 → enchaîner' },
-                { id: 'suitcase_carry', sets: 3, reps: '30m/côté', rest: 0, notes: 'C3 → enchaîner' },
-                { id: 'hanging_leg_raise', sets: 3, reps: '12', rest: 90, notes: 'C4 — Core, repos 90s après le tour' },
+                { id: 'barbell_row', sets: 4, reps: '8', rest: 90, notes: 'C1 — Épaisseur dos · dos droit' },
+                { id: 'seated_row', sets: 3, reps: '12', rest: 60, notes: 'C2 — Volume additionnel · squeeze omoplates' },
+              ]},
+            { name: 'D — Biceps (isolation 8-12)',
+              exercises: [
+                { id: 'bicep_curl', sets: 3, reps: '10', rest: 60, notes: 'D1 — Coudes fixes · contrôle descente' },
+                { id: 'hammer_curl', sets: 3, reps: '12', rest: 60, notes: 'D2 — Brachioradial (grip)' },
+              ]},
+            { name: 'E — Grip Hyrox',
+              exercises: [
+                { id: 'farmers_carry', sets: 3, reps: '60m', rest: 90, notes: 'Race weight · pas courts et rapides' },
               ]},
           ],
-          finisher: 'Conditioning : 3 tours — 400m Rameur + 30m Sandbag Carry + 10 Sandbag Over Shoulder',
-          cooldown: 'Foam rolling + étirements 5 min',
+          finisher: '',
+          cooldown: 'Étirements dos, biceps, avant-bras — 5 min',
         },
+        // ═══ JOUR 3 (MER) — LEGS FORCE + HYROX STATIONS ═══
         {
-          label: 'Poids du corps + Impulsion',
-          focus: 'Circuits 100% bodyweight + impulsion : BBJ, bear crawl, box, devil press',
-          warmup: '5 min jumping jacks + 10 sprawls + mobilité dynamique',
+          label: 'Legs Force + Hyrox Stations',
+          focus: 'Squat 5×5 + RDL + Hip Thrust + Sled Push + Wall Balls — force jambes + spé Hyrox',
+          warmup: '5 min rameur + mobilité hanches/chevilles + séries progressives squat (50%, 70%)',
           blocks: [
-            { name: 'Circuit A — Bodyweight Hyrox (4 tours, enchaîner)',
+            { name: 'A — Back Squat (compound force)',
               exercises: [
-                { id: 'burpee_broad_jump', sets: 4, reps: '15m', rest: 0, notes: 'A1 — Step-up technique, bras agressifs' },
-                { id: 'bear_crawl', sets: 4, reps: '15m', rest: 0, notes: 'A2 — 4 pattes, dos plat, genoux 2cm sol' },
-                { id: 'mountain_climber', sets: 4, reps: '30', rest: 0, notes: 'A3 — Rapide, cardio' },
-                { id: 'hand_release_pushup', sets: 4, reps: '12', rest: 60, notes: 'A4 — Repos 60s après le tour' },
+                { id: 'back_squat', sets: 5, reps: '5', rest: 180, notes: 'A — 5×5 force · repos 3 min · technique > charge' },
               ]},
-            { name: 'Superset B — Impulsion explosive',
+            { name: 'B — Hip Hinge (force + hypertrophie)',
               exercises: [
-                { id: 'jump_lunge', sets: 4, reps: '12/jambe', rest: 45, notes: 'B1 — Puissance unijambiste' },
-                { id: 'box_jump_over', sets: 4, reps: '12', rest: 45, notes: 'B2 — Rythme soutenu, transitions rapides' },
+                { id: 'rdl', sets: 4, reps: '8', rest: 120, notes: 'B1 — Ischios hypertrophie · sentir étirement' },
+                { id: 'hip_thrust', sets: 4, reps: '10', rest: 90, notes: 'B2 — Fessiers · pause 2s en haut' },
               ]},
-            { name: 'Circuit C — Devil Press Conditioning (3 tours)',
+            { name: 'C — Unilateral (hypertrophie)',
               exercises: [
-                { id: 'devil_press', sets: 3, reps: '10', rest: 0, notes: 'C1 — Burpee + snatch DB, enchaîner' },
-                { id: 'broad_jump', sets: 3, reps: '10', rest: 0, notes: 'C2 — Distance > hauteur' },
-                { id: 'air_squat', sets: 3, reps: '20', rest: 60, notes: 'C3 — Brûlure quads, repos après tour' },
+                { id: 'bulgarian_split', sets: 3, reps: '10', rest: 60, notes: 'Par jambe · charge légère volume' },
+              ]},
+            { name: '🏁 D — Hyrox Stations (spé race)',
+              exercises: [
+                { id: 'sled_push_heavy', sets: 4, reps: '25m', rest: 120, notes: 'D1 — Race weight · 25m = demi course · pas courts' },
+                { id: 'wall_ball', sets: 3, reps: '20', rest: 60, notes: 'D2 — Transfert direct front squat + OHP' },
+              ]},
+            { name: 'E — Mollets + Prehab',
+              exercises: [
+                { id: 'calf_raise', sets: 3, reps: '15', rest: 45, notes: 'Propulsion course + prehab' },
+              ]},
+          ],
+          finisher: '',
+          cooldown: 'Étirements quads, ischios, hanches, mollets — 8 min',
+        },
+        // ═══ JOUR 4 (JEU) — PUSH+PULL VOLUME HYPERTROPHIE ═══
+        {
+          label: 'Push+Pull Volume Hypertrophie',
+          focus: '2e passage push+pull en 8-12 reps : incline, dips (encore), rows volume, delts, bras',
+          warmup: '5 min SkiErg + mobilité épaules + activation dos',
+          blocks: [
+            { name: 'A — Incline Bench (haut pec)',
+              exercises: [
+                { id: 'incline_bench', sets: 4, reps: '8', rest: 120, notes: 'A — Équilibre bas/haut pec (bas travaillé J1) · 8 reps' },
+              ]},
+            { name: '💪 B — Focus Pec Bas volume (2e passage)',
+              exercises: [
+                { id: 'weighted_dips', sets: 4, reps: '10', rest: 90, notes: 'B1 — 10 reps volume · torse penché' },
+                { id: 'db_row', sets: 4, reps: '10', rest: 90, notes: 'B2 — Antagoniste dos épaisseur' },
+              ]},
+            { name: 'C — Vertical Push + Pull volume',
+              exercises: [
+                { id: 'db_ohp', sets: 3, reps: '10', rest: 75, notes: 'C1 — Delts hypertrophie · stabilisation' },
+                { id: 'pull_ups', sets: 3, reps: 'AMRAP', rest: 75, notes: 'C2 — Max reps sans lest · endurance dos' },
+              ]},
+            { name: 'D — Isolation bras (hypertrophie)',
+              exercises: [
+                { id: 'lateral_raise', sets: 4, reps: '15', rest: 45, notes: 'D1 — Delts médians · charge légère squeeze' },
+                { id: 'tricep_pushdown', sets: 3, reps: '12', rest: 45, notes: 'D2 — Triceps volume' },
+                { id: 'bicep_curl', sets: 3, reps: '12', rest: 45, notes: 'D3 — Biceps 2e passage semaine' },
+              ]},
+            { name: 'E — Prehab',
+              exercises: [
+                { id: 'face_pull', sets: 3, reps: '15', rest: 45, notes: 'Rotation externe · santé épaule' },
+              ]},
+          ],
+          finisher: '',
+          cooldown: 'Étirements bras, épaules, pecs — 5 min',
+        },
+        // ═══ JOUR 5 (VEN) — LEGS VOLUME + HYROX CONDITIONING ═══
+        {
+          label: 'Legs Volume + Hyrox Conditioning',
+          focus: '2e passage jambes en volume + circuit Hyrox complet : sandbag, BBJ, thruster, KB',
+          warmup: '5 min rameur + 10 air squats + 10 KB swings activation',
+          blocks: [
+            { name: 'A — Front Squat (quad hypertrophie)',
+              exercises: [
+                { id: 'front_squat', sets: 4, reps: '8', rest: 120, notes: 'A — 4×8 quad-focused · torse vertical (transfert wall balls)' },
+              ]},
+            { name: 'B — Hinge volume',
+              exercises: [
+                { id: 'rdl', sets: 3, reps: '10', rest: 90, notes: 'B1 — Ischios 2e passage semaine · 10 reps volume' },
+                { id: 'leg_curl', sets: 3, reps: '12', rest: 60, notes: 'B2 — Isolation ischios · sentir contraction' },
+              ]},
+            { name: 'C — Quad volume + fessiers',
+              exercises: [
+                { id: 'leg_press', sets: 3, reps: '12', rest: 75, notes: 'C1 — Quad volume · amplitude complète' },
+                { id: 'walking_lunge', sets: 3, reps: '20m', rest: 60, notes: 'C2 — Direct applicable lunges Hyrox' },
+              ]},
+            { name: '🏁 D — Circuit Hyrox (3 tours, enchaîner)',
+              exercises: [
+                { id: 'sandbag_lunge', sets: 3, reps: '40m', rest: 0, notes: 'D1 — Foulée longue' },
+                { id: 'burpee_broad_jump', sets: 3, reps: '15m', rest: 0, notes: 'D2 — Rythme régulier' },
+                { id: 'thruster', sets: 3, reps: '12', rest: 0, notes: 'D3 — Squat + press fluide' },
+                { id: 'kb_swing', sets: 3, reps: '20', rest: 90, notes: 'D4 — Hip hinge explosif · repos 90s après tour' },
               ]},
           ],
           finisher: 'Tabata 4 min : 20s sprawls / 10s repos × 8 rounds',
-          cooldown: 'Étirements complets — 8 min',
-        },
-        {
-          label: 'Circuit Race Simulation',
-          focus: 'Simulation complète : enchaîner les stations Hyrox sans pause',
-          warmup: '5 min vélo/rameur + mobilité complète + 10 KB swings activation',
-          blocks: [
-            { name: 'Circuit A — Hyrox Race (4 tours, enchaîner TOUT)',
-              exercises: [
-                { id: 'sled_push_heavy', sets: 4, reps: '25m', rest: 0, notes: 'A1 — Demi course (2×25m = 50m compétition)' },
-                { id: 'wall_ball', sets: 4, reps: '25', rest: 0, notes: 'A2 — Direct après sled' },
-                { id: 'farmers_carry', sets: 4, reps: '50m', rest: 0, notes: 'A3 — Race weight, pas de pause' },
-                { id: 'sandbag_lunge', sets: 4, reps: '25m', rest: 0, notes: 'A4 — Foulée longue, rester droit' },
-                { id: 'burpee_broad_jump', sets: 4, reps: '10m', rest: 120, notes: 'A5 — Repos 2min après le tour complet' },
-              ]},
-            { name: 'Circuit B — Finisher métabolique (3 tours)',
-              exercises: [
-                { id: 'thruster', sets: 3, reps: '12', rest: 0, notes: 'B1 — Squat + press sans pause' },
-                { id: 'kb_swing', sets: 3, reps: '20', rest: 0, notes: 'B2 — Explosif hip hinge' },
-                { id: 'sandbag_over_shoulder', sets: 3, reps: '10', rest: 90, notes: 'B3 — Repos 90s après tour' },
-              ]},
-          ],
-          finisher: '',
-          cooldown: 'Marche 3 min + étirements complets + respiration — 10 min',
+          cooldown: 'Étirements complets + respiration — 10 min',
         },
       ]
     }
@@ -991,7 +1011,10 @@ const MuscuExercises = (() => {
 
   // Bump when templates change so saved plans auto-regenerate on load.
   // v2 (2026-05-29) : add Focus Pec Bas blocks to push days (4j + 5j templates)
-  const TEMPLATES_VERSION = 2;
+  // v3 (2026-07-02) : rewrite 5j template as Hybrid Hyrox + Muscle — each muscle
+  //   hit 2×/week, force ranges (5×5) + hypertrophy ranges (8-12), Hyrox spé
+  //   preserved on J3 (sled, wall balls) + J5 (sandbag, BBJ, thruster, KB).
+  const TEMPLATES_VERSION = 3;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────

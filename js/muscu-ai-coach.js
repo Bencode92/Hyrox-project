@@ -38,6 +38,20 @@ PHILOSOPHIE :
 - Phase : ${_phaseLabel(weekNum)}
 ${profile.focusZone ? `- ⭐ ZONE FOCUS / FAIBLESSE CIBLÉE : ${profile.focusZone}
   → Prioriser systématiquement le travail de cette zone dans le programme (volume, fréquence, exos ciblés).` : ''}
+- 🎯 OBJECTIF : ${_goalLabel(profile.goal)}
+${profile.goal === 'hybrid' ? `
+### RÈGLES HYBRIDE (Hyrox + prise de muscle) — OBLIGATOIRE
+- **Chaque muscle touché 2× par semaine** (push 2×, pull 2×, legs 2×) → indispensable pour hypertrophie.
+- **Deux registres de reps** :
+  - Force : 5×5 sur compound principaux (bench, squat, DL) avec repos 2:30-3:00
+  - Hypertrophie : 8-12 reps sur accessoires + focus zones avec repos 90s
+  - Isolation : 12-15 reps avec repos 45-60s
+- **Volume cible par muscle** : 10-16 sets efficaces / semaine (Schoenfeld).
+- **Progression** : double progression (grimper reps dans la fourchette AVANT +charge).
+- **Hyrox spécificité** : garder sur 2 jours dédiés (sled, sandbag, wall balls, BBJ, thruster, KB).
+  → NE PAS empiler wall balls + sandbag + carries sur les jours push/pull car ça mange la récup.
+- **Bodyweight fonctionnel** : garder (dips, pull-ups, push-ups) — apprécié + transfert Hyrox.
+- **Cardio strict** : à mettre HORS séance muscu ou en fin (compromised running).` : ''}
 
 ## BLESSURES & PRÉCAUTIONS
 ${profile.injuryNotes ? `⚠️ IMPORTANT : ${profile.injuryNotes}
@@ -206,6 +220,14 @@ ${_formatFeedback()}
 
   function _levelLabel(level) {
     return { beginner: 'Débutant (< 1 an de pratique)', intermediate: 'Intermédiaire (1-3 ans)', advanced: 'Avancé (3+ ans)' }[level] || level;
+  }
+
+  function _goalLabel(goal) {
+    return {
+      hyrox:        'HYROX PERF PURE (endurance + force fonctionnelle, prise de muscle secondaire)',
+      hypertrophy:  'PRISE DE MUSCLE (hypertrophie prioritaire, cardio réduit)',
+      hybrid:       'HYBRIDE — Hyrox performance + prise de muscle (les deux à parts égales)',
+    }[goal] || 'HYBRIDE — Hyrox + prise de muscle';
   }
 
   function _phaseLabel(weekNum) {

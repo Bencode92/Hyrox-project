@@ -33,6 +33,7 @@ const MuscuStorage = (() => {
       weight: 80,
       height: 183,         // cm
       focusZone: '',       // ex: "Pecs (bas surtout)"
+      goal: 'hybrid',      // 'hyrox' | 'hypertrophy' | 'hybrid'
       daysPerWeek: 4,
       level: 'intermediate', // beginner, intermediate, advanced
       injuryNotes: '',
@@ -55,6 +56,7 @@ const MuscuStorage = (() => {
       let changed = false;
       if (p.height == null)    { p.height = 183; changed = true; }
       if (p.focusZone == null) { p.focusZone = 'Pecs (bas surtout) — faiblesse marquée'; changed = true; }
+      if (p.goal == null)      { p.goal = 'hybrid'; changed = true; }
       if (changed) _set(KEYS.profile, p);
     } catch {}
   }

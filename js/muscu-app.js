@@ -67,6 +67,7 @@ const MuscuApp = (() => {
       daysPerWeek: parseInt(document.getElementById('ob-days').value) || 4,
       level: document.getElementById('ob-level').value || 'intermediate',
       focusZone: document.getElementById('ob-focus').value.trim(),
+      goal: 'hybrid',
       injuryNotes: document.getElementById('ob-injury').value.trim(),
       createdAt: new Date().toISOString(),
     };
@@ -1167,6 +1168,7 @@ const MuscuApp = (() => {
     document.getElementById('set-days').value = profile.daysPerWeek || 4;
     document.getElementById('set-level').value = profile.level || 'intermediate';
     document.getElementById('set-focus').value = profile.focusZone || '';
+    document.getElementById('set-goal').value = profile.goal || 'hybrid';
     document.getElementById('set-injury').value = profile.injuryNotes || '';
     modal.style.display = 'flex';
   }
@@ -1191,6 +1193,7 @@ const MuscuApp = (() => {
     profile.daysPerWeek = parseInt(document.getElementById('set-days').value) || profile.daysPerWeek;
     profile.level = document.getElementById('set-level').value || profile.level;
     profile.focusZone = document.getElementById('set-focus').value.trim();
+    profile.goal = document.getElementById('set-goal').value || 'hybrid';
     profile.injuryNotes = document.getElementById('set-injury').value.trim();
     MuscuStorage.saveProfile(profile);
     document.getElementById('settings-modal').style.display = 'none';
