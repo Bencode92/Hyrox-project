@@ -892,14 +892,14 @@ const MuscuExercises = (() => {
               exercises: [
                 { id: 'bulgarian_split', sets: 3, reps: '10', rest: 60, notes: 'Par jambe · charge légère volume' },
               ]},
-            { name: '🏁 D — Hyrox Stations (spé race)',
+            { name: '🏁 D — Hyrox Stations (spé race, dose réduite car tu cours 2-3×/sem)',
               exercises: [
-                { id: 'sled_push_heavy', sets: 4, reps: '25m', rest: 120, notes: 'D1 — Race weight · 25m = demi course · pas courts' },
-                { id: 'wall_ball', sets: 3, reps: '20', rest: 60, notes: 'D2 — Transfert direct front squat + OHP' },
+                { id: 'sled_push_heavy', sets: 3, reps: '25m', rest: 120, notes: 'D1 — Race weight · maintenance sled (3 séries au lieu de 4)' },
+                { id: 'wall_ball', sets: 2, reps: '15', rest: 60, notes: 'D2 — Maintenance transfert · volume léger' },
               ]},
             { name: 'E — Mollets + Prehab',
               exercises: [
-                { id: 'calf_raise', sets: 3, reps: '15', rest: 45, notes: 'Propulsion course + prehab' },
+                { id: 'calf_raise', sets: 4, reps: '15', rest: 45, notes: 'Propulsion course · +1 série vs avant (bénéfice hypertrophie)' },
               ]},
           ],
           finisher: '',
@@ -907,41 +907,42 @@ const MuscuExercises = (() => {
         },
         // ═══ JOUR 4 (JEU) — PUSH+PULL VOLUME HYPERTROPHIE ═══
         {
-          label: 'Push+Pull Volume Hypertrophie',
-          focus: '2e passage push+pull en 8-12 reps : incline, dips (encore), rows volume, delts, bras',
-          warmup: '5 min SkiErg + mobilité épaules + activation dos',
+          label: 'Push+Pull Volume — Focus Haut du Pec',
+          focus: '2e passage push+pull hypertrophie : FOCUS HAUT DU PEC (incline barre + incline DB) + maintenance bas + volume dos/delts/bras',
+          warmup: '5 min SkiErg + mobilité épaules + activation dos + 2 séries progressives incline',
           blocks: [
-            { name: 'A — Incline Bench (haut pec)',
+            { name: '💪 A — Haut du Pec (incline compound)',
               exercises: [
-                { id: 'incline_bench', sets: 4, reps: '8', rest: 120, notes: 'A — Équilibre bas/haut pec (bas travaillé J1) · 8 reps' },
+                { id: 'incline_bench', sets: 4, reps: '8', rest: 120, notes: 'A — Banc 30-45° · descente jusqu\'aux clavicules · charge progressive · compound haut pec' },
               ]},
-            { name: '💪 B — Focus Pec Bas volume (2e passage)',
+            { name: '💪 B — Haut du Pec volume (incline DB)',
               exercises: [
-                { id: 'decline_db_press', sets: 4, reps: '10', rest: 90, notes: 'B1 — 2e passage semaine · squeeze en haut · volume bas du pec' },
-                { id: 'db_row', sets: 4, reps: '10', rest: 90, notes: 'B2 — Antagoniste dos épaisseur' },
+                { id: 'incline_db_press', sets: 4, reps: '10', rest: 90, notes: 'B — Volume haut pec · rapprocher DB en haut (squeeze) · contrôle descente 2s' },
               ]},
-            { name: '💪 C — Cable Crossover volume (2e passage isolation)',
+            { name: 'C — Maintenance Bas du Pec',
               exercises: [
-                { id: 'cable_crossover_high', sets: 3, reps: '15', rest: 45, notes: 'C — Isolation bas du pec · 2e passage semaine · squeeze 3s' },
+                { id: 'decline_db_press', sets: 3, reps: '10', rest: 75, notes: 'C1 — Volume bas du pec (maintenance) · banc décliné 15-30°' },
+                { id: 'cable_crossover_high', sets: 3, reps: '15', rest: 45, notes: 'C2 — Isolation bas · poulies HAUTES · squeeze 2s' },
               ]},
-            { name: 'C — Vertical Push + Pull volume',
+            { name: 'D — Pull Volume (dos épaisseur + largeur)',
               exercises: [
-                { id: 'db_ohp', sets: 3, reps: '10', rest: 75, notes: 'C1 — Delts hypertrophie · stabilisation' },
-                { id: 'pull_ups', sets: 3, reps: 'AMRAP', rest: 75, notes: 'C2 — Max reps sans lest · endurance dos' },
+                { id: 'db_row', sets: 4, reps: '10', rest: 90, notes: 'D1 — Dos épaisseur · squeeze omoplate · genou et main sur banc' },
+                { id: 'pull_ups', sets: 3, reps: 'AMRAP', rest: 75, notes: 'D2 — Max reps sans lest · endurance dos · antagoniste push' },
               ]},
-            { name: 'D — Isolation bras (hypertrophie)',
+            { name: 'E — Delts + Bras (isolation)',
               exercises: [
-                { id: 'lateral_raise', sets: 4, reps: '15', rest: 45, notes: 'D1 — Delts médians · charge légère squeeze' },
-                { id: 'tricep_pushdown', sets: 3, reps: '12', rest: 45, notes: 'D2 — Triceps volume' },
-                { id: 'bicep_curl', sets: 3, reps: '12', rest: 45, notes: 'D3 — Biceps 2e passage semaine' },
+                { id: 'db_ohp', sets: 3, reps: '10', rest: 75, notes: 'E1 — Delts hypertrophie · stabilisation' },
+                { id: 'lateral_raise', sets: 4, reps: '15', rest: 45, notes: 'E2 — Delts médians (largeur d\'épaules) · charge légère squeeze' },
+                { id: 'tricep_pushdown', sets: 3, reps: '12', rest: 45, notes: 'E3 — Triceps volume · coudes fixes' },
+                { id: 'bicep_curl', sets: 3, reps: '12', rest: 45, notes: 'E4 — Biceps 2e passage · contrôle 3s descente' },
               ]},
-            { name: 'E — Prehab',
+            { name: 'F — Prehab épaules',
               exercises: [
-                { id: 'face_pull', sets: 3, reps: '15', rest: 45, notes: 'Rotation externe · santé épaule' },
+                { id: 'face_pull', sets: 3, reps: '15', rest: 45, notes: 'Rotation externe · santé épaule · essentiel avec le volume push élevé' },
               ]},
           ],
           finisher: '',
-          cooldown: 'Étirements bras, épaules, pecs — 5 min',
+          cooldown: 'Étirements pecs (haut+bas), épaules, bras — 5 min',
         },
         // ═══ JOUR 5 (VEN) — LEGS VOLUME + HYROX CONDITIONING ═══
         {
@@ -963,15 +964,15 @@ const MuscuExercises = (() => {
                 { id: 'leg_press', sets: 3, reps: '12', rest: 75, notes: 'C1 — Quad volume · amplitude complète' },
                 { id: 'walking_lunge', sets: 3, reps: '20m', rest: 60, notes: 'C2 — Direct applicable lunges Hyrox' },
               ]},
-            { name: '🏁 D — Circuit Hyrox (3 tours, enchaîner)',
+            { name: '🏁 D — Circuit Hyrox (2 tours, dose réduite car tu cours 2-3×/sem)',
               exercises: [
-                { id: 'sandbag_lunge', sets: 3, reps: '40m', rest: 0, notes: 'D1 — Foulée longue' },
-                { id: 'burpee_broad_jump', sets: 3, reps: '15m', rest: 0, notes: 'D2 — Rythme régulier' },
-                { id: 'thruster', sets: 3, reps: '12', rest: 0, notes: 'D3 — Squat + press fluide' },
-                { id: 'kb_swing', sets: 3, reps: '20', rest: 90, notes: 'D4 — Hip hinge explosif · repos 90s après tour' },
+                { id: 'sandbag_lunge', sets: 2, reps: '40m', rest: 0, notes: 'D1 — Foulée longue · maintenance sandbag' },
+                { id: 'burpee_broad_jump', sets: 2, reps: '15m', rest: 0, notes: 'D2 — Rythme régulier' },
+                { id: 'thruster', sets: 2, reps: '12', rest: 0, notes: 'D3 — Squat + press fluide' },
+                { id: 'kb_swing', sets: 2, reps: '20', rest: 90, notes: 'D4 — Hip hinge explosif · repos 90s après tour' },
               ]},
           ],
-          finisher: 'Tabata 4 min : 20s sprawls / 10s repos × 8 rounds',
+          finisher: '',
           cooldown: 'Étirements complets + respiration — 10 min',
         },
       ]
@@ -1021,7 +1022,16 @@ const MuscuExercises = (() => {
   // v4 (2026-07-02) : remove all dips (weighted_dips) from templates —
   //   painful for athlete. Replaced by extra decline_bench + decline_db_press
   //   volume, plus an added cable_crossover_high block on J4.
-  const TEMPLATES_VERSION = 4;
+  // v5 (2026-07-03) : coach-driven refactor for pec "roundness" hypertrophy
+  //   - J4 rewritten as "Push+Pull Volume — Focus Haut du Pec" : incline
+  //     compound (4×8) + incline DB volume (4×10) + decline maintenance +
+  //     cable iso. Balanced haut/moyen/bas of the pec.
+  //   - J3 Hyrox stations : sled 4×25m → 3×25m, wall balls 3×20 → 2×15,
+  //     calf raise 3 → 4 series (extra hypertrophy). Athlete already runs
+  //     2-3×/week outside, no need to double up cardio in muscu.
+  //   - J5 Hyrox circuit : 3 rounds → 2 rounds, tabata finisher removed.
+  //     Same reasoning (cardio done outside).
+  const TEMPLATES_VERSION = 5;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
