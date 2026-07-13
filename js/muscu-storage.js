@@ -91,6 +91,55 @@ const MuscuStorage = (() => {
     return getSessions().slice(-n);
   }
 
+  // ── Pain J+1 tracking (règle des 24h, BJSM 2019) ──────────
+  function saveNextDayPain(sessionId, painScore) {
+    const all = getSessions();
+    const idx = all.findIndex(s => s.id === sessionId);
+    if (idx === -1) return false;
+    all[idx].painNextDay = Math.max(0, Math.min(10, Number(painScore)));
+    all[idx].painNextDayLoggedAt = new Date().toISOString();
+    _set(KEYS.sessions, all);
+    return true;
+  }
+
+  /**
+   * Returns the most recent session that was performed 8-48h ago
+   * and doesn't yet have a painNextDay score. Null if none.
+   */
+  function getSessionAwaitingPain() {
+    const sessions = getSessions();
+    const now = Date.now();
+    for (let i = sessions.length - 1; i >= 0; i--) {
+      const s = sessions[i];
+      if (s.painNextDay != null) continue;
+      if (s.type === 'abs') continue; // Skip abs sessions (too light to bother)
+      const t = new Date(s.createdAt || s.date).getTime();
+      if (isNaN(t)) continue;
+      const hoursAgo = (now - t) / 3600 / 1000;
+      if (hoursAgo >= 8 && hoursAgo <= 48) return s;
+      if (hoursAgo > 48) return null; // older sessions = too late to log
+    }
+    return null;
+  }
+
+  /**
+   * Check if the last N sessions had painNextDay > 3 (persistent pain warning).
+   * Returns { warning: bool, count: number, lastPain: number }.
+   */
+  function getPainWarning() {
+    const sessions = getSessions().filter(s => s.type !== 'abs').slice(-5);
+    const scored = sessions.filter(s => s.painNextDay != null);
+    if (!scored.length) return { warning: false, count: 0, lastPain: null };
+    const lastPain = scored[scored.length - 1].painNextDay;
+    // Consecutive sessions with pain > 3 from most recent
+    let count = 0;
+    for (let i = scored.length - 1; i >= 0; i--) {
+      if (scored[i].painNextDay > 3) count++;
+      else break;
+    }
+    return { warning: count >= 2, count, lastPain };
+  }
+
   // ── PRs ───────────────────────────────────────────────────
   function getPRs() { return _get(KEYS.prs, {}); }
 
@@ -234,6 +283,7 @@ const MuscuStorage = (() => {
       : (exData.rpe || last.globalRpe || null);
 
     const hasPain = !!(last.painNotes && last.painNotes.trim());
+    const painJ1 = typeof last.painNextDay === 'number' ? last.painNextDay : null;
     const step = _isCompound(exerciseId) ? 2.5 : 1.25;
     const targetNum = typeof targetReps === 'number' ? targetReps : null;
     const repsHit = targetNum ? avgReps >= targetNum - 0.5 : true;
@@ -242,10 +292,16 @@ const MuscuStorage = (() => {
     let trend = 'flat';
     let reason = 'Maintien (RPE optimal)';
 
-    if (hasPain) {
+    // Règle 24h (BJSM 2019) : douleur J+1 pilote la charge
+    if (painJ1 != null && painJ1 > 3) {
+      // Décharge auto -5% (arrondi au step)
+      delta = -Math.max(step, Math.round(lastWeight * 0.05 / 2.5) * 2.5);
+      trend = 'pain';
+      reason = `Douleur J+1 = ${painJ1}/10 — décharge auto (règle 24h)`;
+    } else if (hasPain) {
       delta = -step;
       trend = 'pain';
-      reason = 'Douleur signalée — charge allégée';
+      reason = 'Douleur signalée pendant séance — charge allégée';
     } else if (lastRpe && lastRpe >= 9) {
       delta = -step;
       trend = 'down';
@@ -308,6 +364,7 @@ const MuscuStorage = (() => {
   return {
     getProfile, saveProfile, migrateProfile,
     getSessions, saveSession, deleteSession, getSessionsByExercise, getRecentSessions,
+    saveNextDayPain, getSessionAwaitingPain, getPainWarning,
     getPRs, estimate1RM, suggestNextLoad,
     getObjectives, setObjective, removeObjective,
     getWeekPlan, saveWeekPlan, clearWeekPlan,

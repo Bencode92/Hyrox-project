@@ -1404,6 +1404,100 @@ textarea { resize: vertical; min-height: 60px; }
 }
 
 /* ════════════════════════════════════════════════════════════
+   PAIN J+1 (règle 24h, BJSM 2019)
+   ════════════════════════════════════════════════════════════ */
+
+/* Prompt card (dashboard) */
+.pain-prompt-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: linear-gradient(135deg, rgba(255,168,61,0.12), rgba(255,64,96,0.06));
+  border: 1px solid rgba(255,168,61,0.35);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pain-prompt-card:hover {
+  background: linear-gradient(135deg, rgba(255,168,61,0.2), rgba(255,64,96,0.1));
+  transform: translateY(-1px);
+}
+.pain-prompt-icon { font-size: 28px; flex-shrink: 0; }
+.pain-prompt-body { flex: 1; min-width: 0; }
+.pain-prompt-title {
+  font-weight: 800;
+  color: #ffa83d;
+  font-size: 15px;
+}
+.pain-prompt-sub {
+  color: var(--text-2, #8892a8);
+  font-size: 12px;
+  margin-top: 2px;
+}
+.pain-prompt-cta {
+  color: #ffa83d;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/* Warning card (persistent pain) */
+.pain-warning-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(255,64,96,0.10);
+  border: 1px solid rgba(255,64,96,0.4);
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+.pain-warning-icon { font-size: 24px; flex-shrink: 0; }
+.pain-warning-body { flex: 1; }
+.pain-warning-title {
+  font-weight: 800;
+  color: #ff4060;
+  font-size: 14px;
+}
+.pain-warning-sub {
+  color: var(--text-2, #8892a8);
+  font-size: 12px;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* Modal 0-10 scale */
+.pain-modal-content { max-width: 90%; }
+.pain-scale {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  gap: 4px;
+}
+.pain-btn {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  padding: 14px 0;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: #fff;
+}
+.pain-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.4);
+}
+.pain-btn-low  { background: rgba(0,212,170,0.15); color: #00d4aa; }
+.pain-btn-mid  { background: rgba(255,168,61,0.15); color: #ffa83d; }
+.pain-btn-high { background: rgba(255,64,96,0.15); color: #ff4060; }
+.pain-btn-low:hover  { background: rgba(0,212,170,0.35); }
+.pain-btn-mid:hover  { background: rgba(255,168,61,0.35); }
+.pain-btn-high:hover { background: rgba(255,64,96,0.35); }
+
+/* ════════════════════════════════════════════════════════════
    WORKOUT IN PROGRESS — Mode séance guidée
    ════════════════════════════════════════════════════════════ */
 .workout-modal-content {

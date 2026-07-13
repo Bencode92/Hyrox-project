@@ -47,6 +47,9 @@
         <span class="deload-badge" id="dash-deload" style="display:none">DELOAD</span>
       </div>
 
+      <!-- Pain prompt (shown only if a session awaits pain score) -->
+      <div id="pain-prompt-slot"></div>
+
       <!-- Stats -->
       <div class="stats-row">
         <div class="stat-card">
@@ -495,6 +498,24 @@
 
       <button class="btn" onclick="MuscuApp.saveFeedback()">Envoyer le feedback</button>
       <button class="btn btn-secondary" onclick="MuscuApp.skipFeedback()" style="margin-top:6px">Passer</button>
+    </div>
+  </div>
+
+  <!-- Pain J+1 Modal -->
+  <div class="modal" id="pain-modal">
+    <div class="modal-content pain-modal-content">
+      <div class="modal-header">
+        <h2>Douleur ce matin ?</h2>
+        <button class="modal-close" onclick="MuscuApp.closePainPrompt()">×</button>
+      </div>
+      <p class="text-muted text-sm" id="pain-session-label" style="margin-bottom:14px"></p>
+      <p style="font-size:13px;margin-bottom:12px">
+        Note la douleur J+1 dans la zone travaillée (0 = rien, 10 = insupportable) :
+      </p>
+      <div class="pain-scale" id="pain-scale"></div>
+      <p class="text-muted text-sm" style="margin-top:14px;font-style:italic">
+        💡 Règle des 24h : ≤ 3/10 = progression OK · &gt; 3/10 = charge auto-baissée · persiste = ostéo
+      </p>
     </div>
   </div>
 

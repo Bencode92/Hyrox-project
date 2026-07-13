@@ -215,10 +215,90 @@ const MuscuApp = (() => {
     document.getElementById('dash-volume').textContent = totalVolume > 1000 ? Math.round(totalVolume / 1000) + 't' : totalVolume + 'kg';
     document.getElementById('dash-prs').textContent = Object.keys(prs).length;
 
+    _renderPainPrompt();
     _renderWeekPlan(plan);
     _renderAbsCard(weekNum);
     _renderPRCards(prs, objectives);
     _renderObjectivesProgress(prs, objectives);
+  }
+
+  // ── Pain J+1 prompt (règle 24h, BJSM 2019) ────────────────
+  function _renderPainPrompt() {
+    const slot = document.getElementById('pain-prompt-slot');
+    if (!slot) return;
+    let html = '';
+
+    // 1. Session awaiting pain score
+    const awaiting = MuscuStorage.getSessionAwaitingPain
+      ? MuscuStorage.getSessionAwaitingPain() : null;
+    if (awaiting) {
+      const dateStr = _formatDate(awaiting.date);
+      html += `
+        <div class="pain-prompt-card" onclick="MuscuApp.openPainPrompt('${awaiting.id}')">
+          <div class="pain-prompt-icon">🌡️</div>
+          <div class="pain-prompt-body">
+            <div class="pain-prompt-title">Douleur ce matin ?</div>
+            <div class="pain-prompt-sub">Note ton ressenti après ta séance du ${dateStr}</div>
+          </div>
+          <div class="pain-prompt-cta">Noter →</div>
+        </div>`;
+    }
+
+    // 2. Persistent pain warning
+    const warn = MuscuStorage.getPainWarning ? MuscuStorage.getPainWarning() : null;
+    if (warn && warn.warning) {
+      html += `
+        <div class="pain-warning-card">
+          <div class="pain-warning-icon">⚠️</div>
+          <div class="pain-warning-body">
+            <div class="pain-warning-title">Douleur récurrente détectée</div>
+            <div class="pain-warning-sub">${warn.count} séances consécutives avec douleur J+1 &gt; 3/10.
+            Charges auto-baissées. Consulter ton ostéo si ça persiste.</div>
+          </div>
+        </div>`;
+    }
+
+    slot.innerHTML = html;
+  }
+
+  let _painPromptSessionId = null;
+
+  function openPainPrompt(sessionId) {
+    _painPromptSessionId = sessionId;
+    const modal = document.getElementById('pain-modal');
+    const scaleEl = document.getElementById('pain-scale');
+    const session = MuscuStorage.getSessions().find(s => s.id === sessionId);
+    if (session) {
+      const label = session.type === 'musculation' ? 'muscu' : (session.type || 'séance');
+      document.getElementById('pain-session-label').textContent =
+        `Séance : ${_formatDate(session.date)} · ${label}`;
+    }
+
+    // Render 0-10 buttons
+    scaleEl.innerHTML = [0,1,2,3,4,5,6,7,8,9,10].map(n => {
+      const cls = n <= 3 ? 'pain-btn-low' : (n <= 6 ? 'pain-btn-mid' : 'pain-btn-high');
+      return `<button class="pain-btn ${cls}" onclick="MuscuApp.savePain(${n})">${n}</button>`;
+    }).join('');
+
+    modal.style.display = 'flex';
+  }
+
+  function closePainPrompt() {
+    document.getElementById('pain-modal').style.display = 'none';
+    _painPromptSessionId = null;
+  }
+
+  function savePain(score) {
+    if (!_painPromptSessionId) return closePainPrompt();
+    MuscuStorage.saveNextDayPain(_painPromptSessionId, score);
+    closePainPrompt();
+    const msg = score <= 3
+      ? `Douleur ${score}/10 · OK, progression maintenue 👍`
+      : score <= 6
+        ? `Douleur ${score}/10 · Charge auto-baissée la prochaine séance`
+        : `Douleur ${score}/10 · Charge fortement baissée · consulter si persiste`;
+    _toast(msg, score <= 3 ? 'success' : score <= 6 ? 'info' : 'error');
+    renderDashboard();
   }
 
   function _renderAbsCard(weekNum) {
@@ -2169,6 +2249,7 @@ const MuscuApp = (() => {
     addSet, removeSet, updateSet, removeExercise,
     validateSet, unvalidateSet, skipRest, addRestTime,
     skipDay,
+    openPainPrompt, closePainPrompt, savePain,
     showAbsSession, closeAbsSession, startAbsSession, absMarkDone,
     absSkipToRest, absSkipRest, absSkipExo, finishAbsSession,
     // Workout in progress (mode séance guidée)
