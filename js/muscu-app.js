@@ -102,10 +102,10 @@ const MuscuApp = (() => {
     const splash = document.getElementById('splash');
     if (splash) splash.style.display = 'none';
     const profile = MuscuStorage.getProfile();
-    const template = MuscuExercises.getTemplate(profile.daysPerWeek);
+    const template = MuscuExercises.getTemplate(profile.daysPerWeek, profile.goal);
     const el = document.getElementById('launch-modal');
     document.getElementById('launch-template-name').textContent = template.name;
-    document.getElementById('launch-days').textContent = profile.daysPerWeek + ' jours/semaine';
+    document.getElementById('launch-days').textContent = (profile.goal === 'recovery' ? '5' : profile.daysPerWeek) + ' jours/semaine';
     document.getElementById('launch-level').textContent = profile.level;
 
     const daysHtml = template.days.map(d =>

@@ -33,7 +33,7 @@ const MuscuStorage = (() => {
       weight: 80,
       height: 183,         // cm
       focusZone: '',       // ex: "Pecs (bas surtout)"
-      goal: 'hybrid',      // 'hyrox' | 'hypertrophy' | 'hybrid'
+      goal: 'hybrid',      // 'hyrox' | 'hypertrophy' | 'hybrid' | 'recovery'
       excludedExercises: [], // IDs à ne JAMAIS programmer (douleur, blessure)
       daysPerWeek: 4,
       level: 'intermediate', // beginner, intermediate, advanced

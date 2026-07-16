@@ -584,6 +584,103 @@ const MuscuExercises = (() => {
       videoUrl: 'https://www.youtube.com/watch?v=p5TABsQ4KIo',
       cues: ['KB/DB bras tendu au-dessus de la tête', 'Biceps à côté de l\'oreille', 'Core serré, côtes basses', 'Stabilité d\'épaule sous charge', '30-40s par bras'],
       mistakes: ['Coude plié', 'Côtes qui s\'ouvrent (dos cambré)', 'Mauvais alignement'] },
+
+    // ─── RECOVERY / GESTION CHRONIQUE (charges légères, tempo lent, épaule/dos safe) ───
+    { id: 'push_up', name: 'Pompes', category: 'upper_push', subcategory: 'chest', equipment: 'bodyweight',
+      hyrox: ['burpees'], primary: ['pectoraux','triceps'], secondary: ['épaules','core'],
+      videoUrl: 'https://www.youtube.com/watch?v=IODxDxX7oi4',
+      cues: ['Mains largeur épaules, corps gainé en planche', 'Descendre poitrine près du sol, coudes ~45°', 'Tempo lent 3-0-1-0 en gestion chronique', 'Amplitude complète pain-free', 'Régresser sur les genoux si douleur épaule'],
+      mistakes: ['Coudes qui partent à 90° (stress épaule)', 'Hanches qui s\'affaissent', 'Amplitude partielle'] },
+
+    { id: 'ring_push_up', name: 'Pompes aux anneaux', category: 'upper_push', subcategory: 'chest', equipment: 'rings',
+      hyrox: [], primary: ['pectoraux','triceps'], secondary: ['épaules','core','stabilisateurs'],
+      videoUrl: 'https://www.youtube.com/watch?v=8mgOhElkAF8',
+      cues: ['Anneaux à ~20-30 cm du sol', 'Instabilité → +30% activation pec vs pompe standard', 'Tempo lent, coudes serrés', 'Tourner légèrement les anneaux vers l\'extérieur en bas', 'Idéal pec sans compression articulaire'],
+      mistakes: ['Anneaux qui partent dans tous les sens (trop tôt)', 'Épaules qui montent aux oreilles', 'Amplitude partielle'] },
+
+    { id: 'deficit_push_up', name: 'Pompes déficit (poignées)', category: 'upper_push', subcategory: 'chest', equipment: 'bodyweight',
+      hyrox: [], primary: ['pectoraux','triceps'], secondary: ['épaules'],
+      videoUrl: 'https://www.youtube.com/watch?v=4t9CBW-Vg9w',
+      cues: ['Mains sur poignées / plots pour gagner en amplitude', 'Descendre la poitrine SOUS le niveau des mains', 'Reproduit le stimulus des dips SANS compression gléno-humérale', 'Tempo 3-0-1-0', 'Stop si tiraillement épaule antérieure'],
+      mistakes: ['Descendre trop bas si épaule sensible', 'Coudes trop écartés', 'Rebond en bas'] },
+
+    { id: 'archer_push_up', name: 'Pompes archer', category: 'upper_push', subcategory: 'chest', equipment: 'bodyweight',
+      hyrox: [], primary: ['pectoraux','triceps'], secondary: ['épaules','core'],
+      videoUrl: 'https://www.youtube.com/watch?v=hfB_Qun6Zzk',
+      cues: ['Mains très écartées', 'Descendre vers un bras, l\'autre reste tendu', '70-80% du poids sur le bras qui travaille', 'Progression unilatérale safe avant la pompe à un bras', 'Alterner les côtés'],
+      mistakes: ['Bras tendu qui plie (devient une pompe large)', 'Hanches qui tournent', 'Perte de gainage'] },
+
+    { id: 'machine_chest_press', name: 'Développé poitrine machine', category: 'upper_push', subcategory: 'chest', equipment: 'machine',
+      hyrox: [], primary: ['pectoraux','triceps'], secondary: ['épaules'],
+      videoUrl: 'https://www.youtube.com/watch?v=xUm0BiZCWlQ',
+      cues: ['Alternative safe au développé couché barre (trajectoire guidée)', 'Régler le siège : poignées au niveau du milieu de la poitrine', 'Tempo lent 3-0-1-0, RIR 2', 'Ne pas verrouiller violemment les coudes', 'Charge légère à modérée, jamais RPE > 7'],
+      mistakes: ['Siège trop bas/haut (stress épaule)', 'À-coups', 'Charge trop lourde par ego'] },
+
+    { id: 'cable_crossover_low', name: 'Cable Crossover bas → haut', category: 'upper_push', subcategory: 'chest', equipment: 'cable',
+      hyrox: [], primary: ['pectoraux'], secondary: ['épaules'],
+      videoUrl: 'https://www.youtube.com/watch?v=taI4XduLpTk',
+      cues: ['Poulies en position BASSE, mouvement vers le HAUT', 'Cible les fibres basses du pec sans compression axiale', 'Léger, 12-15 reps, contraction 1s en haut', 'Position étirée en bas (léger avantage hypertrophie)', 'Coudes légèrement fléchis fixes'],
+      mistakes: ['Trop lourd → épaules prennent le relais', 'Amplitude écrasée', 'Torse qui s\'effondre'] },
+
+    { id: 'pec_deck', name: 'Pec Deck (machine)', category: 'upper_push', subcategory: 'chest', equipment: 'machine',
+      hyrox: [], primary: ['pectoraux'], secondary: [],
+      videoUrl: 'https://www.youtube.com/watch?v=Z57CtFmRMxA',
+      cues: ['Isolation pec sur trajectoire guidée', 'Dos plaqué, coudes à hauteur des épaules', 'Reps 12-20 en TUT lent (finisher métabolique)', 'Contraction 1s au centre', 'Idéal fin de séance, charge légère'],
+      mistakes: ['Épaules qui s\'enroulent en avant', 'À-coups', 'Amplitude excessive derrière le plan du corps'] },
+
+    { id: 'machine_shoulder_press', name: 'Développé épaules machine', category: 'upper_push', subcategory: 'shoulder', equipment: 'machine',
+      hyrox: [], primary: ['épaules'], secondary: ['triceps'],
+      videoUrl: 'https://www.youtube.com/watch?v=Wqq43dKW1TU',
+      cues: ['Alternative safe à l\'OHP barre (trajectoire guidée)', 'Poignées au niveau des épaules au départ', 'Ne pas verrouiller/claquer en haut', 'Tempo lent, RIR 2, charge légère', 'Stop si accrochage sous-acromial'],
+      mistakes: ['Cambrer le dos', 'Charge trop lourde', 'Amplitude au-delà du confort épaule'] },
+
+    { id: 'inverted_row', name: 'Rowing inversé (Inverted Row)', category: 'upper_pull', subcategory: 'back', equipment: 'bodyweight',
+      hyrox: ['sled_pull'], primary: ['dos','trapèzes'], secondary: ['biceps','core'],
+      videoUrl: 'https://www.youtube.com/watch?v=hXTc1mDnZCw',
+      cues: ['Le rowing le plus safe pour les lombaires (McGill)', 'Barre à hauteur de hanches/poitrine', 'Corps gainé, tirer la poitrine vers la barre', 'Régler la difficulté par la hauteur des pieds (au sol → surélevés)', 'Tempo 3-1-1-1, omoplates serrées en haut'],
+      mistakes: ['Hanches qui pendent', 'Amplitude partielle', 'Tirer avec les bras sans les omoplates'] },
+
+    { id: 'assisted_pull_up', name: 'Traction assistée (élastique)', category: 'upper_pull', subcategory: 'back', equipment: 'bodyweight',
+      hyrox: [], primary: ['dos','biceps'], secondary: ['avant-bras'],
+      videoUrl: 'https://www.youtube.com/watch?v=lktGjO2FT9g',
+      cues: ['Élastique sous les genoux/pieds pour alléger', 'Descente lente et contrôlée (excentrique)', 'Menton au-dessus de la barre sans à-coup', 'Réduire l\'assistance au fil des semaines', 'Épaules basses au départ, pas de balancier'],
+      mistakes: ['Balancier / kipping', 'Amplitude partielle', 'Épaules qui montent'] },
+
+    { id: 'band_pull_apart', name: 'Band Pull-Apart', category: 'upper_pull', subcategory: 'back', equipment: 'band',
+      hyrox: [], primary: ['trapèzes','deltoïdes postérieurs'], secondary: ['rotateurs'],
+      videoUrl: 'https://www.youtube.com/watch?v=IaHb-Rcg1oM',
+      cues: ['Prehab santé épaule — bras tendus devant', 'Écarter l\'élastique en serrant les omoplates', 'Contrôle sur le retour', '3×15-20, quotidien ou en warmup', 'Complément indispensable aux face pulls'],
+      mistakes: ['Hausser les épaules', 'Cambrer le dos', 'Retour non contrôlé'] },
+
+    { id: 'superman_hold', name: 'Superman Hold', category: 'core', subcategory: 'stability', equipment: 'bodyweight',
+      hyrox: [], primary: ['érecteurs du rachis','fessiers'], secondary: ['dos'],
+      videoUrl: 'https://www.youtube.com/watch?v=z6PJMT2y8GQ',
+      cues: ['Allongé sur le ventre, bras et jambes décollés', 'Renfort lombaire au poids du corps (zéro charge)', 'Maintenir 20-40s, respiration continue', 'Serrer fessiers, allonger la nuque', 'Sans hyperextension forcée'],
+      mistakes: ['Casser la nuque en arrière', 'Hyperextension douloureuse', 'Apnée'] },
+
+    { id: 'bird_dog', name: 'Bird-Dog', category: 'core', subcategory: 'stability', equipment: 'bodyweight',
+      hyrox: [], primary: ['core','érecteurs du rachis'], secondary: ['fessiers','épaules'],
+      videoUrl: 'https://www.youtube.com/watch?v=wiFNA3sqjCA',
+      cues: ['À quatre pattes, dos neutre', 'Tendre bras opposé + jambe opposée', 'Anti-rotation : bassin stable (ne pas basculer)', 'Pause 2s, contrôle', 'Excellent réapprentissage du gainage anti-rotation'],
+      mistakes: ['Bassin qui tourne', 'Dos qui creuse', 'Mouvement trop rapide'] },
+
+    { id: 'rower_z2', name: 'Rameur Zone 2', category: 'conditioning', subcategory: 'cardio', equipment: 'rower',
+      hyrox: ['row'], primary: ['cardio','dos','jambes'], secondary: [],
+      videoUrl: 'https://www.youtube.com/watch?v=H0r_ZPXJLtg',
+      cues: ['Allure conversationnelle (Zone 2 = tu peux parler)', 'FC ~60-70% max', 'Séquence jambes → tronc → bras', 'Construit la base aérobie sans écraser la récup', 'Durée en minutes, pas en reps'],
+      mistakes: ['Partir trop fort (sort de la Z2)', 'Tirer avec les bras d\'abord', 'Dos arrondi'] },
+
+    { id: 'ski_erg_z2', name: 'Ski Erg Zone 2', category: 'conditioning', subcategory: 'cardio', equipment: 'skierg',
+      hyrox: ['ski_erg'], primary: ['cardio','dos','core'], secondary: ['triceps'],
+      videoUrl: 'https://www.youtube.com/watch?v=vXbb6Kcv6Bk',
+      cues: ['Allure Zone 2 conversationnelle', 'Engager le tronc, hanches qui poussent', 'Rythme régulier, respiration nasale si possible', 'Durée en minutes', 'Doux pour les articulations'],
+      mistakes: ['Tout tirer avec les bras', 'Allure trop haute', 'Dos rond'] },
+
+    { id: 'course_z2', name: 'Course / Marche rapide Zone 2', category: 'conditioning', subcategory: 'cardio', equipment: 'none',
+      hyrox: ['course'], primary: ['cardio','jambes'], secondary: [],
+      videoUrl: 'https://www.youtube.com/watch?v=brFHyOtTwH4',
+      cues: ['Allure Zone 2 : tu peux tenir une conversation', 'FC ~60-70% max', 'Foulée souple, cadence ~170-180', 'Marche rapide OK si la course tire', 'Durée en minutes'],
+      mistakes: ['Partir en Zone 3-4 (trop rapide)', 'Sur-foulée', 'Négliger l\'échauffement'] },
   ];
 
   // ── Category labels ───────────────────────────────────────
@@ -997,7 +1094,124 @@ const MuscuExercises = (() => {
     );
   }
 
-  function getTemplate(daysPerWeek) {
+  // ── RECOVERY / GESTION CHRONIQUE ──────────────────────────
+  // Programme « zéro barre lourde » validé avec l'athlète (bench + deadlift SORTIS,
+  // pas allégés). Structure fixe / séance : 10 min Z2 + 5 min prehab → 4 exos muscu
+  // → 15 min cardio finisher. Sélectionné quand profile.goal === 'recovery'.
+  // Règles portées par les notes : tempo lent = la vraie charge · près de l'échec
+  // (RIR 1-2) après calibration, PAS un plafond RPE bas permanent · jambes = seule
+  // zone où charger, +1 progression/sem sur leg press uniquement.
+  const RECOVERY_TEMPLATE = {
+    name: 'Récupération — Gestion chronique (zéro barre lourde)',
+    days: [
+      {
+        label: 'J1 — Push (pec) sans compression',
+        focus: 'Pec/épaules en machine + poids du corps, tempo lent, zéro barre. Bench SORTI.',
+        warmup: '10 min rameur Z2 (allure conversationnelle) — c\'est ton échauffement',
+        blocks: [
+          { name: 'Prehab épaules (5 min · 1×/jour max)',
+            exercises: [
+              { id: 'face_pull',        sets: 3, reps: '15', rest: 45, notes: 'Rotation externe · santé épaule' },
+              { id: 'band_pull_apart',  sets: 3, reps: '20', rest: 30, notes: 'Omoplates · retour contrôlé' },
+            ]},
+          { name: 'Push pec — charge légère, tempo 3-0-1-0',
+            exercises: [
+              { id: 'machine_chest_press',    sets: 4, reps: '10',    rest: 90, notes: 'Remplace le bench · tempo 3-0-1-0 · près de l\'échec (RIR 1-2) après calibration' },
+              { id: 'deficit_push_up',        sets: 3, reps: '10-12', rest: 75, notes: 'Poignées/plots · amplitude complète pain-free' },
+              { id: 'cable_crossover_low',    sets: 3, reps: '15',    rest: 60, notes: 'Poulies basses → haut · fibres pec bas sans compression axiale' },
+              { id: 'machine_shoulder_press', sets: 3, reps: '12',    rest: 75, notes: 'Remplace l\'OHP barre · pas de claquage en haut' },
+            ]},
+          { name: 'Cardio finisher (15 min)',
+            exercises: [
+              { id: 'rower_z2', sets: 1, reps: '15 min', rest: 0, notes: 'Zone 2 · base aérobie' },
+            ]},
+        ],
+        finisher: '',
+        cooldown: 'Étirements pec/épaules doux — 3 min',
+      },
+      {
+        label: 'J2 — Pull (dos) safe lombaires',
+        focus: 'Dos en tirage horizontal/vertical safe, zéro deadlift ni row barre penché.',
+        warmup: '10 min ski erg Z2 — échauffement + activation dos',
+        blocks: [
+          { name: 'Prehab épaules (5 min · 1×/jour max)',
+            exercises: [
+              { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'Rotation externe' },
+              { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'Omoplates' },
+            ]},
+          { name: 'Pull dos — charge tissulaire basse',
+            exercises: [
+              { id: 'inverted_row', sets: 4, reps: '10',  rest: 75, notes: 'Le rowing le plus safe (McGill) · tempo 3-1-1-1 · difficulté par hauteur des pieds' },
+              { id: 'lat_pulldown', sets: 3, reps: '12',  rest: 75, notes: 'Prise large · tempo lent' },
+              { id: 'db_row',       sets: 3, reps: '12',  rest: 60, notes: 'Chest-supported (banc incliné) → zéro charge sur les érecteurs' },
+              { id: 'face_pull',    sets: 3, reps: '20',  rest: 45, notes: 'Volume dos + santé épaule' },
+            ]},
+          { name: 'Cardio finisher (15 min)',
+            exercises: [
+              { id: 'ski_erg_z2', sets: 1, reps: '15 min', rest: 0, notes: 'Bonus : encore du dos · Zone 2' },
+            ]},
+        ],
+        finisher: '',
+        cooldown: 'Dead hang 1×30s + étirements dos — 3 min',
+      },
+      {
+        label: 'J3 — Jambes (ta zone saine)',
+        focus: 'Seule zone où tu peux charger. Cap : 1 seule progression/sem, sur le leg press uniquement.',
+        warmup: '5 min vélo/rameur + mobilité hanches/chevilles',
+        blocks: [
+          { name: 'Jambes — charge OK ici',
+            exercises: [
+              { id: 'leg_press',       sets: 4, reps: '10',       rest: 90, notes: 'LÀ tu peux mettre du poids · +1 progression/sem MAX (le seul exo qui monte)' },
+              { id: 'bulgarian_split', sets: 3, reps: '10/jambe', rest: 60, notes: 'Contrôle unijambiste' },
+              { id: 'hip_thrust',      sets: 4, reps: '12',       rest: 75, notes: 'Fessiers/hanche · substitut deadlift · zéro stress dos' },
+              { id: 'leg_curl',        sets: 3, reps: '15',       rest: 45, notes: 'Ischios isolés safe' },
+            ]},
+          { name: 'Cardio finisher (15 min)',
+            exercises: [
+              { id: 'course_z2', sets: 1, reps: '15 min', rest: 0, notes: 'Zone 2 · marche rapide OK si ça tire' },
+            ]},
+        ],
+        finisher: '',
+        cooldown: 'Étirements quads/ischios/hanches — 5 min',
+      },
+      {
+        label: 'J4 — Piscine (dos le plus safe qui existe)',
+        focus: 'Traction complète, zéro compression, zéro impact. Récup active.',
+        warmup: 'Entrer progressivement, quelques longueurs souples',
+        blocks: [
+          { name: 'Natation 30 min',
+            exercises: [
+              { id: 'course_z2', sets: 1, reps: '30 min', rest: 0, notes: 'IDÉAL : piscine — dos crawlé + brasse contrôlée 30 min. Course douce 30 min en repli si pas de bassin.' },
+            ]},
+        ],
+        finisher: '',
+        cooldown: 'Étirements doux au bord — 3 min',
+      },
+      {
+        label: 'J5 — Full body + Hyrox léger',
+        focus: 'Patterns Hyrox à charge légère, hinge propre au KB (substitut deadlift fonctionnel).',
+        warmup: '10 min rameur Z2 + mobilité générale',
+        blocks: [
+          { name: 'Hyrox léger',
+            exercises: [
+              { id: 'sled_push_light', sets: 4, reps: '20m', rest: 90, notes: 'Léger (~50% race weight)' },
+              { id: 'wall_ball',       sets: 3, reps: '15',  rest: 60, notes: 'Jambes > bras, rythme constant' },
+              { id: 'kb_swing',        sets: 3, reps: '15',  rest: 60, notes: 'Hip hinge propre · ton substitut deadlift fonctionnel' },
+              { id: 'sandbag_carry',   sets: 3, reps: '40m', rest: 60, notes: 'Charge légère, posture haute' },
+            ]},
+          { name: 'Cardio finisher (20 min)',
+            exercises: [
+              { id: 'rower_z2', sets: 1, reps: '20 min', rest: 0, notes: 'Rameur ou course · Zone 2' },
+            ]},
+        ],
+        finisher: '',
+        cooldown: 'Étirements complets — 5 min',
+      },
+    ],
+  };
+
+  function getTemplate(daysPerWeek, goal) {
+    if (goal === 'recovery') return RECOVERY_TEMPLATE;
     return TEMPLATES[daysPerWeek] || TEMPLATES[4];
   }
 
@@ -1031,7 +1245,12 @@ const MuscuExercises = (() => {
   //     2-3×/week outside, no need to double up cardio in muscu.
   //   - J5 Hyrox circuit : 3 rounds → 2 rounds, tabata finisher removed.
   //     Same reasoning (cardio done outside).
-  const TEMPLATES_VERSION = 5;
+  // v6 (2026-07-16) : add RECOVERY_TEMPLATE (goal='recovery') — programme
+  //   « zéro barre lourde » (bench + deadlift sortis) validé avec l'athlète pour
+  //   gestion d'une douleur chronique pec+dos. 5 jours, cardio Z2 intégré (warmup
+  //   + finisher), prehab 1×/jour, jambes = seule zone de charge. Finisher grip
+  //   auto désactivé en recovery pour éviter la surcharge cachée quotidienne.
+  const TEMPLATES_VERSION = 6;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
@@ -1196,14 +1415,17 @@ const MuscuExercises = (() => {
    * Generate a week plan based on profile, week number, and past performance
    */
   function generateWeekPlan(profile, weekNum) {
-    const template = getTemplate(profile.daysPerWeek || 4);
+    const isRecovery = profile.goal === 'recovery';
+    const template = getTemplate(profile.daysPerWeek || 4, profile.goal);
     const isDeload = weekNum > 1 && weekNum % 4 === 0;
     const prs = MuscuStorage.getPRs();
 
-    // Finisher toggle (default ON)
+    // Finisher toggle (default ON) — désactivé en mode recovery : le finisher
+    // poignet/grip quotidien recréerait la surcharge cachée à éviter (prehab déjà
+    // intégré 1×/jour dans le template).
     const settings = (typeof MuscuStorage !== 'undefined' && MuscuStorage.getSettings)
       ? MuscuStorage.getSettings() : {};
-    const finisherEnabled = settings.finisherEnabled !== false;
+    const finisherEnabled = (settings.finisherEnabled !== false) && !isRecovery;
 
     const plan = {
       week: weekNum,

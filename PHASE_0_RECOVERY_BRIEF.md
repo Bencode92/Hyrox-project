@@ -1,18 +1,21 @@
-# Phase 0 Recovery — Brief pour second avis coach/GPT
+# Programme d'entraînement en gestion de douleur chronique pec + dos — Brief pour second avis coach/GPT
 
-**Date** : 12 juillet 2026
+**Date** : 16 juillet 2026 · **Version 3** (reframe « gestion chronique », remplace la v2 « récupération temporaire »)
 **Athlète** : Benoit, 80 kg / 183 cm, IMC 23.9, intermédiaire (1-3 ans muscu)
-**Objet** : Deuxième avis sur un programme de récupération après blessure pec + dos, dans le contexte d'un athlète préparant Hyrox (6+ mois) qui veut aussi construire du muscle.
+**Objet** : Deuxième avis sur un programme d'entraînement **adapté à une douleur pec + dos persistante (articulaire + musculaire)**, chez un athlète préparant Hyrox (6+ mois) qui veut aussi construire du muscle **sans aggraver la condition**.
+
+> ⚠️ **Changement de cadrage important vs versions précédentes.** Les v1/v2 traitaient ça comme une blessure aiguë à « guérir » en 3-4 semaines avant retour au lourd. **Ce n'est pas le cas.** La douleur est articulaire + musculaire et, selon l'athlète, **restera vraisemblablement présente**. Le programme n'est donc **pas** un pont vers le 5×5 lourd — c'est un **nouveau modèle d'entraînement durable** : charges légères, tempo lent, poids du corps, progression par volume/amplitude plutôt que par charge max. Le §7 a été entièrement réécrit dans ce sens.
 
 ---
 
 ## 0. Ce que j'attends de toi (le second lecteur)
 
-Je te partage ma situation complète + le programme que je m'apprête à démarrer sur 3-4 semaines de Phase 0. Trois choses que je veux savoir :
+Je te partage ma situation complète + le modèle d'entraînement que je m'apprête à adopter **durablement** (pas juste 3-4 semaines). Ce que je veux savoir :
 
-1. **Est-ce que le programme Phase 0 v2 (§5) est cohérent** avec la reco du kiné et la littérature scientifique récente (§4) ?
-2. **Y a-t-il des red flags** — exos qui restent risqués, volume mal calibré, cardio mal placé, prehab insuffisante ?
-3. **Une fois Phase 0 terminée, comment je reprends progressivement les charges** sans reproduire la blessure ? Quel critère de progression concret ?
+1. **Le diagnostic lui-même** : est-il raisonnable d'accepter « la douleur sera toujours là » sur une atteinte articulaire jamais imagée précisément, ou faut-il d'abord un vrai diagnostic (écho / IRM) avant de bâtir un programme dessus ? (C'est ma question n°1, je ne veux pas construire sur du sable.)
+2. **Est-ce que le programme (§5) est cohérent** avec la reco du kiné (« moins de poids, focus cardio + poids du corps ») et la littérature récente (§4) pour un entraînement **de longue durée en présence de douleur** ?
+3. **Y a-t-il des red flags** — exos qui restent risqués pour une articulation sensible, volume mal calibré, cardio mal placé, prehab insuffisante ou au contraire excessive ?
+4. **Comment progresser durablement SANS augmenter la charge max** ? Volume, tempo, amplitude, densité, difficulté unilatérale : quels leviers privilégier, à quel rythme, avec quel garde-fou douleur ?
 
 Format libre pour ta réponse.
 
@@ -36,10 +39,12 @@ Format libre pour ta réponse.
 
 ## 2. Blessure et diagnostic pro
 
-- **Douleur pec + dos** assez marquée pour avoir forcé arrêt du programme et consultation
+- **Nature** : douleur pec + dos **à composante articulaire ET musculaire** (pas une simple courbature ni une déchirure isolée)
+- **Évolution** : **persistante / chronique** — elle ne disparaît pas complètement au repos et, selon l'athlète, **restera probablement présente**. C'est le postulat central du programme : s'entraîner AUTOUR d'une douleur qui dure, pas attendre qu'elle parte.
+- **Déclencheur** : assez marquée pour avoir forcé l'arrêt du programme lourd (5×5 bench/DL/squat + 28 sets pec/sem) et une consultation
 - **Diagnostic du kiné** : « tu mets trop de poids, focus plus sur cardio et poids du corps, surtout pour pec et dos »
-- **Pas de diagnostic anatomique précis** communiqué (pas de nom de pathologie type tendinite, subacromial, hernie...)
-- **Interprétation** : surcharge progressive trop rapide + technique probablement dégradée sous fatigue
+- **⚠️ Limite à assumer** : **pas de diagnostic anatomique précis** posé (pas de nom de pathologie — tendinopathie ? conflit sous-acromial ? arthropathie AC ? irritation articulaire postérieure / facettaire côté dos ?), **pas d'imagerie** (écho / IRM). Le « articulaire + musculaire » vient du ressenti + de la formule du kiné, pas d'un examen d'imagerie.
+- **Interprétation de travail** : surcharge progressive trop rapide + technique dégradée sous fatigue, sur un terrain articulaire sensible. **Mais cette interprétation demande à être confirmée par un pro** (cf. question n°1 du §0) — accepter une douleur articulaire « à vie » sans l'avoir vraiment caractérisée est un risque en soi.
 
 ---
 
@@ -112,6 +117,8 @@ Recherche menée sur : hypertrophie sans charge lourde / return-to-lift protocol
 - **Critères objectifs de progression** : (1) 0 douleur pendant/après ; (2) amplitude complète pain-free ; (3) test isométrique côté blessé ≥ 90 % du côté sain ; (4) sommeil non perturbé.
 - **Règle "back to baseline le lendemain"** (Cook & Purdam) prime sur le ressenti pendant la séance.
 
+> **Note de recadrage v3** : cette section décrit le retour-à-la-force *classique* (post-blessure aiguë qui guérit). Dans mon cas — douleur **chronique** — je n'applique **pas** la partie « reprise à 50-60 % puis +5-10 %/sem vers le lourd ». Je garde uniquement les principes transverses (charges légères menées près de l'échec, tempo, tolérance 24 h). La progression réelle est décrite au §7, sans retour au 1RM.
+
 **Sources principales** (accessibles) :
 - Schoenfeld & Grgic — Low vs high load hypertrophy meta-analysis (JSCR 2017)
 - Fenwick et al. — Rowing exercises lumbar load comparison (JSCR 2009)
@@ -125,15 +132,17 @@ Recherche menée sur : hypertrophie sans charge lourde / return-to-lift protocol
 
 ---
 
-## 5. Programme Phase 0 v2 proposé (3-4 semaines)
+## 5. Programme proposé — le modèle durable (pas une phase temporaire)
+
+> Ce bloc était appelé « Phase 0 » dans les versions précédentes, pensé comme 3-4 semaines avant retour au lourd. **En gestion chronique, c'est désormais le régime de base** — pas un sas. Les 2-3 premières semaines servent juste à calibrer les charges (cf. feuille de calibration séparée) ; ensuite on reste sur cette structure et on progresse par volume/tempo/amplitude (§7), sans jamais rebasculer vers le 5×5 lourd.
 
 **Structure globale hebdo** :
 - 4 séances muscu (~50 min chacune) + 1 séance full-body cardio (~60 min)
 - **Cardio Z2** total : ~180 min/sem (150-300 recommandé)
 - **HIIT court** : 1× 15 min (compromised style Hyrox léger)
 - **Prehab** : face pull + band pull-apart en warmup obligatoire chaque séance
-- **RPE cap** : 6 max semaines 1-2, 7 max semaines 3-4
-- **Zéro charge lourde** sur bench, deadlift, squat, row barre, decline barre
+- **Charge légère MAIS près de l'échec** (RIR 1-2 après la phase de calibration) sur les mouvements non douloureux — un plafond « RPE 6 partout » reviendrait à du décentraînement volontaire (l'hypertrophie à charge légère n'existe que menée près de l'échec). Le garde-fou n'est pas un chiffre de RPE mais la **règle douleur J+1** (§7.2).
+- **Zéro charge lourde à vie** sur bench, deadlift, squat barre lourd, row barre penché, decline barre — remplacés durablement par machines / poids du corps / tempo lent. Bench + deadlift ne sont pas « allégés » : ils sont **sortis**.
 
 ### J1 Lun — Push BW + Cardio Z2 (~55 min)
 - Warmup : 10 min rameur Z2 + Face Pull 3×15 + Band Pull-Apart 3×20
@@ -200,43 +209,60 @@ Recherche menée sur : hypertrophie sans charge lourde / return-to-lift protocol
 
 ---
 
-## 7. Reprise progressive après Phase 0 (semaines 5-8)
+## 7. Progresser durablement SANS augmenter la charge max (gestion chronique)
 
-**Semaine 5 (retour progressif)** :
-- Reprendre bench, squat, DL à **50 % 1RM pré-blessure**
-- Séries 3×5 uniquement
-- RPE cap 7
-- Garder 100 % du cardio Z2 mis en place
-- Critère go/no-go : 0 douleur 24-48 h post-séance
+> **Réécriture v3.** Les versions précédentes prévoyaient ici un retour au 5×5 lourd (bench/squat/DL) en semaines 5-9. **Abandonné.** Puisque la douleur est chronique, l'objectif n'est plus de « revenir au lourd » mais de **continuer à progresser sans jamais dépendre de la charge maximale**. La charge max n'est plus un levier — c'est ce qui a blessé. On progresse sur tout le reste.
 
-**Semaines 6-7-8** :
-- +5-10 % 1RM par semaine SI critères respectés
-- RPE cap 7 encore semaine 6, puis 8 dès semaine 7
-- Retour progressif du hybride Hyrox : réintroduire 1 session compromised running / sem
+### 7.1 — Les 6 leviers de progression (par ordre de priorité, à la place de « + de kg »)
 
-**Semaine 9+ (retour au 5j hybride)** :
-- Retour au template hybride Hyrox + muscle complet
-- MAIS : progression désormais **+2.5 kg / 2 semaines** (au lieu de +2.5 / sem) sur compound
-- Deload obligatoire toutes les 4 semaines
-- Test isométrique côté blessé ≥ 90 % côté sain avant tout retour à 1RM max
+1. **Volume** : +1 série / exo toutes les 2-3 semaines si toléré (jusqu'à un plafond raisonnable ~20 sets/muscle/sem, puis on tourne).
+2. **Tempo / TUT** : allonger l'excentrique (3→4→5 s), ajouter des pauses en position étirée. Plus de stimulus au même poids.
+3. **Amplitude** : gagner du ROM pain-free (pompes plus profondes, lengthened partials → full ROM).
+4. **Densité** : réduire le repos (90→75→60 s), supersets antagonistes, drop sets métaboliques.
+5. **Difficulté mécanique (poids du corps)** : pompes genoux → standard → déficit → archer → ring. Inverted row : pieds au sol → surélevés → une jambe.
+6. **Charge — mais micro et plafonnée** : sur machines/isolation NON douloureuses seulement, par paliers de +1.25/+2.5 kg en double progression (4×12 propres sur 2 séances → +1 palier). **Jamais** sur les compounds axiaux lourds, **jamais** au-delà de RPE 7 sur pec/dos.
+
+### 7.2 — La règle qui autorise (ou bloque) toute progression
+
+**Filtre douleur J+1** (Cook & Purdam, tolérance 24 h) — prime sur le ressenti pendant la séance :
+- **Douleur J+1 ≤ 3/10 et revenue à la baseline** → on peut avancer d'un cran (un seul levier à la fois)
+- **> 3/10 ou qui persiste au-delà de 24 h** → on stagne, ou on recule (-1 levier)
+- **Douleur qui monte alors qu'on progresse** → stop, retour au cran précédent, et si ça persiste → reconsulter
+
+### 7.3 — Le cardio et le Hyrox restent la vraie zone de progression « performance »
+
+Comme les charges max sont hors-jeu, **c'est le cardio et le conditioning Hyrox qui deviennent le terrain de PR** (là où on peut pousser sans agresser l'articulation) :
+- Temps/distance rameur & ski erg Z2, puis seuil
+- Compromised running (réintroduit prudemment), wall balls, sled, carries
+- Ces métriques deviennent les « chiffres qui montent » qui gardent la motivation — pas le 1RM.
+
+### 7.4 — Ce qui reste définitivement écarté (sauf feu vert médical explicite)
+
+- Bench / squat / deadlift / row barre penché **lourds à faible reps (≤6)** → remplacés à vie par machine chest press, leg press/goblet, hip hinge léger, chest-supported / inverted row
+- Tout travail à RPE 8-9 sur pec ou dos
+- La chasse au 1RM
+
+> Le seul chemin de retour vers du plus lourd serait un **vrai diagnostic + feu vert d'un pro** (cf. §0 q1) montrant que la structure le supporte. Tant que ce n'est pas le cas, le lourd reste retiré — ce n'est pas une privation, c'est le design du programme.
 
 ---
 
 ## 8. Points spécifiques où je veux ton avis (questions ciblées)
 
-1. **La Phase 0 dure-t-elle assez ?** 3-4 sem me semble bien mais mon kiné ne m'a pas donné de durée précise. La littérature (Silbernagel) parle de 3-12 semaines selon la sévérité — je ne connais pas la sévérité exacte de mon cas.
+1. **Le postulat « douleur à vie » est-il à challenger ?** Est-il raisonnable de bâtir un programme sur « ça restera toujours là » sans imagerie, ou faut-il d'abord caractériser l'atteinte articulaire (écho/IRM, avis médecin du sport) ? Qu'est-ce qui, dans mon tableau, justifierait de pousser pour un vrai diagnostic ?
 
-2. **BFR sur biceps/triceps sans supervision** : sûr pour un intermédiaire qui n'en a jamais fait ? Ou vaut-il mieux zapper ce point ?
+2. **S'entraîner en présence de douleur** : quel niveau de douleur est acceptable PENDANT l'effort sur une atteinte articulaire ? La règle « ≤ 3/10 et retour baseline à 24 h » est-elle le bon garde-fou, ou trop permissive / trop stricte dans mon cas ?
 
-3. **Fréquence prehab quotidien** (inverted rows + pull-aparts + dead hang) : est-ce trop pour une phase de récup ? Ou justement nécessaire ?
+3. **Les leviers de progression du §7.1** (volume, tempo, amplitude, densité, difficulté BW, micro-charge plafonnée) : l'ordre de priorité te paraît-il juste pour une articulation sensible ? En manque-t-il un, y en a-t-il un à retirer ?
 
-4. **Le passage direct 50 % → +5-10 %/sem en semaine 5** : progression trop rapide selon toi ? Certains protocoles recommandent 3-5 %/sem plutôt.
+4. **Cardio & Hyrox comme terrain de perf principal** (§7.3) : le compromised running / wall balls / sled, même « légers », sollicitent le tronc et les épaules — y a-t-il un risque pour ma condition, ou c'est effectivement la zone la plus safe pour progresser ?
 
-5. **Retour au compound 5×5** : à partir de quelle semaine tu recommandes vraiment ? J'ai mis semaine 9 mais peut-être trop tôt.
+5. **BFR sur biceps/triceps sans supervision** : sûr pour un intermédiaire qui n'en a jamais fait, en usage durable ? Ou à zapper ?
 
-6. **Nutrition Phase 0** : maintien calorique (2600 kcal) ou léger déficit (-200) pour éviter la prise de gras pendant la baisse d'activité ? La prise de muscle est de toute façon minimale sur cette phase.
+6. **Fréquence prehab quotidien** (inverted rows + pull-aparts + dead hang) : soutenable et utile sur le long terme, ou risque de surcharge sur une articulation déjà irritée ?
 
-7. **Autre chose critique que j'ai loupée** : mobilité thoracique, breathing, sleep hygiene, autres ?
+7. **Nutrition durable** : maintien calorique (~2600 kcal) vs léger surplus pour construire du muscle malgré les charges légères ? La prise de muscle est-elle réaliste à RPE ≤ 7 sans charge lourde, sur le long terme ?
+
+8. **Autre chose critique que j'ai loupée** : mobilité thoracique, respiration, sommeil, gestion des poussées douloureuses (flare-ups), signaux imposant une reconsultation ?
 
 ---
 
