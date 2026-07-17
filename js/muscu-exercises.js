@@ -681,6 +681,12 @@ const MuscuExercises = (() => {
       videoUrl: 'https://www.youtube.com/watch?v=brFHyOtTwH4',
       cues: ['Allure Zone 2 : tu peux tenir une conversation', 'FC ~60-70% max', 'Foulée souple, cadence ~170-180', 'Marche rapide OK si la course tire', 'Durée en minutes'],
       mistakes: ['Partir en Zone 3-4 (trop rapide)', 'Sur-foulée', 'Négliger l\'échauffement'] },
+
+    { id: 'natation', name: 'Natation (récup active)', category: 'conditioning', subcategory: 'cardio', equipment: 'pool',
+      hyrox: [], primary: ['cardio','dos','épaules'], secondary: ['pectoraux'],
+      videoUrl: 'https://www.youtube.com/watch?v=5HLW2AI1Ink',
+      cues: ['Dos crawlé = ton ami : ouverture pec + rotation externe d\'épaule, zéro compression', 'Allure Z2, conversation possible — jour FACILE (4-5/10), sortir frais', 'Crawl (nage libre) en modération si épaule sensible (rotation interne exigeante)', 'JAMAIS de papillon (opposé de ce que ton épaule/haut du dos demandent)', 'Reps = distance (m) par longueur'],
+      mistakes: ['Sortir fatigué (raté : ce jour permet aux 4 autres d\'être durs)', 'Forcer le crawl si l\'épaule tire → bascule dos + brasse', 'Chercher la performance natation'] },
   ];
 
   // ── Category labels ───────────────────────────────────────
@@ -1157,15 +1163,19 @@ const MuscuExercises = (() => {
       },
       {
         label: 'J3 — Jambes (ta zone saine)',
-        focus: 'Seule zone où tu peux charger. Cap : 1 seule progression/sem, sur le leg press uniquement.',
+        focus: 'Zone saine : tu charges plus librement ici. La progression (reps → charge) vaut aussi sur le haut du corps (cf. J1), pas que les jambes.',
         warmup: '5 min vélo/rameur + mobilité hanches/chevilles',
         blocks: [
           { name: 'Jambes — charge OK ici',
             exercises: [
-              { id: 'leg_press',       sets: 4, reps: '10',       rest: 90, notes: 'Charge plus agressive ici (zone saine). Mais la progression (reps → petite charge) vaut AUSSI pour le haut du corps sur machine/câble — pas que les jambes.' },
+              { id: 'leg_press',       sets: 4, reps: '10',       rest: 90, notes: 'Charge plus agressive ici · reps ↑ puis charge ↑ (RIR 1-2)' },
               { id: 'bulgarian_split', sets: 3, reps: '10/jambe', rest: 60, notes: 'Contrôle unijambiste' },
               { id: 'hip_thrust',      sets: 4, reps: '12',       rest: 75, notes: 'Fessiers/hanche · substitut deadlift · zéro stress dos' },
-              { id: 'leg_curl',        sets: 3, reps: '15',       rest: 45, notes: 'Ischios isolés safe' },
+              { id: 'leg_curl',        sets: 3, reps: '15',       rest: 45, notes: 'Ischios isolés safe · assis > allongé (position étirée)' },
+            ]},
+          { name: 'Transfert Hyrox (optionnel · avant la course)',
+            exercises: [
+              { id: 'wall_ball', sets: 2, reps: '15', rest: 45, notes: 'Apprend à courir sur quadris fatigués (très spécifique Hyrox) · pas plus, sinon rogne la récup jambes' },
             ]},
           { name: 'Cardio finisher (15 min)',
             exercises: [
@@ -1177,20 +1187,26 @@ const MuscuExercises = (() => {
       },
       {
         label: 'J4 — Piscine (dos le plus safe qui existe)',
-        focus: 'Traction complète, zéro compression, zéro impact. Récup active.',
-        warmup: 'Entrer progressivement, quelques longueurs souples',
+        focus: 'Récup active + base aérobie + mobilité épaules/thorax. Jour FACILE (4-5/10) — c\'est lui qui permet aux 4 autres d\'être durs. Alterne Semaine A (aérobie) / Semaine B (technique) d\'une semaine à l\'autre.',
+        warmup: 'Échauffement 5-8 min : 100 m nage libre souple + 50 m dos crawlé lent + 2×25 m brasse jambes (planche)',
         blocks: [
-          { name: 'Natation 30 min',
+          { name: 'Semaine A — Aérobie continue (Z2, sortir frais)',
             exercises: [
-              { id: 'course_z2', sets: 1, reps: '30 min', rest: 0, notes: 'IDÉAL : piscine — dos crawlé + brasse contrôlée 30 min. Course douce 30 min en repli si pas de bassin.' },
+              { id: 'natation', sets: 4, reps: '100 m', rest: 30, notes: 'Dos crawlé — ouverture pec + rotation externe, zéro compression · repos 30s' },
+              { id: 'natation', sets: 4, reps: '50 m',  rest: 20, notes: 'Brasse contrôlée · conversation possible (Z2) · repos 20s' },
+            ]},
+          { name: 'Semaine B — Technique + fractionné doux (en alternance avec A)',
+            exercises: [
+              { id: 'natation', sets: 6, reps: '50 m', rest: 20, notes: 'Nage libre souple · focus glisse et allongement · repos 20s' },
+              { id: 'natation', sets: 4, reps: '25 m', rest: 30, notes: 'Dos, allure un peu + soutenue (~Z3 bas) · puis 100 m brasse lente pour redescendre' },
             ]},
         ],
         finisher: '',
-        cooldown: 'Étirements doux au bord — 3 min',
+        cooldown: 'Retour au calme 5 min : 50-100 m très lent + mobilité dans l\'eau (bras en cercles, étirement pec au mur, bras 90° + rotation du buste). CRAWL modéré si épaule sensible · JAMAIS de papillon.',
       },
       {
-        label: 'J5 — 2ᵉ dose haut du corps + Hyrox condensé',
-        focus: '2ᵉ stimulation pec (haut/claviculaire) + dos dans la semaine (fréquence 2×/sem sur le haut), puis Hyrox léger.',
+        label: 'J5 — 2ᵉ dose haut du corps + Circuit Hyrox',
+        focus: 'Bloc A muscu (pec haut + dos, 2ᵉ stimulation de la semaine) PUIS Bloc B circuit Hyrox. Le fonctionnel vient APRÈS le muscle, jamais à sa place.',
         warmup: '10 min rameur Z2 + mobilité générale',
         blocks: [
           { name: 'Prehab épaules (5 min · 1×/jour max)',
@@ -1198,23 +1214,22 @@ const MuscuExercises = (() => {
               { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'Rotation externe' },
               { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'Omoplates' },
             ]},
-          { name: 'Push pec HAUT — 2ᵉ dose (claviculaire, absent de J1)',
+          { name: 'Bloc A — Muscu (pec haut + dos · 25 min)',
             exercises: [
-              { id: 'incline_db_press',     sets: 3, reps: '10-12', rest: 75, notes: 'Haltères inclinés · haut du pec · excentrique contrôlé · zéro barre' },
-              { id: 'cable_crossover_high', sets: 2, reps: '15',    rest: 45, notes: 'Finisher pec · contraction 1s en bas' },
+              { id: 'incline_db_press',     sets: 3, reps: '10-12', rest: 75, notes: 'Haltères inclinés · haut/claviculaire du pec (absent de J1) · excentrique contrôlé · zéro barre' },
+              { id: 'cable_crossover_high', sets: 2, reps: '15',    rest: 45, notes: 'Finisher pec · contraction 1s' },
+              { id: 'seated_row',           sets: 3, reps: '12',    rest: 60, notes: 'Tirage horizontal · le sled/carry ne comptent PAS comme stimulus dos hypertrophie' },
             ]},
-          { name: 'Pull dos — 2ᵉ dose',
+          { name: 'Bloc B — Circuit Hyrox (stations, transitions rapides, effort ~7/10 · 20 min)',
             exercises: [
-              { id: 'seated_row', sets: 4, reps: '12', rest: 60, notes: 'Tirage horizontal machine/câble · le sled/carry ne comptent PAS comme stimulus dos hypertrophie' },
+              { id: 'sled_push_light', sets: 4, reps: '20m', rest: 60, notes: '~50-60% race weight' },
+              { id: 'wall_ball',       sets: 3, reps: '15',  rest: 45, notes: 'Jambes > bras, rythme constant' },
+              { id: 'kb_swing',        sets: 3, reps: '15',  rest: 45, notes: 'Hip hinge propre · substitut deadlift fonctionnel' },
+              { id: 'sandbag_carry',   sets: 3, reps: '40m', rest: 60, notes: '⚠ charge le haut du dos/trapèzes (zone sensible) → règle J+1 ici · si tension, remplace par farmers carry haltères' },
             ]},
-          { name: 'Hyrox léger condensé',
+          { name: 'Cardio finisher — fatigue composée (15 min course)',
             exercises: [
-              { id: 'sled_push_light', sets: 3, reps: '20m', rest: 90, notes: 'Léger (~50% race weight)' },
-              { id: 'kb_swing',        sets: 3, reps: '15',  rest: 60, notes: 'Hip hinge propre · substitut deadlift fonctionnel' },
-            ]},
-          { name: 'Cardio finisher (15 min course)',
-            exercises: [
-              { id: 'course_z2', sets: 1, reps: '15 min', rest: 0, notes: 'Course progressive (transfert Hyrox) · applique la règle douleur J+1 AU DOS · marche-course OK au début' },
+              { id: 'course_z2', sets: 1, reps: '15 min', rest: 0, notes: 'Enchaîné après le circuit = courir sur jambes lourdes (la compétence Hyrox qui manque aux gens de salle) · règle J+1 AU DOS · marche-course OK au début' },
             ]},
         ],
         finisher: '',
@@ -1281,7 +1296,13 @@ const MuscuExercises = (() => {
   //   (reps → petite charge) vaut sur TOUT le haut du corps en machine/câble, pas
   //   seulement les jambes ; seule la barre lourde reste proscrite. Retire le reste
   //   d'ancien cadrage « leg press = seul exo qui monte ».
-  const TEMPLATES_VERSION = 9;
+  // v10 (2026-07-17) : intégration fonctionnel Hyrox + protocole piscine (Fable).
+  //   - J5 en 2 blocs : A muscu (pec haut + dos) PUIS B circuit Hyrox (sled/wall
+  //     balls/KB/sandbag), finisher course = fatigue composée.
+  //   - J3 : wall balls 2×15 optionnelles avant la course (courir sur quadris fatigués).
+  //   - J4 piscine structurée : échauffement + Semaine A (aérobie) / Semaine B
+  //     (technique) + retour au calme mobilité. Nouvel exo 'natation'.
+  const TEMPLATES_VERSION = 10;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
