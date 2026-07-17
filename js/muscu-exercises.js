@@ -1114,12 +1114,13 @@ const MuscuExercises = (() => {
               { id: 'face_pull',        sets: 3, reps: '15', rest: 45, notes: 'Rotation externe · santé épaule' },
               { id: 'band_pull_apart',  sets: 3, reps: '20', rest: 30, notes: 'Omoplates · retour contrôlé' },
             ]},
-          { name: 'Push pec — charge légère, tempo 3-0-1-0',
+          { name: 'Push pec + épaules — charge légère, contrôle',
             exercises: [
-              { id: 'machine_chest_press',    sets: 4, reps: '10',    rest: 90, notes: 'Remplace le bench · tempo 3-0-1-0 · près de l\'échec (RIR 1-2) après calibration' },
-              { id: 'deficit_push_up',        sets: 3, reps: '10-12', rest: 75, notes: 'Poignées/plots · amplitude complète pain-free' },
-              { id: 'cable_crossover_low',    sets: 3, reps: '15',    rest: 60, notes: 'Poulies basses → haut · fibres pec bas sans compression axiale' },
+              { id: 'machine_chest_press',    sets: 4, reps: '10',    rest: 90, notes: 'Colonne du push (remplace le bench) · excentrique contrôlé 2-3s + PAUSE 1s pec étiré en bas · près de l\'échec (RIR 1-2)' },
+              { id: 'cable_crossover_low',    sets: 3, reps: '15',    rest: 60, notes: 'Poulies basses → haut · fibres pec bas · contraction 1s, reps libres' },
+              { id: 'deficit_push_up',        sets: 3, reps: '10-12', rest: 75, notes: 'Complément poids du corps · ne pas descendre dans la douleur (stress épaule en bas)' },
               { id: 'machine_shoulder_press', sets: 3, reps: '12',    rest: 75, notes: 'Remplace l\'OHP barre · pas de claquage en haut' },
+              { id: 'lateral_raise',          sets: 3, reps: '15',    rest: 45, notes: 'Délts latéraux · léger, bien toléré · largeur d\'épaules' },
             ]},
           { name: 'Cardio finisher (15 min)',
             exercises: [
@@ -1141,9 +1142,9 @@ const MuscuExercises = (() => {
             ]},
           { name: 'Pull dos — charge tissulaire basse',
             exercises: [
-              { id: 'inverted_row', sets: 4, reps: '10',  rest: 75, notes: 'Le rowing le plus safe (McGill) · tempo 3-1-1-1 · difficulté par hauteur des pieds' },
-              { id: 'lat_pulldown', sets: 3, reps: '12',  rest: 75, notes: 'Prise large · tempo lent' },
-              { id: 'db_row',       sets: 3, reps: '12',  rest: 60, notes: 'Chest-supported (banc incliné) → zéro charge sur les érecteurs' },
+              { id: 'inverted_row', sets: 4, reps: '10',  rest: 75, notes: 'Le rowing le plus safe (McGill) · contrôlé sans rebond · difficulté/reps libres (hauteur des pieds)' },
+              { id: 'lat_pulldown', sets: 3, reps: '12',  rest: 75, notes: 'Prise large · excentrique contrôlé 2-3s + pause étiré en bas' },
+              { id: 'db_row',       sets: 3, reps: '12',  rest: 60, notes: 'Chest-supported (banc incliné) → zéro charge sur les érecteurs · reps libres' },
               { id: 'face_pull',    sets: 3, reps: '20',  rest: 45, notes: 'Volume dos + santé épaule' },
             ]},
           { name: 'Cardio finisher (15 min)',
@@ -1188,20 +1189,32 @@ const MuscuExercises = (() => {
         cooldown: 'Étirements doux au bord — 3 min',
       },
       {
-        label: 'J5 — Full body + Hyrox léger',
-        focus: 'Patterns Hyrox à charge légère, hinge propre au KB (substitut deadlift fonctionnel).',
+        label: 'J5 — 2ᵉ dose haut du corps + Hyrox condensé',
+        focus: '2ᵉ stimulation pec (haut/claviculaire) + dos dans la semaine (fréquence 2×/sem sur le haut), puis Hyrox léger.',
         warmup: '10 min rameur Z2 + mobilité générale',
         blocks: [
-          { name: 'Hyrox léger',
+          { name: 'Prehab épaules (5 min · 1×/jour max)',
             exercises: [
-              { id: 'sled_push_light', sets: 4, reps: '20m', rest: 90, notes: 'Léger (~50% race weight)' },
-              { id: 'wall_ball',       sets: 3, reps: '15',  rest: 60, notes: 'Jambes > bras, rythme constant' },
-              { id: 'kb_swing',        sets: 3, reps: '15',  rest: 60, notes: 'Hip hinge propre · ton substitut deadlift fonctionnel' },
-              { id: 'sandbag_carry',   sets: 3, reps: '40m', rest: 60, notes: 'Charge légère, posture haute' },
+              { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'Rotation externe' },
+              { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'Omoplates' },
             ]},
-          { name: 'Cardio finisher (20 min)',
+          { name: 'Push pec HAUT — 2ᵉ dose (claviculaire, absent de J1)',
             exercises: [
-              { id: 'rower_z2', sets: 1, reps: '20 min', rest: 0, notes: 'Rameur ou course · Zone 2' },
+              { id: 'incline_db_press',     sets: 3, reps: '10-12', rest: 75, notes: 'Haltères inclinés · haut du pec · excentrique contrôlé · zéro barre' },
+              { id: 'cable_crossover_high', sets: 2, reps: '15',    rest: 45, notes: 'Finisher pec · contraction 1s en bas' },
+            ]},
+          { name: 'Pull dos — 2ᵉ dose',
+            exercises: [
+              { id: 'seated_row', sets: 4, reps: '12', rest: 60, notes: 'Tirage horizontal machine/câble · le sled/carry ne comptent PAS comme stimulus dos hypertrophie' },
+            ]},
+          { name: 'Hyrox léger condensé',
+            exercises: [
+              { id: 'sled_push_light', sets: 3, reps: '20m', rest: 90, notes: 'Léger (~50% race weight)' },
+              { id: 'kb_swing',        sets: 3, reps: '15',  rest: 60, notes: 'Hip hinge propre · substitut deadlift fonctionnel' },
+            ]},
+          { name: 'Cardio finisher (15 min course)',
+            exercises: [
+              { id: 'course_z2', sets: 1, reps: '15 min', rest: 0, notes: 'Course progressive (transfert Hyrox) · applique la règle douleur J+1 AU DOS · marche-course OK au début' },
             ]},
         ],
         finisher: '',
@@ -1254,7 +1267,17 @@ const MuscuExercises = (() => {
   //   « Hybride Muscle + Cardio (sans barre lourde) » (RECOVERY_TEMPLATE →
   //   MUSCLE_CARDIO_TEMPLATE). L'ancien hybride lourd (bench 5×5) n'est plus servi
   //   que pour 'hyrox' / 'hypertrophy'. Bump force la régén des plans sauvegardés.
-  const TEMPLATES_VERSION = 7;
+  // v8 (2026-07-17) : révision après double second-avis (Fable + contre-analyse).
+  //   - Pec & dos passent à 2×/sem : J5 reçoit un bloc pec HAUT (incline DB + câble
+  //     haut, claviculaire absent de J1) + tirage dos (seated row). Wall balls
+  //     retirées de J5.
+  //   - Tempo : plus de 3-0-1-0 rigide partout. Excentrique contrôlé 2-3s + pause
+  //     position étirée UNIQUEMENT sur chest press & lat pulldown ; charge/reps
+  //     libres ailleurs (le tempo lent ne construit pas de muscle — Schoenfeld 2015).
+  //   - Machine/câble = colonne du push, pompes déficit en complément (pas l'inverse).
+  //   - Ajout élévations latérales (délts) à J1. Cardio J5 → course progressive
+  //     (transfert Hyrox) avec garde-fou douleur J+1 sur le dos.
+  const TEMPLATES_VERSION = 8;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
