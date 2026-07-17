@@ -105,7 +105,7 @@ const MuscuApp = (() => {
     const template = MuscuExercises.getTemplate(profile.daysPerWeek, profile.goal);
     const el = document.getElementById('launch-modal');
     document.getElementById('launch-template-name').textContent = template.name;
-    document.getElementById('launch-days').textContent = (profile.goal === 'recovery' ? '5' : profile.daysPerWeek) + ' jours/semaine';
+    document.getElementById('launch-days').textContent = template.days.length + ' jours/semaine';
     document.getElementById('launch-level').textContent = profile.level;
 
     const daysHtml = template.days.map(d =>
@@ -1288,9 +1288,7 @@ const MuscuApp = (() => {
     }
 
     document.getElementById('settings-modal').style.display = 'none';
-    _toast(goalChanged && profile.goal === 'recovery'
-      ? '🩹 Mode Récupération activé — plan mis à jour'
-      : 'Paramètres sauvegardés', 'success');
+    _toast(planChanged ? 'Programme mis à jour ✓' : 'Paramètres sauvegardés', 'success');
   }
 
   function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }

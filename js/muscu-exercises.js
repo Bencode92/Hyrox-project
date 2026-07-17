@@ -1094,15 +1094,15 @@ const MuscuExercises = (() => {
     );
   }
 
-  // ── RECOVERY / GESTION CHRONIQUE ──────────────────────────
-  // Programme « zéro barre lourde » validé avec l'athlète (bench + deadlift SORTIS,
-  // pas allégés). Structure fixe / séance : 10 min Z2 + 5 min prehab → 4 exos muscu
-  // → 15 min cardio finisher. Sélectionné quand profile.goal === 'recovery'.
+  // ── PROGRAMME PAR DÉFAUT : MUSCLE + CARDIO (sans barre lourde) ──
+  // Le programme validé avec l'athlète : muscle + Hyrox, cardio intégré, BENCH +
+  // DEADLIFT SORTIS, tempo lent (pas la force max). C'est désormais le programme
+  // par défaut (objectif 'hybrid'). Structure fixe / séance : 10 min Z2 + 5 min
+  // prehab → 4 exos muscu → 15 min cardio finisher.
   // Règles portées par les notes : tempo lent = la vraie charge · près de l'échec
-  // (RIR 1-2) après calibration, PAS un plafond RPE bas permanent · jambes = seule
-  // zone où charger, +1 progression/sem sur leg press uniquement.
-  const RECOVERY_TEMPLATE = {
-    name: 'Récupération — Gestion chronique (zéro barre lourde)',
+  // (RIR 1-2) pour construire du muscle · jambes = seule zone où charger.
+  const MUSCLE_CARDIO_TEMPLATE = {
+    name: '💪 Hybride Muscle + Cardio (sans barre lourde)',
     days: [
       {
         label: 'J1 — Push (pec) sans compression',
@@ -1211,8 +1211,11 @@ const MuscuExercises = (() => {
   };
 
   function getTemplate(daysPerWeek, goal) {
-    if (goal === 'recovery') return RECOVERY_TEMPLATE;
-    return TEMPLATES[daysPerWeek] || TEMPLATES[4];
+    // 'hybrid' (défaut) → programme Muscle + Cardio sans barre lourde (bench+DL sortis).
+    // 'recovery' (ancien nom) → idem. Seuls 'hyrox' (perf pure) et 'hypertrophy'
+    // gardent les templates classiques avec barre lourde.
+    if (goal === 'hyrox' || goal === 'hypertrophy') return TEMPLATES[daysPerWeek] || TEMPLATES[4];
+    return MUSCLE_CARDIO_TEMPLATE;
   }
 
   // ── Finisher block (auto-injected end of each day) ───────────
@@ -1246,11 +1249,12 @@ const MuscuExercises = (() => {
   //   - J5 Hyrox circuit : 3 rounds → 2 rounds, tabata finisher removed.
   //     Same reasoning (cardio done outside).
   // v6 (2026-07-16) : add RECOVERY_TEMPLATE (goal='recovery') — programme
-  //   « zéro barre lourde » (bench + deadlift sortis) validé avec l'athlète pour
-  //   gestion d'une douleur chronique pec+dos. 5 jours, cardio Z2 intégré (warmup
-  //   + finisher), prehab 1×/jour, jambes = seule zone de charge. Finisher grip
-  //   auto désactivé en recovery pour éviter la surcharge cachée quotidienne.
-  const TEMPLATES_VERSION = 6;
+  //   « zéro barre lourde » (bench + deadlift sortis) validé avec l'athlète.
+  // v7 (2026-07-17) : ce programme devient le DÉFAUT (objectif 'hybrid'), renommé
+  //   « Hybride Muscle + Cardio (sans barre lourde) » (RECOVERY_TEMPLATE →
+  //   MUSCLE_CARDIO_TEMPLATE). L'ancien hybride lourd (bench 5×5) n'est plus servi
+  //   que pour 'hyrox' / 'hypertrophy'. Bump force la régén des plans sauvegardés.
+  const TEMPLATES_VERSION = 7;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
@@ -1415,17 +1419,17 @@ const MuscuExercises = (() => {
    * Generate a week plan based on profile, week number, and past performance
    */
   function generateWeekPlan(profile, weekNum) {
-    const isRecovery = profile.goal === 'recovery';
     const template = getTemplate(profile.daysPerWeek || 4, profile.goal);
+    const isMuscleCardio = (template === MUSCLE_CARDIO_TEMPLATE);
     const isDeload = weekNum > 1 && weekNum % 4 === 0;
     const prs = MuscuStorage.getPRs();
 
-    // Finisher toggle (default ON) — désactivé en mode recovery : le finisher
-    // poignet/grip quotidien recréerait la surcharge cachée à éviter (prehab déjà
-    // intégré 1×/jour dans le template).
+    // Finisher toggle (default ON) — désactivé sur le programme Muscle+Cardio :
+    // le finisher poignet/grip quotidien recréerait la surcharge cachée à éviter
+    // (prehab déjà intégré 1×/jour dans le template).
     const settings = (typeof MuscuStorage !== 'undefined' && MuscuStorage.getSettings)
       ? MuscuStorage.getSettings() : {};
-    const finisherEnabled = (settings.finisherEnabled !== false) && !isRecovery;
+    const finisherEnabled = (settings.finisherEnabled !== false) && !isMuscleCardio;
 
     const plan = {
       week: weekNum,
