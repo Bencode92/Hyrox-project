@@ -1106,7 +1106,7 @@ const MuscuExercises = (() => {
     days: [
       {
         label: 'J1 — Push (pec) sans compression',
-        focus: 'Pec/épaules en machine + poids du corps, tempo lent, zéro barre. Bench SORTI.',
+        focus: 'Pec/épaules en machine + poids du corps, zéro barre lourde. Progresse partout SAUF barre lourde : reps ↑ dans la fourchette → puis petite charge ↑ (RIR 1-2). Bench SORTI.',
         warmup: '10 min rameur Z2 (allure conversationnelle) — c\'est ton échauffement',
         blocks: [
           { name: 'Prehab épaules (5 min · 1×/jour max)',
@@ -1162,7 +1162,7 @@ const MuscuExercises = (() => {
         blocks: [
           { name: 'Jambes — charge OK ici',
             exercises: [
-              { id: 'leg_press',       sets: 4, reps: '10',       rest: 90, notes: 'LÀ tu peux mettre du poids · +1 progression/sem MAX (le seul exo qui monte)' },
+              { id: 'leg_press',       sets: 4, reps: '10',       rest: 90, notes: 'Charge plus agressive ici (zone saine). Mais la progression (reps → petite charge) vaut AUSSI pour le haut du corps sur machine/câble — pas que les jambes.' },
               { id: 'bulgarian_split', sets: 3, reps: '10/jambe', rest: 60, notes: 'Contrôle unijambiste' },
               { id: 'hip_thrust',      sets: 4, reps: '12',       rest: 75, notes: 'Fessiers/hanche · substitut deadlift · zéro stress dos' },
               { id: 'leg_curl',        sets: 3, reps: '15',       rest: 45, notes: 'Ischios isolés safe' },
@@ -1277,7 +1277,11 @@ const MuscuExercises = (() => {
   //   - Machine/câble = colonne du push, pompes déficit en complément (pas l'inverse).
   //   - Ajout élévations latérales (délts) à J1. Cardio J5 → course progressive
   //     (transfert Hyrox) avec garde-fou douleur J+1 sur le dos.
-  const TEMPLATES_VERSION = 8;
+  // v9 (2026-07-17) : notes de progression corrigées — la surcharge progressive
+  //   (reps → petite charge) vaut sur TOUT le haut du corps en machine/câble, pas
+  //   seulement les jambes ; seule la barre lourde reste proscrite. Retire le reste
+  //   d'ancien cadrage « leg press = seul exo qui monte ».
+  const TEMPLATES_VERSION = 9;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
