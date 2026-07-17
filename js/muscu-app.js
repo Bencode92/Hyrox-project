@@ -1261,13 +1261,10 @@ const MuscuApp = (() => {
     settings.finisherEnabled = document.getElementById('set-finisher').checked;
     MuscuStorage.saveSettings(settings);
 
-    // If finisher toggle changed, regenerate plan to reflect it
-    if (prevFinisher !== settings.finisherEnabled) {
-      const weekNum = MuscuStorage.getWeekNumber();
-      const newPlan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), weekNum);
-      MuscuStorage.saveWeekPlan(newPlan);
-    }
+    // Update profile first, capturing what changes the plan
     const profile = MuscuStorage.getProfile();
+    const prevGoal = profile.goal || 'hybrid';
+    const prevDays = profile.daysPerWeek;
     profile.weight = parseFloat(document.getElementById('set-weight').value) || profile.weight;
     profile.height = parseInt(document.getElementById('set-height').value) || profile.height;
     profile.daysPerWeek = parseInt(document.getElementById('set-days').value) || profile.daysPerWeek;
@@ -1276,8 +1273,24 @@ const MuscuApp = (() => {
     profile.goal = document.getElementById('set-goal').value || 'hybrid';
     profile.injuryNotes = document.getElementById('set-injury').value.trim();
     MuscuStorage.saveProfile(profile);
+
+    // Regenerate the plan if anything affecting it changed (goal, days, finisher).
+    // Sans ça, changer l'objectif (ex: → Récupération) ne changeait PAS le plan affiché.
+    const goalChanged = prevGoal !== profile.goal;
+    const planChanged = goalChanged
+      || prevDays !== profile.daysPerWeek
+      || prevFinisher !== settings.finisherEnabled;
+    if (planChanged) {
+      const weekNum = MuscuStorage.getWeekNumber();
+      MuscuStorage.saveWeekPlan(MuscuExercises.generateWeekPlan(profile, weekNum));
+      renderDashboard();
+      _tryAIUpgrade();
+    }
+
     document.getElementById('settings-modal').style.display = 'none';
-    _toast('Paramètres sauvegardés', 'success');
+    _toast(goalChanged && profile.goal === 'recovery'
+      ? '🩹 Mode Récupération activé — plan mis à jour'
+      : 'Paramètres sauvegardés', 'success');
   }
 
   function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
