@@ -1115,22 +1115,28 @@ const MuscuExercises = (() => {
         focus: 'Pec/épaules en machine + poids du corps, zéro barre lourde. Progresse partout SAUF barre lourde : reps ↑ dans la fourchette → puis petite charge ↑ (RIR 1-2). Bench SORTI.',
         warmup: '10 min rameur Z2 (allure conversationnelle) — c\'est ton échauffement',
         blocks: [
-          { name: 'Prehab épaules (5 min · 1×/jour max)',
+          { name: 'Échauffement — Prehab (superset)',
             exercises: [
-              { id: 'face_pull',        sets: 3, reps: '15', rest: 45, notes: 'Rotation externe · santé épaule' },
-              { id: 'band_pull_apart',  sets: 3, reps: '20', rest: 30, notes: 'Omoplates · retour contrôlé' },
+              { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'A1 · rotation externe — enchaîne avec A2' },
+              { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'A2 · omoplates · retour contrôlé' },
             ]},
-          { name: 'Push pec + épaules — charge légère, contrôle',
+          { name: 'Superset A — Pec + délts',
             exercises: [
-              { id: 'machine_chest_press',    sets: 4, reps: '10',    rest: 90, notes: 'Colonne du push (remplace le bench) · excentrique contrôlé 2-3s + PAUSE 1s pec étiré en bas · près de l\'échec (RIR 1-2)' },
-              { id: 'cable_crossover_low',    sets: 3, reps: '15',    rest: 60, notes: 'Poulies basses → haut · fibres pec bas · contraction 1s, reps libres' },
-              { id: 'deficit_push_up',        sets: 3, reps: '10-12', rest: 75, notes: 'Complément poids du corps · ne pas descendre dans la douleur (stress épaule en bas)' },
-              { id: 'machine_shoulder_press', sets: 3, reps: '12',    rest: 75, notes: 'Remplace l\'OHP barre · pas de claquage en haut' },
-              { id: 'lateral_raise',          sets: 3, reps: '15',    rest: 45, notes: 'Délts latéraux · léger, bien toléré · largeur d\'épaules' },
+              { id: 'machine_chest_press', sets: 4, reps: '10-12',  rest: 90, notes: 'A1 · colonne push (remplace bench) · excentrique 2-3s + pause 1s pec étiré · DESCENDS À RIR 1-2 (près de l\'échec) même léger' },
+              { id: 'lateral_raise',       sets: 3, reps: '15-20',  rest: 45, notes: 'A2 · délts latéraux · enchaîné, léger, jusqu\'à la brûlure' },
             ]},
-          { name: 'Cardio finisher (15 min)',
+          { name: 'Superset B — Épaules + pec iso',
             exercises: [
-              { id: 'rower_z2', sets: 1, reps: '15 min', rest: 0, notes: 'Zone 2 · base aérobie' },
+              { id: 'machine_shoulder_press', sets: 3, reps: '12', rest: 75, notes: 'B1 · remplace OHP barre · RIR 1-2 · pas de claquage en haut' },
+              { id: 'cable_crossover_low',    sets: 3, reps: '15', rest: 60, notes: 'B2 · poulies basses → haut · fibres pec bas · contraction 1s' },
+            ]},
+          { name: 'Finisher pec (poids du corps, max reps)',
+            exercises: [
+              { id: 'deficit_push_up', sets: 2, reps: 'max (AMRAP)', rest: 60, notes: 'Jusqu\'à RIR 0-1 · ne pas descendre dans la douleur épaule' },
+            ]},
+          { name: 'Cardio finisher (20 min)',
+            exercises: [
+              { id: 'rower_z2', sets: 1, reps: '20 min', rest: 0, notes: 'Zone 2 · monte l\'allure sur les 5 dernières min si tu te sens bien' },
             ]},
         ],
         finisher: '',
@@ -1141,21 +1147,24 @@ const MuscuExercises = (() => {
         focus: 'Dos en tirage horizontal/vertical safe, zéro deadlift ni row barre penché.',
         warmup: '10 min ski erg Z2 — échauffement + activation dos',
         blocks: [
-          { name: 'Prehab épaules (5 min · 1×/jour max)',
+          { name: 'Échauffement — Prehab (superset)',
             exercises: [
-              { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'Rotation externe' },
-              { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'Omoplates' },
+              { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'A1 · rotation externe' },
+              { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'A2 · omoplates' },
             ]},
-          { name: 'Pull dos — charge tissulaire basse',
+          { name: 'Superset A — Tirage vertical + horizontal',
             exercises: [
-              { id: 'inverted_row', sets: 4, reps: '10',  rest: 75, notes: 'Le rowing le plus safe (McGill) · contrôlé sans rebond · difficulté/reps libres (hauteur des pieds)' },
-              { id: 'lat_pulldown', sets: 3, reps: '12',  rest: 75, notes: 'Prise large · excentrique contrôlé 2-3s + pause étiré en bas' },
-              { id: 'db_row',       sets: 3, reps: '12',  rest: 60, notes: 'Chest-supported (banc incliné) → zéro charge sur les érecteurs · reps libres' },
-              { id: 'face_pull',    sets: 3, reps: '20',  rest: 45, notes: 'Volume dos + santé épaule' },
+              { id: 'inverted_row', sets: 4, reps: '10-12', rest: 75, notes: 'A1 · le rowing le plus safe (McGill) · contrôlé sans rebond · RIR 1-2 (descends la barre si trop facile)' },
+              { id: 'lat_pulldown', sets: 4, reps: '12',    rest: 75, notes: 'A2 · prise large · excentrique 2-3s + pause étiré en bas · RIR 1-2' },
             ]},
-          { name: 'Cardio finisher (15 min)',
+          { name: 'Superset B — Dos épais + arrière d\'épaule',
             exercises: [
-              { id: 'ski_erg_z2', sets: 1, reps: '15 min', rest: 0, notes: 'Bonus : encore du dos · Zone 2' },
+              { id: 'db_row',    sets: 3, reps: '12', rest: 60, notes: 'B1 · chest-supported (banc incliné) → zéro charge érecteurs · RIR 1-2' },
+              { id: 'face_pull', sets: 3, reps: '20', rest: 45, notes: 'B2 · volume dos + santé épaule · jusqu\'à la brûlure' },
+            ]},
+          { name: 'Cardio finisher (20 min)',
+            exercises: [
+              { id: 'ski_erg_z2', sets: 1, reps: '20 min', rest: 0, notes: 'Bonus : encore du dos · Zone 2' },
             ]},
         ],
         finisher: '',
@@ -1166,20 +1175,23 @@ const MuscuExercises = (() => {
         focus: 'Zone saine : tu charges plus librement ici. La progression (reps → charge) vaut aussi sur le haut du corps (cf. J1), pas que les jambes.',
         warmup: '5 min vélo/rameur + mobilité hanches/chevilles',
         blocks: [
-          { name: 'Jambes — charge OK ici',
+          { name: 'Superset A — Quadriceps + ischios',
             exercises: [
-              { id: 'leg_press',       sets: 4, reps: '10',       rest: 90, notes: 'Charge plus agressive ici · reps ↑ puis charge ↑ (RIR 1-2)' },
-              { id: 'bulgarian_split', sets: 3, reps: '10/jambe', rest: 60, notes: 'Contrôle unijambiste' },
-              { id: 'hip_thrust',      sets: 4, reps: '12',       rest: 75, notes: 'Fessiers/hanche · substitut deadlift · zéro stress dos' },
-              { id: 'leg_curl',        sets: 3, reps: '15',       rest: 45, notes: 'Ischios isolés safe · assis > allongé (position étirée)' },
+              { id: 'leg_press', sets: 4, reps: '10-12', rest: 90, notes: 'A1 · charge plus agressive ici · reps ↑ puis charge ↑ · RIR 1-2' },
+              { id: 'leg_curl',  sets: 3, reps: '15',    rest: 45, notes: 'A2 · ischios · assis > allongé (position étirée)' },
+            ]},
+          { name: 'Superset B — Hanche + unilatéral',
+            exercises: [
+              { id: 'hip_thrust',      sets: 4, reps: '12',       rest: 75, notes: 'B1 · fessiers/hanche · substitut deadlift · zéro stress dos · RIR 1-2' },
+              { id: 'bulgarian_split', sets: 3, reps: '10/jambe', rest: 60, notes: 'B2 · contrôle unijambiste' },
             ]},
           { name: 'Transfert Hyrox (optionnel · avant la course)',
             exercises: [
-              { id: 'wall_ball', sets: 2, reps: '15', rest: 45, notes: 'Apprend à courir sur quadris fatigués (très spécifique Hyrox) · pas plus, sinon rogne la récup jambes' },
+              { id: 'wall_ball', sets: 2, reps: '15', rest: 45, notes: 'Apprend à courir sur quadris fatigués · pas plus, sinon rogne la récup jambes' },
             ]},
-          { name: 'Cardio finisher (15 min)',
+          { name: 'Cardio finisher (20 min)',
             exercises: [
-              { id: 'course_z2', sets: 1, reps: '15 min', rest: 0, notes: 'Zone 2 · marche rapide OK si ça tire' },
+              { id: 'course_z2', sets: 1, reps: '20 min', rest: 0, notes: 'Zone 2 · marche rapide OK si ça tire' },
             ]},
         ],
         finisher: '',
@@ -1209,27 +1221,33 @@ const MuscuExercises = (() => {
         focus: 'Bloc A muscu (pec haut + dos, 2ᵉ stimulation de la semaine) PUIS Bloc B circuit Hyrox. Le fonctionnel vient APRÈS le muscle, jamais à sa place.',
         warmup: '10 min rameur Z2 + mobilité générale',
         blocks: [
-          { name: 'Prehab épaules (5 min · 1×/jour max)',
+          { name: 'Échauffement — Prehab (superset)',
             exercises: [
-              { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'Rotation externe' },
-              { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'Omoplates' },
+              { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'A1 · rotation externe' },
+              { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'A2 · omoplates' },
             ]},
-          { name: 'Bloc A — Muscu (pec haut + dos · 25 min)',
+          { name: 'Superset A — Pec haut + dos (2ᵉ dose)',
             exercises: [
-              { id: 'incline_db_press',     sets: 3, reps: '10-12', rest: 75, notes: 'Haltères inclinés · haut/claviculaire du pec (absent de J1) · excentrique contrôlé · zéro barre' },
-              { id: 'cable_crossover_high', sets: 2, reps: '15',    rest: 45, notes: 'Finisher pec · contraction 1s' },
-              { id: 'seated_row',           sets: 3, reps: '12',    rest: 60, notes: 'Tirage horizontal · le sled/carry ne comptent PAS comme stimulus dos hypertrophie' },
+              { id: 'incline_db_press', sets: 3, reps: '10-12', rest: 75, notes: 'A1 · haltères inclinés · haut/claviculaire du pec (absent de J1) · RIR 1-2 · zéro barre' },
+              { id: 'seated_row',       sets: 3, reps: '12',    rest: 60, notes: 'A2 · tirage horizontal · le sled/carry ne comptent PAS comme stimulus dos' },
             ]},
-          { name: 'Bloc B — Circuit Hyrox (stations, transitions rapides, effort ~7/10 · 20 min)',
+          { name: 'Finisher pec',
             exercises: [
-              { id: 'sled_push_light', sets: 4, reps: '20m', rest: 60, notes: '~50-60% race weight' },
-              { id: 'wall_ball',       sets: 3, reps: '15',  rest: 45, notes: 'Jambes > bras, rythme constant' },
-              { id: 'kb_swing',        sets: 3, reps: '15',  rest: 45, notes: 'Hip hinge propre · substitut deadlift fonctionnel' },
-              { id: 'sandbag_carry',   sets: 3, reps: '40m', rest: 60, notes: '⚠ charge le haut du dos/trapèzes (zone sensible) → règle J+1 ici · si tension, remplace par farmers carry haltères' },
+              { id: 'cable_crossover_high', sets: 2, reps: '15', rest: 45, notes: 'Contraction 1s · jusqu\'à la brûlure' },
             ]},
-          { name: 'Cardio finisher — fatigue composée (15 min course)',
+          { name: 'Circuit Hyrox 1 — Poussée (superset)',
             exercises: [
-              { id: 'course_z2', sets: 1, reps: '15 min', rest: 0, notes: 'Enchaîné après le circuit = courir sur jambes lourdes (la compétence Hyrox qui manque aux gens de salle) · règle J+1 AU DOS · marche-course OK au début' },
+              { id: 'sled_push_light', sets: 4, reps: '20m', rest: 45, notes: 'A1 · ~50-60% race weight — enchaîne avec A2' },
+              { id: 'wall_ball',       sets: 3, reps: '15',  rest: 45, notes: 'A2 · jambes > bras, rythme constant' },
+            ]},
+          { name: 'Circuit Hyrox 2 — Hinge + carry (superset)',
+            exercises: [
+              { id: 'kb_swing',      sets: 3, reps: '15',  rest: 45, notes: 'B1 · hip hinge propre · substitut deadlift fonctionnel' },
+              { id: 'sandbag_carry', sets: 3, reps: '40m', rest: 60, notes: 'B2 · ⚠ charge le haut du dos (zone sensible) → règle J+1 · si tension, farmers carry haltères' },
+            ]},
+          { name: 'Cardio finisher — fatigue composée (20 min course)',
+            exercises: [
+              { id: 'course_z2', sets: 1, reps: '20 min', rest: 0, notes: 'Enchaîné après le circuit = courir sur jambes lourdes (compétence Hyrox) · règle J+1 AU DOS · marche-course OK' },
             ]},
         ],
         finisher: '',
@@ -1302,7 +1320,12 @@ const MuscuExercises = (() => {
   //   - J3 : wall balls 2×15 optionnelles avant la course (courir sur quadris fatigués).
   //   - J4 piscine structurée : échauffement + Semaine A (aérobie) / Semaine B
   //     (technique) + retour au calme mobilité. Nouvel exo 'natation'.
-  const TEMPLATES_VERSION = 10;
+  // v11 (2026-07-20) : feedback séance — supersets de 2 EXOS MAX (l'app rendait un
+  //   bloc de 5 exos comme un superset de 5). Tous les blocs muscu réorganisés en
+  //   paires. Emphase RIR 1-2 (près de l'échec) — la vraie raison du « pas fatigué »
+  //   n'est pas la durée mais l'arrêt trop loin de l'échec. Cardio 15→20 min,
+  //   finishers AMRAP ajoutés.
+  const TEMPLATES_VERSION = 11;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
