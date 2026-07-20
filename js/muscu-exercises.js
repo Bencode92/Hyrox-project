@@ -687,6 +687,12 @@ const MuscuExercises = (() => {
       videoUrl: 'https://www.youtube.com/watch?v=5HLW2AI1Ink',
       cues: ['Dos crawlé = ton ami : ouverture pec + rotation externe d\'épaule, zéro compression', 'Allure Z2, conversation possible — jour FACILE (4-5/10), sortir frais', 'Crawl (nage libre) en modération si épaule sensible (rotation interne exigeante)', 'JAMAIS de papillon (opposé de ce que ton épaule/haut du dos demandent)', 'Reps = distance (m) par longueur'],
       mistakes: ['Sortir fatigué (raté : ce jour permet aux 4 autres d\'être durs)', 'Forcer le crawl si l\'épaule tire → bascule dos + brasse', 'Chercher la performance natation'] },
+
+    { id: 'velo_z2', name: 'Vélo Zone 2 (base Ironman)', category: 'conditioning', subcategory: 'cardio', equipment: 'bike',
+      hyrox: [], primary: ['cardio','jambes'], secondary: [],
+      videoUrl: 'https://www.youtube.com/watch?v=1nLxfM0MSqM',
+      cues: ['Allure Z2 conversationnelle · FC ~60-70% max · durée en minutes', 'POSITION RELEVÉE (buste haut) au début — protège le dos sensible, on descendra plus tard', 'Dès septembre 2026 : 1 sortie/sem 60-90 min, en REMPLACEMENT d\'un finisher cardio (pas en plus)', 'TEST DOS : applique la règle douleur J+1 · si le dos proteste malgré ajustements → info précieuse AVANT de s\'engager sur l\'Ironman', 'Bike fit pro avant tout achat de vélo de tri'],
+      mistakes: ['Position tri agressive (buste très penché) trop tôt = piège pour le dos', 'Partir en Z3-4 (sortir de la Z2)', 'Ajouter le vélo EN PLUS au lieu de remplacer un cardio (surcharge)'] },
   ];
 
   // ── Category labels ───────────────────────────────────────
@@ -1191,7 +1197,7 @@ const MuscuExercises = (() => {
             ]},
           { name: 'Cardio finisher (20 min)',
             exercises: [
-              { id: 'course_z2', sets: 1, reps: '20 min', rest: 0, notes: 'Zone 2 · marche rapide OK si ça tire' },
+              { id: 'course_z2', sets: 1, reps: '20 min', rest: 0, notes: 'Zone 2 · marche rapide OK si ça tire · dès septembre : swap 🔄 en VÉLO Z2 60-90 min (base Ironman, test dos)' },
             ]},
         ],
         finisher: '',
@@ -1334,7 +1340,11 @@ const MuscuExercises = (() => {
   //   burnouts. Drop sets retirés des gros exos (chest press, incliné, leg press),
   //   gardés sur 2-3 finishers max. Reps passées en fourchettes 8-12 / 12-15.
   //   Deload −40% toutes les 6 sem (au lieu de 4) : tendons + lents que le muscle.
-  const TEMPLATES_VERSION = 13;
+  // v14 (2026-07-20) : objectif Ironman 2027 acté. Nouvel exo 'velo_z2' (Vélo Zone 2,
+  //   position relevée, test dos) — apparaît en alternative de swap sur les finishers
+  //   cardio. Note sur le finisher J3 : swap vélo dès septembre. Phase muscle actuelle
+  //   inchangée (= la « phase muscle » du rétro-planning jusqu'à décembre).
+  const TEMPLATES_VERSION = 14;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
