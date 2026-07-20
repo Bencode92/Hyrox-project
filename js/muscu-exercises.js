@@ -1122,17 +1122,17 @@ const MuscuExercises = (() => {
             ]},
           { name: 'Superset A — Pec + délts',
             exercises: [
-              { id: 'machine_chest_press', sets: 4, reps: '10-12',  rest: 90, notes: 'A1 · colonne push (remplace bench) · excentrique 2-3s + pause 1s pec étiré · DESCENDS À RIR 1-2 (près de l\'échec) même léger' },
+              { id: 'machine_chest_press', sets: 5, reps: '10-12',  rest: 90, notes: 'A1 · colonne push (remplace bench) · excentrique 2-3s + pause 1s pec étiré · RIR 1-2 · DERNIÈRE SÉRIE EN DROP SET (−30% puis à l\'échec) = le pump' },
               { id: 'lateral_raise',       sets: 3, reps: '15-20',  rest: 45, notes: 'A2 · délts latéraux · enchaîné, léger, jusqu\'à la brûlure' },
             ]},
           { name: 'Superset B — Épaules + pec iso',
             exercises: [
               { id: 'machine_shoulder_press', sets: 3, reps: '12', rest: 75, notes: 'B1 · remplace OHP barre · RIR 1-2 · pas de claquage en haut' },
-              { id: 'cable_crossover_low',    sets: 3, reps: '15', rest: 60, notes: 'B2 · poulies basses → haut · fibres pec bas · contraction 1s' },
+              { id: 'cable_crossover_low',    sets: 4, reps: '15', rest: 60, notes: 'B2 · poulies basses → haut · fibres pec bas · contraction 1s · dernière série drop set' },
             ]},
-          { name: 'Finisher pec (poids du corps, max reps)',
+          { name: 'Finisher pec — Burnout pompes (drop set mécanique)',
             exercises: [
-              { id: 'deficit_push_up', sets: 2, reps: 'max (AMRAP)', rest: 60, notes: 'Jusqu\'à RIR 0-1 · ne pas descendre dans la douleur épaule' },
+              { id: 'deficit_push_up', sets: 3, reps: 'à l\'échec', rest: 75, notes: 'DROP SET MÉCANIQUE : déficit à l\'échec → enchaîne pompes standard → puis genoux, SANS repos. 3 tours. C\'est CE pump qui te fait sentir le pec.' },
             ]},
           { name: 'Cardio finisher (20 min)',
             exercises: [
@@ -1228,12 +1228,12 @@ const MuscuExercises = (() => {
             ]},
           { name: 'Superset A — Pec haut + dos (2ᵉ dose)',
             exercises: [
-              { id: 'incline_db_press', sets: 3, reps: '10-12', rest: 75, notes: 'A1 · haltères inclinés · haut/claviculaire du pec (absent de J1) · RIR 1-2 · zéro barre' },
+              { id: 'incline_db_press', sets: 4, reps: '10-12', rest: 75, notes: 'A1 · haltères inclinés · haut/claviculaire du pec (absent de J1) · RIR 1-2 · dernière série drop set · zéro barre' },
               { id: 'seated_row',       sets: 3, reps: '12',    rest: 60, notes: 'A2 · tirage horizontal · le sled/carry ne comptent PAS comme stimulus dos' },
             ]},
-          { name: 'Finisher pec',
+          { name: 'Finisher pec — Burnout câble',
             exercises: [
-              { id: 'cable_crossover_high', sets: 2, reps: '15', rest: 45, notes: 'Contraction 1s · jusqu\'à la brûlure' },
+              { id: 'cable_crossover_high', sets: 3, reps: '15-20', rest: 45, notes: 'Contraction 1s · dernière série en drop set jusqu\'à ne plus pouvoir · le pump pec' },
             ]},
           { name: 'Circuit Hyrox 1 — Poussée (superset)',
             exercises: [
@@ -1325,7 +1325,11 @@ const MuscuExercises = (() => {
   //   paires. Emphase RIR 1-2 (près de l'échec) — la vraie raison du « pas fatigué »
   //   n'est pas la durée mais l'arrêt trop loin de l'échec. Cardio 15→20 min,
   //   finishers AMRAP ajoutés.
-  const TEMPLATES_VERSION = 11;
+  // v12 (2026-07-20) : pec trop léger (ressenti) → techniques d'intensité (charge
+  //   basse, sensation haute) : drop sets sur chest press / incliné / câbles,
+  //   burnout pompes (drop set mécanique déficit→standard→genoux). Volume pec
+  //   ~12→~19 séries/sem. Sans nouveaux exos.
+  const TEMPLATES_VERSION = 12;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
