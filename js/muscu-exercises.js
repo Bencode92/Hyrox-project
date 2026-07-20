@@ -1122,17 +1122,17 @@ const MuscuExercises = (() => {
             ]},
           { name: 'Superset A — Pec + délts',
             exercises: [
-              { id: 'machine_chest_press', sets: 5, reps: '10-12',  rest: 90, notes: 'A1 · colonne push (remplace bench) · excentrique 2-3s + pause 1s pec étiré · RIR 1-2 · DERNIÈRE SÉRIE EN DROP SET (−30% puis à l\'échec) = le pump' },
-              { id: 'lateral_raise',       sets: 3, reps: '15-20',  rest: 45, notes: 'A2 · délts latéraux · enchaîné, léger, jusqu\'à la brûlure' },
+              { id: 'machine_chest_press', sets: 4, reps: '8-12',  rest: 90, notes: 'A1 · TA FONDATION · excentrique 2-3s + pause étiré · RIR 1-2 · DOUBLE PROGRESSION : monte 8→12 reps sur toutes les séries → puis +1 cran (≈+5%) et redescends à 8. Pas de drop set ici.' },
+              { id: 'lateral_raise',       sets: 3, reps: '12-15', rest: 45, notes: 'A2 · délts · RIR 1-2 · monte reps puis charge' },
             ]},
           { name: 'Superset B — Épaules + pec iso',
             exercises: [
-              { id: 'machine_shoulder_press', sets: 3, reps: '12', rest: 75, notes: 'B1 · remplace OHP barre · RIR 1-2 · pas de claquage en haut' },
-              { id: 'cable_crossover_low',    sets: 4, reps: '15', rest: 60, notes: 'B2 · poulies basses → haut · fibres pec bas · contraction 1s · dernière série drop set' },
+              { id: 'machine_shoulder_press', sets: 3, reps: '8-12',  rest: 75, notes: 'B1 · RIR 1-2 · double progression · pas de claquage en haut' },
+              { id: 'cable_crossover_low',    sets: 3, reps: '12-15', rest: 60, notes: 'B2 · fibres pec bas · contraction 1s · RIR 1-2 · 1 drop set autorisé sur la DERNIÈRE série' },
             ]},
-          { name: 'Finisher pec — Burnout pompes (drop set mécanique)',
+          { name: 'Finisher pec — 1 technique d\'intensité (dernier levier)',
             exercises: [
-              { id: 'deficit_push_up', sets: 3, reps: 'à l\'échec', rest: 75, notes: 'DROP SET MÉCANIQUE : déficit à l\'échec → enchaîne pompes standard → puis genoux, SANS repos. 3 tours. C\'est CE pump qui te fait sentir le pec.' },
+              { id: 'deficit_push_up', sets: 2, reps: 'max propres', rest: 75, notes: 'Drop set mécanique : déficit → standard → genoux, sans repos · 2 tours · STOP avant les reps sales (RIR 0-1, pas au-delà)' },
             ]},
           { name: 'Cardio finisher (20 min)',
             exercises: [
@@ -1154,13 +1154,13 @@ const MuscuExercises = (() => {
             ]},
           { name: 'Superset A — Tirage vertical + horizontal',
             exercises: [
-              { id: 'inverted_row', sets: 4, reps: '10-12', rest: 75, notes: 'A1 · le rowing le plus safe (McGill) · contrôlé sans rebond · RIR 1-2 (descends la barre si trop facile)' },
-              { id: 'lat_pulldown', sets: 4, reps: '12',    rest: 75, notes: 'A2 · prise large · excentrique 2-3s + pause étiré en bas · RIR 1-2' },
+              { id: 'inverted_row', sets: 4, reps: '8-12', rest: 75, notes: 'A1 · McGill safe · contrôlé sans rebond · RIR 1-2 · double progression (pieds plus bas / lest quand trop facile)' },
+              { id: 'lat_pulldown', sets: 4, reps: '8-12', rest: 75, notes: 'A2 · prise large · excentrique 2-3s + pause étiré · RIR 1-2 · double progression (monte le cran)' },
             ]},
           { name: 'Superset B — Dos épais + arrière d\'épaule',
             exercises: [
-              { id: 'db_row',    sets: 3, reps: '12', rest: 60, notes: 'B1 · chest-supported (banc incliné) → zéro charge érecteurs · RIR 1-2' },
-              { id: 'face_pull', sets: 3, reps: '20', rest: 45, notes: 'B2 · volume dos + santé épaule · jusqu\'à la brûlure' },
+              { id: 'db_row',    sets: 3, reps: '10-12', rest: 60, notes: 'B1 · chest-supported → zéro charge érecteurs · RIR 1-2 · double progression' },
+              { id: 'face_pull', sets: 3, reps: '15-20', rest: 45, notes: 'B2 · santé épaule · RIR 2 (garde 2 reps en réserve, pas à l\'échec)' },
             ]},
           { name: 'Cardio finisher (20 min)',
             exercises: [
@@ -1177,13 +1177,13 @@ const MuscuExercises = (() => {
         blocks: [
           { name: 'Superset A — Quadriceps + ischios',
             exercises: [
-              { id: 'leg_press', sets: 4, reps: '10-12', rest: 90, notes: 'A1 · charge plus agressive ici · reps ↑ puis charge ↑ · RIR 1-2' },
-              { id: 'leg_curl',  sets: 3, reps: '15',    rest: 45, notes: 'A2 · ischios · assis > allongé (position étirée)' },
+              { id: 'leg_press', sets: 4, reps: '8-12',  rest: 90, notes: 'A1 · charge OK ici (zone saine) · RIR 1-2 · DOUBLE PROGRESSION : ici le lever principal c\'est la charge — monte les crans' },
+              { id: 'leg_curl',  sets: 3, reps: '12-15', rest: 45, notes: 'A2 · ischios · assis > allongé (position étirée) · RIR 1-2' },
             ]},
           { name: 'Superset B — Hanche + unilatéral',
             exercises: [
-              { id: 'hip_thrust',      sets: 4, reps: '12',       rest: 75, notes: 'B1 · fessiers/hanche · substitut deadlift · zéro stress dos · RIR 1-2' },
-              { id: 'bulgarian_split', sets: 3, reps: '10/jambe', rest: 60, notes: 'B2 · contrôle unijambiste' },
+              { id: 'hip_thrust',      sets: 4, reps: '10-12',    rest: 75, notes: 'B1 · fessiers/hanche · substitut deadlift · zéro stress dos · RIR 1-2 · double progression' },
+              { id: 'bulgarian_split', sets: 3, reps: '10/jambe', rest: 60, notes: 'B2 · contrôle unijambiste · RIR 1-2' },
             ]},
           { name: 'Transfert Hyrox (optionnel · avant la course)',
             exercises: [
@@ -1228,12 +1228,12 @@ const MuscuExercises = (() => {
             ]},
           { name: 'Superset A — Pec haut + dos (2ᵉ dose)',
             exercises: [
-              { id: 'incline_db_press', sets: 4, reps: '10-12', rest: 75, notes: 'A1 · haltères inclinés · haut/claviculaire du pec (absent de J1) · RIR 1-2 · dernière série drop set · zéro barre' },
-              { id: 'seated_row',       sets: 3, reps: '12',    rest: 60, notes: 'A2 · tirage horizontal · le sled/carry ne comptent PAS comme stimulus dos' },
+              { id: 'incline_db_press', sets: 4, reps: '8-12',  rest: 75, notes: 'A1 · haltères inclinés · haut/claviculaire du pec (absent de J1) · RIR 1-2 · double progression · zéro barre' },
+              { id: 'seated_row',       sets: 3, reps: '10-12', rest: 60, notes: 'A2 · tirage horizontal · RIR 1-2 · double progression' },
             ]},
-          { name: 'Finisher pec — Burnout câble',
+          { name: 'Finisher pec — 1 technique d\'intensité (dernier levier)',
             exercises: [
-              { id: 'cable_crossover_high', sets: 3, reps: '15-20', rest: 45, notes: 'Contraction 1s · dernière série en drop set jusqu\'à ne plus pouvoir · le pump pec' },
+              { id: 'cable_crossover_high', sets: 3, reps: '12-15', rest: 45, notes: 'Contraction 1s · 1 drop set sur la dernière série (pas plus)' },
             ]},
           { name: 'Circuit Hyrox 1 — Poussée (superset)',
             exercises: [
@@ -1329,7 +1329,12 @@ const MuscuExercises = (() => {
   //   basse, sensation haute) : drop sets sur chest press / incliné / câbles,
   //   burnout pompes (drop set mécanique déficit→standard→genoux). Volume pec
   //   ~12→~19 séries/sem. Sans nouveaux exos.
-  const TEMPLATES_VERSION = 12;
+  // v13 (2026-07-20) : recadrage Fable — la fondation = charge MODÉRÉE 8-15 reps
+  //   RIR 1-2 + DOUBLE PROGRESSION (reps → charge par petits paliers), pas les
+  //   burnouts. Drop sets retirés des gros exos (chest press, incliné, leg press),
+  //   gardés sur 2-3 finishers max. Reps passées en fourchettes 8-12 / 12-15.
+  //   Deload −40% toutes les 6 sem (au lieu de 4) : tendons + lents que le muscle.
+  const TEMPLATES_VERSION = 13;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
@@ -1496,7 +1501,10 @@ const MuscuExercises = (() => {
   function generateWeekPlan(profile, weekNum) {
     const template = getTemplate(profile.daysPerWeek || 4, profile.goal);
     const isMuscleCardio = (template === MUSCLE_CARDIO_TEMPLATE);
-    const isDeload = weekNum > 1 && weekNum % 4 === 0;
+    // Deload toutes les 6 sem sur le programme Muscle+Cardio (tendons s'adaptent
+    // plus lentement que le muscle) ; toutes les 4 sem sur les templates classiques.
+    const deloadEvery = isMuscleCardio ? 6 : 4;
+    const isDeload = weekNum > 1 && weekNum % deloadEvery === 0;
     const prs = MuscuStorage.getPRs();
 
     // Finisher toggle (default ON) — désactivé sur le programme Muscle+Cardio :
