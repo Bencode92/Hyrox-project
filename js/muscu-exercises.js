@@ -1114,7 +1114,7 @@ const MuscuExercises = (() => {
   // Règles portées par les notes : tempo lent = la vraie charge · près de l'échec
   // (RIR 1-2) pour construire du muscle · jambes = seule zone où charger.
   const MUSCLE_CARDIO_TEMPLATE = {
-    name: '💪 Hybride Muscle + Cardio (sans barre lourde)',
+    name: '💪 Muscle-primary — focus pec (sans barre lourde)',
     days: [
       {
         label: 'J1 — Push (pec) sans compression',
@@ -1262,12 +1262,154 @@ const MuscuExercises = (() => {
     ],
   };
 
+  // ── SEMAINE HYBRIDE — BLOC HYROX (course dédiée + vélo + muscu 3 doses) ──
+  // Bascule validée par l'athlète : muscu → 3 doses (haut J1, jambes J3, léger J5),
+  // course J2 (sortie longue) + course courte sous fatigue J3, vélo Z2 J5 (test dos),
+  // piscine J4 (nage technique). Prépare le Hyrox Paris déc 2026. Le pec progresse
+  // encore mais plus lentement — trade-off assumé.
+  const HYROX_HYBRID_TEMPLATE = {
+    name: '🏃 Hybride Hyrox — muscle + course + vélo',
+    days: [
+      {
+        label: 'J1 — Muscu HAUT (pec + dos) + Z2',
+        focus: 'Séance muscle principale : pec dominant + dos. Progression charge 8-12 reps RIR 1-2. Le muscle passe ici avant tout.',
+        warmup: '5 min rameur + mobilité épaules/thoracique',
+        blocks: [
+          { name: 'Échauffement — Prehab (superset)',
+            exercises: [
+              { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'A1 · rotation externe' },
+              { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'A2 · omoplates' },
+            ]},
+          { name: 'Superset A — Pec + tirage vertical',
+            exercises: [
+              { id: 'machine_chest_press', sets: 4, reps: '8-12', rest: 90, notes: 'A1 · TA FONDATION pec · excentrique 2-3s + pause étiré · RIR 1-2 · double progression (reps→charge)' },
+              { id: 'lat_pulldown',        sets: 4, reps: '8-12', rest: 75, notes: 'A2 · prise large · RIR 1-2 · double progression' },
+            ]},
+          { name: 'Superset B — Pec haut + tirage horizontal',
+            exercises: [
+              { id: 'incline_db_press', sets: 3, reps: '8-12',  rest: 75, notes: 'B1 · haut/claviculaire du pec · RIR 1-2 · zéro barre' },
+              { id: 'seated_row',       sets: 3, reps: '10-12', rest: 60, notes: 'B2 · dos épais · RIR 1-2' },
+            ]},
+          { name: 'Superset C — Pec iso + délts',
+            exercises: [
+              { id: 'cable_crossover_low', sets: 3, reps: '12-15', rest: 45, notes: 'C1 · fibres pec bas · 1 drop set dernière série' },
+              { id: 'lateral_raise',       sets: 3, reps: '12-15', rest: 45, notes: 'C2 · délts latéraux · RIR 1-2' },
+            ]},
+          { name: 'Cardio (Z2, court)',
+            exercises: [
+              { id: 'rower_z2', sets: 1, reps: '15-20 min', rest: 0, notes: 'Zone 2 · base aérobie' },
+            ]},
+        ],
+        finisher: '',
+        cooldown: 'Étirements pec/épaules — 3 min',
+      },
+      {
+        label: 'J2 — Course (sortie longue Z2)',
+        focus: 'Jour cardio dédié : la sortie longue de la semaine. LE moteur du chrono Hyrox. +10%/sem max, règle J+1 sur le dos.',
+        warmup: '5-10 min marche/footing très lent + mobilité chevilles/hanches',
+        blocks: [
+          { name: 'Prehab (superset · le faire même les jours course)',
+            exercises: [
+              { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'A1 · santé épaule' },
+              { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'A2 · omoplates' },
+            ]},
+          { name: 'Sortie longue',
+            exercises: [
+              { id: 'course_z2', sets: 1, reps: '45-60 min', rest: 0, notes: 'Allure Z2 conversationnelle · monte progressivement vers 8-10 km continus sur le bloc · dos J+1 = juge' },
+            ]},
+        ],
+        finisher: '',
+        cooldown: 'Retour au calme 5 min + étirements jambes',
+      },
+      {
+        label: 'J3 — Jambes + Circuit Hyrox + course courte',
+        focus: 'Force-endurance jambes + stations Hyrox + course sur jambes fatiguées (compromised). La grosse journée.',
+        warmup: '5 min vélo/rameur + mobilité hanches/chevilles',
+        blocks: [
+          { name: 'Superset A — Quadriceps + ischios',
+            exercises: [
+              { id: 'leg_press', sets: 4, reps: '8-12',  rest: 90, notes: 'A1 · charge OK ici · RIR 1-2 · double progression' },
+              { id: 'leg_curl',  sets: 3, reps: '12-15', rest: 45, notes: 'A2 · ischios · assis > allongé' },
+            ]},
+          { name: 'Superset B — Hanche + unilatéral',
+            exercises: [
+              { id: 'hip_thrust',      sets: 3, reps: '10-12',    rest: 75, notes: 'B1 · fessiers · zéro stress dos · RIR 1-2' },
+              { id: 'bulgarian_split', sets: 3, reps: '10/jambe', rest: 60, notes: 'B2 · unilatéral' },
+            ]},
+          { name: 'Circuit Hyrox 1 (superset)',
+            exercises: [
+              { id: 'sled_push_light', sets: 4, reps: '20m', rest: 45, notes: 'A1 · converge vers charge de course (sem 4-6) — enchaîne' },
+              { id: 'wall_ball',       sets: 3, reps: '15',  rest: 45, notes: 'A2 · cible 3 m, jambes > bras' },
+            ]},
+          { name: 'Circuit Hyrox 2 (superset)',
+            exercises: [
+              { id: 'kb_swing',      sets: 3, reps: '15',  rest: 45, notes: 'B1 · hip hinge propre' },
+              { id: 'sandbag_carry', sets: 3, reps: '40m', rest: 60, notes: 'B2 · ⚠ charge le dos → règle J+1 dédiée · station non-swappable en compét, teste tôt' },
+            ]},
+          { name: 'Course courte SOUS FATIGUE (compromised)',
+            exercises: [
+              { id: 'course_z2', sets: 1, reps: '10-15 min', rest: 0, notes: 'Courir juste après les stations, jambes cramées · LA compétence Hyrox · allure contrôlée → allure course sur le bloc' },
+            ]},
+        ],
+        finisher: '',
+        cooldown: 'Étirements complets — 5 min',
+      },
+      {
+        label: 'J4 — Piscine (nage technique + récup)',
+        focus: 'Récup active + base natation (prépa tri) + mobilité épaules/thorax. Jour FACILE (4-5/10). Alterne Semaine A/B.',
+        warmup: 'Échauffement 5-8 min : 100 m nage libre souple + 50 m dos crawlé + 2×25 m brasse jambes (planche)',
+        blocks: [
+          { name: 'Semaine A — Aérobie continue (Z2)',
+            exercises: [
+              { id: 'natation', sets: 4, reps: '100 m', rest: 30, notes: 'Dos crawlé — ouverture pec, zéro compression · repos 30s' },
+              { id: 'natation', sets: 4, reps: '50 m',  rest: 20, notes: 'Brasse contrôlée · conversation possible' },
+            ]},
+          { name: 'Semaine B — Technique + fractionné doux (alternance)',
+            exercises: [
+              { id: 'natation', sets: 6, reps: '50 m', rest: 20, notes: 'Nage libre souple · focus glisse/allongement' },
+              { id: 'natation', sets: 4, reps: '25 m', rest: 30, notes: 'Dos ~Z3 bas · puis 100 m brasse lente' },
+            ]},
+        ],
+        finisher: '',
+        cooldown: 'Retour au calme + mobilité pec au mur. CRAWL modéré si épaule sensible · JAMAIS de papillon.',
+      },
+      {
+        label: 'J5 — Muscu haut léger (2ᵉ dose) + Vélo Z2',
+        focus: '2ᵉ dose pec/dos légère + vélo Z2 (TEST DOS, position relevée). Vélo d\'appart en salle en attendant ton vélo.',
+        warmup: '5 min mobilité générale',
+        blocks: [
+          { name: 'Échauffement — Prehab (superset)',
+            exercises: [
+              { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'A1 · rotation externe' },
+              { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'A2 · omoplates' },
+            ]},
+          { name: 'Superset A — Pec + dos (2ᵉ dose, léger)',
+            exercises: [
+              { id: 'machine_chest_press', sets: 3, reps: '10-12', rest: 75, notes: 'A1 · 2ᵉ dose pec · RIR 2 (léger, pas à fond)' },
+              { id: 'db_row',              sets: 3, reps: '12',    rest: 60, notes: 'A2 · chest-supported · RIR 2' },
+            ]},
+          { name: 'Finisher pec',
+            exercises: [
+              { id: 'cable_crossover_high', sets: 2, reps: '12-15', rest: 45, notes: 'Contraction 1s' },
+            ]},
+          { name: 'Vélo Z2 — test dos (position relevée)',
+            exercises: [
+              { id: 'velo_z2', sets: 1, reps: '30-45 min', rest: 0, notes: 'Vélo d\'appart salle / home trainer · buste HAUT · Z2 · règle J+1 dos = données pour la décision IM · bike fit avant achat' },
+            ]},
+        ],
+        finisher: '',
+        cooldown: 'Étirements dos/hanches — 3 min',
+      },
+    ],
+  };
+
   function getTemplate(daysPerWeek, goal) {
-    // 'hybrid' (défaut) → programme Muscle + Cardio sans barre lourde (bench+DL sortis).
-    // 'recovery' (ancien nom) → idem. Seuls 'hyrox' (perf pure) et 'hypertrophy'
-    // gardent les templates classiques avec barre lourde.
+    // 'hybrid' (défaut) → semaine hybride bloc Hyrox (course dédiée + vélo + muscu 3 doses).
+    // 'muscle' → programme muscle-primary focus pec (fenêtre muscle / post-course).
+    // 'hyrox' / 'hypertrophy' → templates classiques avec barre lourde.
+    if (goal === 'muscle' || goal === 'recovery') return MUSCLE_CARDIO_TEMPLATE;
     if (goal === 'hyrox' || goal === 'hypertrophy') return TEMPLATES[daysPerWeek] || TEMPLATES[4];
-    return MUSCLE_CARDIO_TEMPLATE;
+    return HYROX_HYBRID_TEMPLATE;
   }
 
   // ── Finisher block (auto-injected end of each day) ───────────
@@ -1344,7 +1486,11 @@ const MuscuExercises = (() => {
   //   position relevée, test dos) — apparaît en alternative de swap sur les finishers
   //   cardio. Note sur le finisher J3 : swap vélo dès septembre. Phase muscle actuelle
   //   inchangée (= la « phase muscle » du rétro-planning jusqu'à décembre).
-  const TEMPLATES_VERSION = 14;
+  // v15 (2026-07-20) : bascule DÉFAUT en HYROX_HYBRID_TEMPLATE (semaine hybride bloc
+  //   Hyrox : J1 muscu haut, J2 course longue, J3 jambes+stations+course courte, J4
+  //   piscine technique, J5 muscu léger + vélo Z2). goal='hybrid' → hybride Hyrox ;
+  //   nouveau goal='muscle' → l'ancien MUSCLE_CARDIO_TEMPLATE (muscle-primary) conservé.
+  const TEMPLATES_VERSION = 15;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
@@ -1510,10 +1656,10 @@ const MuscuExercises = (() => {
    */
   function generateWeekPlan(profile, weekNum) {
     const template = getTemplate(profile.daysPerWeek || 4, profile.goal);
-    const isMuscleCardio = (template === MUSCLE_CARDIO_TEMPLATE);
-    // Deload toutes les 6 sem sur le programme Muscle+Cardio (tendons s'adaptent
-    // plus lentement que le muscle) ; toutes les 4 sem sur les templates classiques.
-    const deloadEvery = isMuscleCardio ? 6 : 4;
+    const isCustomProgram = (template === MUSCLE_CARDIO_TEMPLATE || template === HYROX_HYBRID_TEMPLATE);
+    // Deload toutes les 6 sem sur nos programmes (tendons s'adaptent plus lentement
+    // que le muscle) ; toutes les 4 sem sur les templates classiques avec barre.
+    const deloadEvery = isCustomProgram ? 6 : 4;
     const isDeload = weekNum > 1 && weekNum % deloadEvery === 0;
     const prs = MuscuStorage.getPRs();
 
@@ -1522,7 +1668,7 @@ const MuscuExercises = (() => {
     // (prehab déjà intégré 1×/jour dans le template).
     const settings = (typeof MuscuStorage !== 'undefined' && MuscuStorage.getSettings)
       ? MuscuStorage.getSettings() : {};
-    const finisherEnabled = (settings.finisherEnabled !== false) && !isMuscleCardio;
+    const finisherEnabled = (settings.finisherEnabled !== false) && !isCustomProgram;
 
     const plan = {
       week: weekNum,
