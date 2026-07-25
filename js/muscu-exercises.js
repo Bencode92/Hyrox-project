@@ -1271,8 +1271,8 @@ const MuscuExercises = (() => {
     name: '🏃 Hybride Hyrox — muscle + course + vélo',
     days: [
       {
-        label: 'J1 — Muscu HAUT (pec + dos) + Z2',
-        focus: 'Séance muscle principale : pec dominant + dos. Progression charge 8-12 reps RIR 1-2. Le muscle passe ici avant tout.',
+        label: 'J1 — Pec + Triceps (+ pompes)',
+        focus: 'Poussée : pec + triceps + pompes. Progression charge 8-12 reps RIR 1-2. Pec = ta priorité.',
         warmup: '5 min rameur + mobilité épaules/thoracique',
         blocks: [
           { name: 'Échauffement — Prehab (superset)',
@@ -1280,20 +1280,20 @@ const MuscuExercises = (() => {
               { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'A1 · rotation externe' },
               { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'A2 · omoplates' },
             ]},
-          { name: 'Superset A — Pec + tirage vertical',
+          { name: 'Superset A — Pec lourd + triceps',
             exercises: [
-              { id: 'machine_chest_press', sets: 4, reps: '8-12', rest: 90, notes: 'A1 · TA FONDATION pec · excentrique 2-3s + pause étiré · RIR 1-2 · double progression (reps→charge)' },
-              { id: 'lat_pulldown',        sets: 4, reps: '8-12', rest: 75, notes: 'A2 · prise large · RIR 1-2 · double progression' },
+              { id: 'machine_chest_press', sets: 4, reps: '8-12',  rest: 90, notes: 'A1 · TA FONDATION pec · excentrique 2-3s + pause étiré · RIR 1-2 · double progression' },
+              { id: 'tricep_pushdown',     sets: 3, reps: '12-15', rest: 45, notes: 'A2 · triceps · coudes fixes · RIR 1-2' },
             ]},
-          { name: 'Superset B — Pec haut + tirage horizontal',
+          { name: 'Superset B — Pec haut + pompes',
             exercises: [
-              { id: 'incline_db_press', sets: 3, reps: '8-12',  rest: 75, notes: 'B1 · haut/claviculaire du pec · RIR 1-2 · zéro barre' },
-              { id: 'seated_row',       sets: 3, reps: '10-12', rest: 60, notes: 'B2 · dos épais · RIR 1-2' },
+              { id: 'incline_db_press', sets: 3, reps: '8-12',       rest: 75, notes: 'B1 · haut/claviculaire du pec · RIR 1-2 · zéro barre' },
+              { id: 'push_up',          sets: 3, reps: 'max propres', rest: 60, notes: 'B2 · POMPES · tempo contrôlé · genoux si besoin · pas dans la douleur épaule' },
             ]},
-          { name: 'Superset C — Pec iso + délts',
+          { name: 'Superset C — Pec iso + triceps',
             exercises: [
               { id: 'cable_crossover_low', sets: 3, reps: '12-15', rest: 45, notes: 'C1 · fibres pec bas · 1 drop set dernière série' },
-              { id: 'lateral_raise',       sets: 3, reps: '12-15', rest: 45, notes: 'C2 · délts latéraux · RIR 1-2' },
+              { id: 'tricep_pushdown',     sets: 3, reps: '12-15', rest: 45, notes: 'C2 · triceps (corde) · contraction 1s' },
             ]},
           { name: 'Cardio (Z2, court)',
             exercises: [
@@ -1301,7 +1301,7 @@ const MuscuExercises = (() => {
             ]},
         ],
         finisher: '',
-        cooldown: 'Étirements pec/épaules — 3 min',
+        cooldown: 'Étirements pec/triceps — 3 min',
       },
       {
         label: 'J2 — Course (sortie longue Z2)',
@@ -1322,19 +1322,24 @@ const MuscuExercises = (() => {
         cooldown: 'Retour au calme 5 min + étirements jambes',
       },
       {
-        label: 'J3 — Jambes + Circuit Hyrox + course courte',
-        focus: 'Force-endurance jambes + stations Hyrox + course sur jambes fatiguées (compromised). La grosse journée.',
-        warmup: '5 min vélo/rameur + mobilité hanches/chevilles',
+        label: 'J3 — Jambes + Épaules + Circuit Hyrox',
+        focus: 'Jambes + épaules, puis stations Hyrox et course sur jambes fatiguées. La grosse journée.',
+        warmup: '5 min vélo/rameur + mobilité hanches/chevilles/épaules',
         blocks: [
-          { name: 'Superset A — Quadriceps + ischios',
+          { name: 'Superset A — Quadriceps + épaules',
             exercises: [
-              { id: 'leg_press', sets: 4, reps: '8-12',  rest: 90, notes: 'A1 · charge OK ici · RIR 1-2 · double progression' },
-              { id: 'leg_curl',  sets: 3, reps: '12-15', rest: 45, notes: 'A2 · ischios · assis > allongé' },
+              { id: 'leg_press',              sets: 4, reps: '8-12', rest: 90, notes: 'A1 · charge OK ici · RIR 1-2 · double progression' },
+              { id: 'machine_shoulder_press', sets: 3, reps: '8-12', rest: 75, notes: 'A2 · épaules · remplace OHP barre · RIR 1-2 · pas de claquage' },
             ]},
-          { name: 'Superset B — Hanche + unilatéral',
+          { name: 'Superset B — Hanche + délts latéraux',
             exercises: [
-              { id: 'hip_thrust',      sets: 3, reps: '10-12',    rest: 75, notes: 'B1 · fessiers · zéro stress dos · RIR 1-2' },
-              { id: 'bulgarian_split', sets: 3, reps: '10/jambe', rest: 60, notes: 'B2 · unilatéral' },
+              { id: 'hip_thrust',    sets: 4, reps: '10-12', rest: 75, notes: 'B1 · fessiers · zéro stress dos · RIR 1-2' },
+              { id: 'lateral_raise', sets: 3, reps: '12-15', rest: 45, notes: 'B2 · délts latéraux · largeur d\'épaules' },
+            ]},
+          { name: 'Superset C — Ischios + unilatéral',
+            exercises: [
+              { id: 'leg_curl',        sets: 3, reps: '12-15',    rest: 45, notes: 'C1 · ischios · assis > allongé (position étirée)' },
+              { id: 'bulgarian_split', sets: 3, reps: '10/jambe', rest: 60, notes: 'C2 · unilatéral' },
             ]},
           { name: 'Circuit Hyrox 1 (superset)',
             exercises: [
@@ -1374,23 +1379,29 @@ const MuscuExercises = (() => {
         cooldown: 'Retour au calme + mobilité pec au mur. CRAWL modéré si épaule sensible · JAMAIS de papillon.',
       },
       {
-        label: 'J5 — Muscu haut léger (2ᵉ dose) + Vélo Z2',
-        focus: '2ᵉ dose pec/dos légère + vélo Z2 (TEST DOS, position relevée). Vélo d\'appart en salle en attendant ton vélo.',
-        warmup: '5 min mobilité générale',
+        label: 'J5 — Dos + Biceps (+ tractions) + Vélo Z2',
+        focus: 'Tirage : dos + biceps + tractions, puis vélo Z2 (TEST DOS, position relevée). Vélo d\'appart en salle en attendant ton vélo.',
+        warmup: '5 min rameur + mobilité épaules',
         blocks: [
           { name: 'Échauffement — Prehab (superset)',
             exercises: [
               { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'A1 · rotation externe' },
               { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'A2 · omoplates' },
             ]},
-          { name: 'Superset A — Pec + dos (2ᵉ dose, léger)',
+          { name: 'Superset A — Tractions + biceps',
             exercises: [
-              { id: 'machine_chest_press', sets: 3, reps: '10-12', rest: 75, notes: 'A1 · 2ᵉ dose pec · RIR 2 (léger, pas à fond)' },
-              { id: 'db_row',              sets: 3, reps: '12',    rest: 60, notes: 'A2 · chest-supported · RIR 2' },
+              { id: 'pull_ups',   sets: 4, reps: 'max',   rest: 90, notes: 'A1 · TRACTIONS · assisté élastique si besoin · excentrique contrôlé · pas de balancier' },
+              { id: 'bicep_curl', sets: 3, reps: '10-12', rest: 45, notes: 'A2 · biceps · RIR 1-2' },
             ]},
-          { name: 'Finisher pec',
+          { name: 'Superset B — Tirage horizontal + biceps',
             exercises: [
-              { id: 'cable_crossover_high', sets: 2, reps: '12-15', rest: 45, notes: 'Contraction 1s' },
+              { id: 'seated_row',  sets: 4, reps: '10-12', rest: 60, notes: 'B1 · dos épais · RIR 1-2 · double progression' },
+              { id: 'hammer_curl', sets: 3, reps: '12',    rest: 45, notes: 'B2 · biceps/brachial · prise marteau' },
+            ]},
+          { name: 'Superset C — Dos largeur + arrière épaule',
+            exercises: [
+              { id: 'lat_pulldown', sets: 3, reps: '10-12', rest: 60, notes: 'C1 · prise large · pause étiré en bas' },
+              { id: 'face_pull',    sets: 3, reps: '20',    rest: 45, notes: 'C2 · arrière épaule · RIR 2' },
             ]},
           { name: 'Vélo Z2 — test dos (position relevée)',
             exercises: [
@@ -1398,7 +1409,7 @@ const MuscuExercises = (() => {
             ]},
         ],
         finisher: '',
-        cooldown: 'Étirements dos/hanches — 3 min',
+        cooldown: 'Étirements dos/biceps — 3 min',
       },
     ],
   };
@@ -1490,7 +1501,11 @@ const MuscuExercises = (() => {
   //   Hyrox : J1 muscu haut, J2 course longue, J3 jambes+stations+course courte, J4
   //   piscine technique, J5 muscu léger + vélo Z2). goal='hybrid' → hybride Hyrox ;
   //   nouveau goal='muscle' → l'ancien MUSCLE_CARDIO_TEMPLATE (muscle-primary) conservé.
-  const TEMPLATES_VERSION = 15;
+  // v16 (2026-07-25) : split préféré de l'athlète dans HYROX_HYBRID — J1 Pec+Triceps
+  //   (+ pompes), J3 Jambes+Épaules (+ circuit Hyrox), J5 Dos+Biceps (+ tractions)
+  //   + vélo. Ajout tricep_pushdown, bicep_curl, hammer_curl, push_up, pull_ups.
+  //   Trade-off : pec & dos repassent à 1×/sem (split classique).
+  const TEMPLATES_VERSION = 16;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
