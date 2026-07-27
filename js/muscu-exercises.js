@@ -1280,10 +1280,10 @@ const MuscuExercises = (() => {
               { id: 'face_pull',       sets: 3, reps: '15', rest: 45, notes: 'A1 · rotation externe' },
               { id: 'band_pull_apart', sets: 3, reps: '20', rest: 30, notes: 'A2 · omoplates' },
             ]},
-          { name: 'Superset A — Pec lourd + triceps',
+          { name: 'Superset A — Bench (réintroduction prudente) + triceps',
             exercises: [
-              { id: 'machine_chest_press', sets: 4, reps: '8-12',  rest: 90, notes: 'A1 · TA FONDATION pec · excentrique 2-3s + pause étiré · RIR 1-2 · double progression' },
-              { id: 'tricep_pushdown',     sets: 3, reps: '12-15', rest: 45, notes: 'A2 · triceps · coudes fixes · RIR 1-2' },
+              { id: 'bench_press',     sets: 4, reps: '8-10',  rest: 90, notes: 'A1 · ⚠ RÉINTRODUCTION PRUDENTE (l\'exo qui t\'a blessé) : charge LÉGÈRE, mouvement lent contrôlé, pieds au sol, omoplates serrées, RIR 3 (JAMAIS à l\'échec, PAS de 5×5). Gate = douleur J+1 ≤ 3/10 · sinon recule ou repasse en machine (swap 🔄)' },
+              { id: 'tricep_pushdown', sets: 3, reps: '12-15', rest: 45, notes: 'A2 · triceps · coudes fixes · RIR 1-2' },
             ]},
           { name: 'Superset B — Pec haut + pompes',
             exercises: [
@@ -1326,9 +1326,9 @@ const MuscuExercises = (() => {
         focus: 'Jambes + épaules, puis stations Hyrox et course sur jambes fatiguées. La grosse journée.',
         warmup: '5 min vélo/rameur + mobilité hanches/chevilles/épaules',
         blocks: [
-          { name: 'Superset A — Quadriceps + épaules',
+          { name: 'Superset A — Squat (réintroduction) + épaules',
             exercises: [
-              { id: 'leg_press',              sets: 4, reps: '8-12', rest: 90, notes: 'A1 · charge OK ici · RIR 1-2 · double progression' },
+              { id: 'front_squat',            sets: 4, reps: '8-10', rest: 90, notes: 'A1 · ⚠ RÉINTRODUCTION SQUAT : FRONT squat (torse vertical = bien moins de contrainte lombaire que le back squat) · charge LÉGÈRE, contrôlé, RIR 2-3 · gate douleur J+1 dos ≤ 3/10 · back squat lourd seulement plus tard si le dos reste clean · leg press en swap 🔄 si besoin' },
               { id: 'machine_shoulder_press', sets: 3, reps: '8-12', rest: 75, notes: 'A2 · épaules · remplace OHP barre · RIR 1-2 · pas de claquage' },
             ]},
           { name: 'Superset B — Hanche + délts latéraux',
@@ -1505,7 +1505,11 @@ const MuscuExercises = (() => {
   //   (+ pompes), J3 Jambes+Épaules (+ circuit Hyrox), J5 Dos+Biceps (+ tractions)
   //   + vélo. Ajout tricep_pushdown, bicep_curl, hammer_curl, push_up, pull_ups.
   //   Trade-off : pec & dos repassent à 1×/sem (split classique).
-  const TEMPLATES_VERSION = 16;
+  // v17 (2026-07-27) : réintroduction PRUDENTE de la barre (choix athlète, clinicien
+  //   OK) — bench_press léger/contrôlé RIR 3 en A1 de J1, front_squat léger en A1 de
+  //   J3. Garde-fou dur = douleur J+1 ≤ 3/10 · machine chest press / leg press restent
+  //   en swap. « Pas de LOURD (5×5) » tient toujours ; on réintroduit le pattern léger.
+  const TEMPLATES_VERSION = 17;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
