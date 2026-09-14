@@ -307,7 +307,7 @@ const MuscuApp = (() => {
     renderDashboard();
   }
 
-  // ── Carte plan piscine : phase courante, séance J4 résumée, timeline des 4 phases
+  // ── Carte plan piscine : phase courante, timeline 4 phases, fiche de séance lisible
   function _renderSwimCard(plan) {
     const container = document.getElementById('dash-swim-content');
     if (!container) return;
@@ -318,54 +318,68 @@ const MuscuApp = (() => {
     const day = dayIdx >= 0 ? plan.days[dayIdx] : null;
 
     const STEPS = [
-      { key: 'tech',  label: '1 · Technique',   when: 'sept → nov',  min: 28 },
-      { key: 'aero',  label: '2 · Aérobie',     when: 'déc → fév',   min: 16 },
-      { key: 'spec',  label: '3 · Spécifique',  when: 'mars → mai',  min: 4 },
-      { key: 'taper', label: 'Pré-compét',      when: 'J-4 → course', min: -Infinity },
+      { key: 'tech',  label: 'Technique',   when: 'sept → nov',   min: 28, goal: 'Apprendre à nager BIEN avant de nager plus', effort: '40-45 min · effort 5/10' },
+      { key: 'aero',  label: 'Aérobie',     when: 'déc → fév',    min: 16, goal: 'Monter le volume à allure régulière',        effort: '45-50 min · effort 6/10' },
+      { key: 'spec',  label: 'Spécifique',  when: 'mars → mai',   min: 4,  goal: 'Allure course sur 750 m + eau libre',        effort: '45-50 min · effort 7/10' },
+      { key: 'taper', label: 'Pré-compét',  when: 'J-4 → course', min: -Infinity, goal: 'Affûter, ne plus construire',          effort: '30 min · sortir frais' },
     ];
-    const activeIdx = STEPS.findIndex(st => weeks > st.min);
+    const activeIdx = Math.max(0, STEPS.findIndex(st => weeks > st.min));
+    const active = STEPS[activeIdx];
     const timeline = STEPS.map((st, i) => `
-      <div class="swim-step ${i === activeIdx ? 'active' : i < activeIdx ? 'done' : ''}">${st.label}<small>${st.when}</small></div>`).join('');
-
-    // Résumé des blocs de la séance J4 (distance par bloc)
-    let blocksHtml = '';
-    let total = 0;
-    if (day) {
-      const byBlock = new Map();
-      (day.exercises || []).forEach(ex => {
-        const m = String(ex.reps).match(/(\d+)\s*m/);
-        const dist = m ? Number(m[1]) * (typeof ex.sets === 'number' ? ex.sets : 1) : 0;
-        total += dist;
-        const b = byBlock.get(ex.blockName) || { dist: 0, n: 0 };
-        b.dist += dist; b.n += 1;
-        byBlock.set(ex.blockName, b);
-      });
-      blocksHtml = [...byBlock.entries()].map(([name, b]) =>
-        `<div class="swim-block"><strong>${name}</strong><em>${b.dist ? b.dist + ' m' : ''}</em></div>`).join('');
-    }
+      <div class="swim-step ${i === activeIdx ? 'active' : i < activeIdx ? 'done' : ''}">${i + 1} · ${st.label}<small>${st.when}</small></div>`).join('');
 
     const KEY = {
-      tech:  'Compte tes coups de bras sur 25 m : l\'objectif de la phase, c\'est que ce chiffre BAISSE (plus de glisse), pas d\'aller plus vite. Et expire EN CONTINU sous l\'eau.',
-      aero:  'Même temps sur chaque 100 (± 3 s). La régularité, pas la vitesse. Semaine A : 8×100 · semaine B : 4×200.',
-      spec:  'Allure course sur 3×300 = ton 750 m. Sighting tous les 8 cycles. Dès avril : eau libre en combinaison 1 fois / 2 sem.',
-      taper: 'On n\'apprend plus rien : 750 m chrono comme test, puis du court. Semaine de course : 600 m facile, sortir frais.',
+      tech:  'Compte tes coups de bras sur 25 m : il doit BAISSER au fil des semaines (plus de glisse). Expire en continu sous l\'eau.',
+      aero:  'Même temps sur chaque 100 m (± 3 s). La régularité, pas la vitesse.',
+      spec:  'Tiens l\'allure course sur les 3×300. Lève les yeux tous les 8 cycles (sighting).',
+      taper: 'Le 750 m chrono est un test, pas un entraînement. Semaine de course : 600 m facile.',
     };
-    const active = STEPS[activeIdx] || STEPS[STEPS.length - 1];
+
+    // Fiche de séance : échauffement → blocs → lignes (séries × distance — consigne courte)
+    // Consigne courte : 1er segment (avant « · »), + le 2ᵉ si le 1er est très court
+    const short = t => {
+      const seg = String(t || '').split(' · ');
+      const txt = seg[0].length < 30 && seg[1] ? seg[0] + ' — ' + seg[1] : seg[0];
+      return txt.replace(/\s*\(.*?\)\s*/g, ' ').trim();
+    };
+    const firstMeters = t => { const m = String(t || '').match(/(\d+)\s*m\b/); return m ? Number(m[1]) : 0; };
+    let sheetHtml = '';
+    let total = 0;
+    if (day) {
+      const warm = firstMeters(day.warmup);
+      total += warm;
+      if (day.warmup) sheetHtml += `<div class="swim-row swim-row-warm"><span class="swim-dist">${warm ? warm + ' m' : ''}</span><span class="swim-what">Échauffement — ${day.warmup.replace(/^Échauffement\s*\d*\s*m?\s*:\s*/i, '')}</span></div>`;
+      let lastBlock = null;
+      (day.exercises || []).forEach(ex => {
+        if (ex.blockName !== lastBlock) {
+          sheetHtml += `<div class="swim-block-title">${short(ex.blockName)}</div>`;
+          lastBlock = ex.blockName;
+        }
+        const m = String(ex.reps).match(/(\d+)\s*m/);
+        const per = m ? Number(m[1]) : 0;
+        const sets = typeof ex.sets === 'number' ? ex.sets : 1;
+        total += per * sets;
+        const rest = (sets > 1 && ex.restSec) ? `<small>repos ${ex.restSec} s</small>` : '';
+        sheetHtml += `<div class="swim-row"><span class="swim-dist">${sets > 1 ? sets + ' × ' : ''}${ex.reps}</span><span class="swim-what">${short(ex.notes)}${rest}</span></div>`;
+      });
+      sheetHtml += `<div class="swim-row swim-row-total"><span class="swim-dist">≈ ${total} m</span><span class="swim-what">Total séance (+ 100 m retour au calme)</span></div>`;
+    }
 
     container.innerHTML = `
       <div class="swim-card-header">
         <div>
           <div class="swim-card-title">🏊 Plan piscine</div>
-          <div class="swim-card-sub">${day ? day.label.replace(/^J\d+ — Piscine · /, '') : 'Séance J4'}${total ? ` · ${total} m de séries + échauffement` : ''}</div>
+          <div class="swim-card-sub">Phase ${activeIdx + 1} · ${active.label} — ${active.goal}</div>
+          <div class="text-muted text-sm">${active.effort}</div>
         </div>
         <span class="swim-card-phase">${race ? 'J-' + race.weeks + ' sem' : ''}</span>
       </div>
       <div class="swim-timeline">${timeline}</div>
-      ${day ? `<div class="text-muted text-sm" style="margin-bottom:6px">${day.focus || ''}</div>` : ''}
-      <div class="swim-blocks">${blocksHtml}</div>
+      <div class="swim-sheet-title">Séance J4 de la semaine</div>
+      <div class="swim-sheet">${sheetHtml}</div>
       <div class="swim-key">🎯 ${KEY[active.key]}</div>
-      <div class="swim-option">🔄 <b>Muscu + piscine le même jour ?</b> Sur la séance muscu, swap le cardio de fin par « Piscine post-muscu — technique (20-25 min) » : ≈ 800 m d'éducatifs + respiration. Pas de volume après le haut du corps. Épaule qui tire en crawl → dos crawlé, règle J+1.</div>
-      ${dayIdx >= 0 ? `<button class="btn btn-swim" onclick="MuscuApp.showDayDetail(${dayIdx})">🏊 Voir la séance piscine complète</button>` : ''}
+      <div class="swim-option">🔄 <b>Muscu + piscine le même jour :</b> sur la séance muscu, swap le cardio de fin → « Piscine post-muscu — technique » (≈ 800 m, 20-25 min).</div>
+      ${dayIdx >= 0 ? `<button class="btn btn-swim" onclick="MuscuApp.showDayDetail(${dayIdx})">🏊 Ouvrir la séance piscine (consignes complètes)</button>` : ''}
     `;
   }
 
