@@ -108,7 +108,7 @@ const MuscuApp = (() => {
     document.getElementById('launch-days').textContent = template.days.length + ' jours/semaine';
     document.getElementById('launch-level').textContent = profile.level;
 
-    const daysHtml = template.days.map(d =>
+    const daysHtml = template.days.map(raw => MuscuExercises.resolveDay(raw, { weeksToRace: (MuscuExercises.getPhaseForRace(MuscuStorage.getSettings().raceDate || '2027-06-15') || {}).weeks })).map(d =>
       `<div class="launch-day-card"><strong>${d.label}</strong><span class="text-muted">${d.focus}</span></div>`
     ).join('');
     document.getElementById('launch-days-list').innerHTML = daysHtml;

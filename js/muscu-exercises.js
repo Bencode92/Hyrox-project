@@ -682,11 +682,17 @@ const MuscuExercises = (() => {
       cues: ['Allure Zone 2 : tu peux tenir une conversation', 'FC ~60-70% max', 'Foulée souple, cadence ~170-180', 'Marche rapide OK si la course tire', 'Durée en minutes'],
       mistakes: ['Partir en Zone 3-4 (trop rapide)', 'Sur-foulée', 'Négliger l\'échauffement'] },
 
-    { id: 'natation', name: 'Natation (récup active)', category: 'conditioning', subcategory: 'cardio', equipment: 'pool',
+    { id: 'natation', name: 'Natation (crawl / dos crawlé)', category: 'conditioning', subcategory: 'cardio', equipment: 'pool',
       hyrox: [], primary: ['cardio','dos','épaules'], secondary: ['pectoraux'],
       videoUrl: 'https://www.youtube.com/watch?v=5HLW2AI1Ink',
-      cues: ['Dos crawlé = ton ami : ouverture pec + rotation externe d\'épaule, zéro compression', 'Allure Z2, conversation possible — jour FACILE (4-5/10), sortir frais', 'Crawl (nage libre) en modération si épaule sensible (rotation interne exigeante)', 'JAMAIS de papillon (opposé de ce que ton épaule/haut du dos demandent)', 'Reps = distance (m) par longueur'],
-      mistakes: ['Sortir fatigué (raté : ce jour permet aux 4 autres d\'être durs)', 'Forcer le crawl si l\'épaule tire → bascule dos + brasse', 'Chercher la performance natation'] },
+      cues: ['Reps = distance (m) par répétition · le contenu exact est dans la note de la série', 'Crawl : tête dans l\'axe (regard fond), expiration CONTINUE sous l\'eau, respiration bilatérale 3 temps, coude haut, doigts relâchés', 'Dos crawlé = récup + ouverture pec : rotation externe d\'épaule, zéro compression', 'Si l\'épaule tire en crawl → bascule dos crawlé, règle J+1 comme en muscu', 'JAMAIS de papillon (opposé de ce que ton épaule/haut du dos demandent)'],
+      mistakes: ['Bloquer la respiration puis souffler-inspirer en un temps (= essoufflement)', 'Lever la tête pour respirer (les hanches coulent)', 'Forcer le crawl si l\'épaule tire', 'Nager toujours à la même allure sans structure (le 1000 m en continu = 0 progrès technique)'] },
+
+    { id: 'natation_technique', name: 'Piscine post-muscu — technique (20-25 min)', category: 'conditioning', subcategory: 'cardio', equipment: 'pool',
+      hyrox: [], primary: ['cardio','dos','épaules'], secondary: ['pectoraux'],
+      videoUrl: 'https://www.youtube.com/watch?v=5HLW2AI1Ink',
+      cues: ['Option « muscu + piscine » : swap 🔄 du cardio de fin de séance, même durée (20-25 min, ≈ 800 m)', 'Échauffement 100 m : 50 NL souple + 50 dos', 'Éducatifs 6×50 R20 : 2× battements bras devant (planche OK) · 2× rattrapé (une main attend l\'autre devant) · 2× un bras (25 G / 25 D, bras libre le long du corps)', 'Respiration 4×50 R20 : crawl 3 temps bilatéral, expirer en continu sous l\'eau', 'Fin 100 m dos crawlé souple', 'Allure FACILE — après la muscu, c\'est de la technique, pas du volume'],
+      mistakes: ['Faire du volume après une séance muscu haut du corps (épaules déjà chargées)', 'Enchaîner sans repos entre les 50 (l\'éducatif se dégrade)', 'Sauter les éducatifs pour « juste nager »'] },
 
     { id: 'velo_z2', name: 'Vélo Zone 2 (base Ironman)', category: 'conditioning', subcategory: 'cardio', equipment: 'bike',
       hyrox: [], primary: ['cardio','jambes'], secondary: [],
@@ -1214,23 +1220,104 @@ const MuscuExercises = (() => {
         cooldown: 'Étirements quads/ischios/hanches — 5 min',
       },
       {
-        label: 'J4 — Piscine (nage technique + récup)',
-        focus: 'Récup active + base natation (prépa tri) + mobilité épaules/thorax. Jour FACILE (4-5/10) — c\'est lui qui permet aux 4 autres d\'être durs. Alterne Semaine A / B.',
-        warmup: 'Échauffement 5-8 min : 100 m nage libre souple + 50 m dos crawlé lent + 2×25 m brasse jambes (planche)',
-        blocks: [
-          { name: 'Semaine A — Aérobie continue (Z2, sortir frais)',
-            exercises: [
-              { id: 'natation', sets: 4, reps: '100 m', rest: 30, notes: 'Dos crawlé — ouverture pec + rotation externe, zéro compression · repos 30s' },
-              { id: 'natation', sets: 4, reps: '50 m',  rest: 20, notes: 'Brasse contrôlée · conversation possible (Z2) · repos 20s' },
-            ]},
-          { name: 'Semaine B — Technique + fractionné doux (en alternance avec A)',
-            exercises: [
-              { id: 'natation', sets: 6, reps: '50 m', rest: 20, notes: 'Nage libre souple · focus glisse et allongement · repos 20s' },
-              { id: 'natation', sets: 4, reps: '25 m', rest: 30, notes: 'Dos, allure un peu + soutenue (~Z3 bas) · puis 100 m brasse lente pour redescendre' },
-            ]},
-        ],
+        // Plan piscine progressif (athlète : 1000 m crawl/dos OK, ZÉRO technique →
+        // technique d'abord, volume ensuite). Variante choisie par semaines avant la
+        // course (settings.raceDate) via resolveDay(). Tri sprint = 750 m eau libre.
+        label: 'J4 — Piscine',
+        focus: 'Plan piscine progressif.',
+        warmup: '',
+        blocks: [],
         finisher: '',
-        cooldown: 'Retour au calme 5 min : 50-100 m très lent + mobilité dans l\'eau (bras en cercles, étirement pec au mur). CRAWL modéré si épaule sensible · JAMAIS de papillon.',
+        cooldown: 'Retour au calme 100 m très lent + mobilité dans l\'eau (bras en cercles, étirement pec au mur). Si l\'épaule tire en crawl → dos crawlé · JAMAIS de papillon.',
+        variants: [
+          { minWeeksToRace: 28,
+            label: 'J4 — Piscine · Phase 1 TECHNIQUE (~1 500 m)',
+            focus: 'Sept → nov : on construit la technique crawl AVANT le volume. Tu sais nager 1 000 m — maintenant on apprend à le nager BIEN : respiration continue, alignement, allongement. 40-45 min, effort 5/10.',
+            warmup: 'Échauffement 200 m : 100 NL souple + 100 dos crawlé',
+            blocks: [
+              { name: 'Éducatifs (6×50, repos 20 s)',
+                exercises: [
+                  { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'Battements bras devant (planche OK) · corps horizontal, regard fond, petits battements depuis la hanche' },
+                  { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'RATTRAPÉ (catch-up) : une main attend l\'autre devant · allongement + glisse' },
+                  { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'UN BRAS : 25 m bras gauche / 25 m bras droit, bras libre le long du corps · rotation des hanches' },
+                ]},
+              { name: 'Respiration (4×50, repos 20 s)',
+                exercises: [
+                  { id: 'natation', sets: 4, reps: '50 m', rest: 20, notes: 'Crawl respiration 3 temps (bilatérale) · EXPIRER EN CONTINU sous l\'eau (bulles), une seule oreille sort · si essoufflé : 2 temps mais expire quand même' },
+                ]},
+              { name: 'Corps de séance (6×100, repos 30 s)',
+                exercises: [
+                  { id: 'natation', sets: 6, reps: '100 m', rest: 30, notes: 'Crawl allure FACILE · 1 focus par 100 : ① tête dans l\'axe ② allongement devant ③ rotation hanches ④ coude haut ⑤ mains relâchées ⑥ glisse (moins de coups par longueur) · compte tes coups de bras sur 25 m : l\'objectif c\'est qu\'il BAISSE' },
+                ]},
+              { name: 'Récup',
+                exercises: [
+                  { id: 'natation', sets: 1, reps: '100 m', rest: 0, notes: 'Dos crawlé souple · ouverture pec' },
+                ]},
+            ] },
+          { minWeeksToRace: 16,
+            label: 'J4 — Piscine · Phase 2 AÉROBIE (~1 700 m)',
+            focus: 'Déc → fév : la technique est posée, on monte le volume à allure régulière. Alterne semaine A (8×100) / semaine B (4×200). 45-50 min, effort 6/10.',
+            warmup: 'Échauffement 300 m : 200 NL souple + 100 dos crawlé',
+            blocks: [
+              { name: 'Rappel technique (4×50, repos 20 s)',
+                exercises: [
+                  { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'Rattrapé · allongement' },
+                  { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'Un bras 25/25 · rotation' },
+                ]},
+              { name: 'Corps de séance — semaine A : 8×100 R20 · semaine B : 4×200 R30',
+                exercises: [
+                  { id: 'natation', sets: 8, reps: '100 m', rest: 20, notes: 'Crawl allure RÉGULIÈRE (même temps sur chaque 100, ±3 s) · respiration 3 temps · semaine B : regroupe en 4×200 repos 30 s' },
+                ]},
+              { name: 'Vitesse (4×50, repos 30 s)',
+                exercises: [
+                  { id: 'natation', sets: 4, reps: '50 m', rest: 30, notes: '25 m RAPIDE (technique tenue) / 25 m souple · pas de papillon' },
+                ]},
+              { name: 'Récup',
+                exercises: [
+                  { id: 'natation', sets: 1, reps: '100 m', rest: 0, notes: 'Dos crawlé souple' },
+                ]},
+            ] },
+          { minWeeksToRace: 4,
+            label: 'J4 — Piscine · Phase 3 SPÉCIFIQUE tri (~1 900 m)',
+            focus: 'Mars → mai : allure course sur la distance de l\'épreuve (750 m) + compétences eau libre (sighting, nager droit). Dès avril : 1 séance eau libre / 2 sem en combinaison si possible. 45-50 min, effort 7/10.',
+            warmup: 'Échauffement 300 m : 200 NL + 100 dos, puis 4×25 m progressifs',
+            blocks: [
+              { name: 'Rappel technique (4×50, repos 20 s)',
+                exercises: [
+                  { id: 'natation', sets: 4, reps: '50 m', rest: 20, notes: 'Rattrapé / un bras en alternance' },
+                ]},
+              { name: 'Allure course (3×300, repos 45 s)',
+                exercises: [
+                  { id: 'natation', sets: 3, reps: '300 m', rest: 45, notes: 'Crawl allure COURSE visée sur 750 m · départ un peu plus vite (simule le départ groupé) puis stabilise · note le temps de chaque 300' },
+                ]},
+              { name: 'Eau libre — sighting (200 m continu)',
+                exercises: [
+                  { id: 'natation', sets: 1, reps: '200 m', rest: 30, notes: 'Tous les 8 cycles : lever les yeux (pas la tête entière) vers l\'avant pour « viser » · garde le rythme · ligne droite sans la ligne au fond (yeux fermés 3 cycles)' },
+                ]},
+              { name: 'Récup',
+                exercises: [
+                  { id: 'natation', sets: 1, reps: '100 m', rest: 0, notes: 'Dos crawlé souple' },
+                ]},
+            ] },
+          { minWeeksToRace: -Infinity,
+            label: 'J4 — Piscine · PRÉ-COMPÉT / TAPER (~1 250 m)',
+            focus: 'J-4 → course : on ne construit plus, on affûte. Un 750 m continu à allure course comme test, puis du court rapide. Semaine de course : 600 m facile + 4×25 vite, c\'est tout. 30 min, sortir frais.',
+            warmup: 'Échauffement 200 m : 100 NL + 100 dos',
+            blocks: [
+              { name: 'Test distance course',
+                exercises: [
+                  { id: 'natation', sets: 1, reps: '750 m', rest: 120, notes: 'Continu, allure course, sighting tous les 8 cycles · CHRONO = ta référence · semaine de course : remplacer par 600 m facile' },
+                ]},
+              { name: 'Vitesse courte (4×50, repos 45 s)',
+                exercises: [
+                  { id: 'natation', sets: 4, reps: '50 m', rest: 45, notes: '25 m vite / 25 m souple · semaine de course : 4×25 vite seulement' },
+                ]},
+              { name: 'Récup',
+                exercises: [
+                  { id: 'natation', sets: 1, reps: '100 m', rest: 0, notes: 'Dos crawlé souple' },
+                ]},
+            ] },
+        ],
       },
       {
         label: 'J5 — 2ᵉ dose Pec + Dos (+ délts)',
@@ -1530,7 +1617,12 @@ const MuscuExercises = (() => {
   //   entretien (stations Hyrox retirées). goal 'muscle' = nouveau DÉFAUT ; 'hybrid'
   //   conservé pour le bloc spécifique (~mars 2027). Phases calées sur la date de
   //   course (settings.raceDate) via getPhaseForRace().
-  const TEMPLATES_VERSION = 19;
+  // v20 (2026-09-14) : PLAN PISCINE progressif (athlète : 1 000 m crawl/dos, zéro
+  //   technique). J4 porte des `variants` par semaines avant course (resolveDay) :
+  //   >28 technique ~1 500 m · 17-28 aérobie ~1 900 m · 5-16 spécifique 750 m +
+  //   sighting · ≤4 pré-compét/taper. Nouvel exo 'natation_technique' (post-muscu
+  //   20-25 min, swap 🔄 des cardios de fin de séance) pour l'option « muscu + piscine ».
+  const TEMPLATES_VERSION = 20;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
@@ -1710,6 +1802,26 @@ const MuscuExercises = (() => {
     return { weeks, label, hint };
   }
 
+  // Un jour de template peut porter des `variants` (triées par minWeeksToRace
+  // décroissant) : on sert la 1ʳᵉ dont weeksToRace > minWeeksToRace. Sert au plan
+  // piscine progressif (technique → aérobie → spécifique → taper).
+  function resolveDay(day, ctx) {
+    if (!day.variants || !day.variants.length) return day;
+    const w = ctx && typeof ctx.weeksToRace === 'number' ? ctx.weeksToRace : Infinity;
+    const v = day.variants.find(x => w > (x.minWeeksToRace == null ? -Infinity : x.minWeeksToRace))
+      || day.variants[day.variants.length - 1];
+    const out = Object.assign({}, day, v);
+    delete out.variants;
+    return out;
+  }
+
+  function _raceCtx() {
+    const settings = (typeof MuscuStorage !== 'undefined' && MuscuStorage.getSettings)
+      ? MuscuStorage.getSettings() : {};
+    const phase = getPhaseForRace(settings.raceDate || '2027-06-15');
+    return { weeksToRace: phase ? phase.weeks : Infinity, phase: phase ? phase.label : null };
+  }
+
   function _isCustomProgram(template) {
     return template === MUSCLE_CARDIO_TEMPLATE || template === HYROX_HYBRID_TEMPLATE;
   }
@@ -1728,6 +1840,7 @@ const MuscuExercises = (() => {
     const isCustomProgram = _isCustomProgram(template);
     const isDeload = isDeloadWeek(weekNum, profile.goal);
     const prs = MuscuStorage.getPRs();
+    const raceCtx = _raceCtx();
 
     // Finisher toggle (default ON) — désactivé sur le programme Muscle+Cardio :
     // le finisher poignet/grip quotidien recréerait la surcharge cachée à éviter
@@ -1742,7 +1855,8 @@ const MuscuExercises = (() => {
       templateName: template.name,
       templatesVersion: TEMPLATES_VERSION,
       generatedAt: new Date().toISOString(),
-      days: template.days.map((day, dayIndex) => {
+      days: template.days.map((rawDay, dayIndex) => {
+        const day = resolveDay(rawDay, raceCtx);
         const exercises = [];
         (day.blocks || []).forEach(block => {
           block.exercises.forEach(exDef => {
@@ -1971,7 +2085,7 @@ const MuscuExercises = (() => {
 
   return {
     getAll, getById, getByCategory, getCategoryInfo, getCategories,
-    search, getTemplate, generateWeekPlan, isDeloadWeek, getPhaseForRace, getHyroxRelevance, getFinisherBlock,
+    search, getTemplate, generateWeekPlan, isDeloadWeek, getPhaseForRace, resolveDay, getHyroxRelevance, getFinisherBlock,
     getAbsSession, getTemplatesVersion, findAlternatives,
     HYROX_STATIONS, DB,
   };
