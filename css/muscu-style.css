@@ -1296,6 +1296,72 @@ textarea { resize: vertical; min-height: 60px; }
 .switch input:checked + .slider-toggle::before { transform: translateX(22px); }
 
 /* ════════════════════════════════════════════════════════════
+   SWIM PLAN — Dashboard card (plan piscine progressif)
+   ════════════════════════════════════════════════════════════ */
+.card.swim-card {
+  background: linear-gradient(135deg, rgba(56,189,248,0.10), rgba(59,130,246,0.04));
+  border: 1px solid rgba(56,189,248,0.30);
+}
+.swim-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.swim-card-title { font-weight: 800; font-size: 15px; color: #38bdf8; }
+.swim-card-sub { font-size: 13px; color: #fff; margin-top: 2px; }
+.swim-card-phase {
+  background: rgba(56,189,248,0.15);
+  color: #38bdf8;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 8px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.swim-timeline {
+  display: flex; gap: 4px; margin: 10px 0 12px;
+}
+.swim-step {
+  flex: 1; text-align: center;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+  padding: 6px 4px; border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text-2, #8892a8);
+}
+.swim-step.done { opacity: 0.45; text-decoration: line-through; }
+.swim-step.active {
+  background: rgba(56,189,248,0.18);
+  border-color: #38bdf8; color: #fff;
+}
+.swim-step small { display: block; font-weight: 500; font-size: 9px; opacity: 0.8; margin-top: 2px; }
+.swim-blocks { display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+.swim-block {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+  font-size: 12px; padding: 6px 10px; border-radius: 8px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+}
+.swim-block strong { color: #fff; font-weight: 600; }
+.swim-block em { font-style: normal; color: #38bdf8; font-weight: 700; white-space: nowrap; }
+.swim-key {
+  font-size: 12px; line-height: 1.45; color: #fff;
+  padding: 8px 10px; border-radius: 8px;
+  background: rgba(56,189,248,0.08);
+  border-left: 3px solid #38bdf8;
+  margin: 10px 0;
+}
+.swim-option {
+  font-size: 11px; line-height: 1.4; color: var(--text-2, #8892a8);
+  margin: 8px 0 10px;
+}
+.swim-option b { color: #fff; }
+.btn-swim {
+  background: linear-gradient(135deg, #38bdf8, #3b82f6);
+  color: #041018; font-weight: 800; width: 100%;
+}
+
+/* ════════════════════════════════════════════════════════════
    ABS PROGRAM — Dashboard card + session modal
    ════════════════════════════════════════════════════════════ */
 

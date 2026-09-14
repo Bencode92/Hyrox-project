@@ -13,7 +13,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/muscu-style.css?v=21">
+  <link rel="stylesheet" href="css/muscu-style.css?v=22">
 </head>
 <body>
 
@@ -73,6 +73,11 @@
           <button class="btn btn-sm btn-ghost" onclick="MuscuApp.regeneratePlan()">Régénérer</button>
         </div>
         <div id="dash-plan"></div>
+      </div>
+
+      <!-- Swim plan (progressif par phase) -->
+      <div class="card swim-card" id="dash-swim-card">
+        <div id="dash-swim-content"></div>
       </div>
 
       <!-- Abs of the day -->
@@ -573,10 +578,10 @@
 
   <!-- ══════════════ SCRIPTS ══════════════ -->
   <!-- ?v= = cache-busting : bumper à chaque changement JS pour forcer le rechargement navigateur -->
-  <script src="js/muscu-storage.js?v=21"></script>
-  <script src="js/muscu-exercises.js?v=21"></script>
-  <script src="js/muscu-ai-coach.js?v=21"></script>
-  <script src="js/muscu-app.js?v=21"></script>
+  <script src="js/muscu-storage.js?v=22"></script>
+  <script src="js/muscu-exercises.js?v=22"></script>
+  <script src="js/muscu-ai-coach.js?v=22"></script>
+  <script src="js/muscu-app.js?v=22"></script>
 
 </body>
 </html>

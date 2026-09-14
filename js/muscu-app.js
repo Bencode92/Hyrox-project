@@ -222,6 +222,7 @@ const MuscuApp = (() => {
 
     _renderPainPrompt();
     _renderWeekPlan(plan);
+    _renderSwimCard(plan);
     _renderAbsCard(weekNum);
     _renderPRCards(prs, objectives);
     _renderObjectivesProgress(prs, objectives);
@@ -304,6 +305,68 @@ const MuscuApp = (() => {
         : `Douleur ${score}/10 · Charge fortement baissée · consulter si persiste`;
     _toast(msg, score <= 3 ? 'success' : score <= 6 ? 'info' : 'error');
     renderDashboard();
+  }
+
+  // ── Carte plan piscine : phase courante, séance J4 résumée, timeline des 4 phases
+  function _renderSwimCard(plan) {
+    const container = document.getElementById('dash-swim-content');
+    if (!container) return;
+    const settings = MuscuStorage.getSettings();
+    const race = MuscuExercises.getPhaseForRace(settings.raceDate || '2027-06-15');
+    const weeks = race ? race.weeks : Infinity;
+    const dayIdx = (plan && plan.days) ? plan.days.findIndex(d => /piscine/i.test(d.label || '')) : -1;
+    const day = dayIdx >= 0 ? plan.days[dayIdx] : null;
+
+    const STEPS = [
+      { key: 'tech',  label: '1 · Technique',   when: 'sept → nov',  min: 28 },
+      { key: 'aero',  label: '2 · Aérobie',     when: 'déc → fév',   min: 16 },
+      { key: 'spec',  label: '3 · Spécifique',  when: 'mars → mai',  min: 4 },
+      { key: 'taper', label: 'Pré-compét',      when: 'J-4 → course', min: -Infinity },
+    ];
+    const activeIdx = STEPS.findIndex(st => weeks > st.min);
+    const timeline = STEPS.map((st, i) => `
+      <div class="swim-step ${i === activeIdx ? 'active' : i < activeIdx ? 'done' : ''}">${st.label}<small>${st.when}</small></div>`).join('');
+
+    // Résumé des blocs de la séance J4 (distance par bloc)
+    let blocksHtml = '';
+    let total = 0;
+    if (day) {
+      const byBlock = new Map();
+      (day.exercises || []).forEach(ex => {
+        const m = String(ex.reps).match(/(\d+)\s*m/);
+        const dist = m ? Number(m[1]) * (typeof ex.sets === 'number' ? ex.sets : 1) : 0;
+        total += dist;
+        const b = byBlock.get(ex.blockName) || { dist: 0, n: 0 };
+        b.dist += dist; b.n += 1;
+        byBlock.set(ex.blockName, b);
+      });
+      blocksHtml = [...byBlock.entries()].map(([name, b]) =>
+        `<div class="swim-block"><strong>${name}</strong><em>${b.dist ? b.dist + ' m' : ''}</em></div>`).join('');
+    }
+
+    const KEY = {
+      tech:  'Compte tes coups de bras sur 25 m : l\'objectif de la phase, c\'est que ce chiffre BAISSE (plus de glisse), pas d\'aller plus vite. Et expire EN CONTINU sous l\'eau.',
+      aero:  'Même temps sur chaque 100 (± 3 s). La régularité, pas la vitesse. Semaine A : 8×100 · semaine B : 4×200.',
+      spec:  'Allure course sur 3×300 = ton 750 m. Sighting tous les 8 cycles. Dès avril : eau libre en combinaison 1 fois / 2 sem.',
+      taper: 'On n\'apprend plus rien : 750 m chrono comme test, puis du court. Semaine de course : 600 m facile, sortir frais.',
+    };
+    const active = STEPS[activeIdx] || STEPS[STEPS.length - 1];
+
+    container.innerHTML = `
+      <div class="swim-card-header">
+        <div>
+          <div class="swim-card-title">🏊 Plan piscine</div>
+          <div class="swim-card-sub">${day ? day.label.replace(/^J\d+ — Piscine · /, '') : 'Séance J4'}${total ? ` · ≈ ${total} m` : ''}</div>
+        </div>
+        <span class="swim-card-phase">${race ? 'J-' + race.weeks + ' sem' : ''}</span>
+      </div>
+      <div class="swim-timeline">${timeline}</div>
+      ${day ? `<div class="text-muted text-sm" style="margin-bottom:6px">${day.focus || ''}</div>` : ''}
+      <div class="swim-blocks">${blocksHtml}</div>
+      <div class="swim-key">🎯 ${KEY[active.key]}</div>
+      <div class="swim-option">🔄 <b>Muscu + piscine le même jour ?</b> Sur la séance muscu, swap le cardio de fin par « Piscine post-muscu — technique (20-25 min) » : ≈ 800 m d'éducatifs + respiration. Pas de volume après le haut du corps. Épaule qui tire en crawl → dos crawlé, règle J+1.</div>
+      ${dayIdx >= 0 ? `<button class="btn btn-swim" onclick="MuscuApp.showDayDetail(${dayIdx})">🏊 Voir la séance piscine complète</button>` : ''}
+    `;
   }
 
   function _renderAbsCard(weekNum) {
