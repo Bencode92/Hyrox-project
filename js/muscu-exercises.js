@@ -1509,7 +1509,12 @@ const MuscuExercises = (() => {
   //   OK) — bench_press léger/contrôlé RIR 3 en A1 de J1, front_squat léger en A1 de
   //   J3. Garde-fou dur = douleur J+1 ≤ 3/10 · machine chest press / leg press restent
   //   en swap. « Pas de LOURD (5×5) » tient toujours ; on réintroduit le pattern léger.
-  const TEMPLATES_VERSION = 17;
+  // v18 (2026-09-14) : progression corrigée — (1) double progression réelle sur les
+  //   fourchettes '8-12' (toutes séries au haut → charge ↑, sinon même charge et on
+  //   gagne des reps) au lieu de +2.5 kg systématique ; (2) deload −40 % (au lieu de
+  //   −30 %) et PRIORITAIRE sur la suggestion en séance ; (3) badge DELOAD aligné sur
+  //   la vraie règle (mod 6) via isDeloadWeek().
+  const TEMPLATES_VERSION = 18;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
@@ -1673,13 +1678,23 @@ const MuscuExercises = (() => {
   /**
    * Generate a week plan based on profile, week number, and past performance
    */
+  function _isCustomProgram(template) {
+    return template === MUSCLE_CARDIO_TEMPLATE || template === HYROX_HYBRID_TEMPLATE;
+  }
+
+  // Deload toutes les 6 sem sur nos programmes (tendons s'adaptent plus lentement
+  // que le muscle) ; toutes les 4 sem sur les templates classiques avec barre.
+  // Source unique de vérité : dashboard (badge) + generateWeekPlan.
+  function isDeloadWeek(weekNum, goal) {
+    const template = getTemplate(4, goal);
+    const deloadEvery = _isCustomProgram(template) ? 6 : 4;
+    return weekNum > 1 && weekNum % deloadEvery === 0;
+  }
+
   function generateWeekPlan(profile, weekNum) {
     const template = getTemplate(profile.daysPerWeek || 4, profile.goal);
-    const isCustomProgram = (template === MUSCLE_CARDIO_TEMPLATE || template === HYROX_HYBRID_TEMPLATE);
-    // Deload toutes les 6 sem sur nos programmes (tendons s'adaptent plus lentement
-    // que le muscle) ; toutes les 4 sem sur les templates classiques avec barre.
-    const deloadEvery = isCustomProgram ? 6 : 4;
-    const isDeload = weekNum > 1 && weekNum % deloadEvery === 0;
+    const isCustomProgram = _isCustomProgram(template);
+    const isDeload = isDeloadWeek(weekNum, profile.goal);
     const prs = MuscuStorage.getPRs();
 
     // Finisher toggle (default ON) — désactivé sur le programme Muscle+Cardio :
@@ -1706,7 +1721,8 @@ const MuscuExercises = (() => {
               const avg = pr.history.slice(-3).reduce((s, e) => s + e.weight, 0) / Math.min(3, pr.history.length);
               suggestedWeight = Math.round(avg / 2.5) * 2.5;
             }
-            if (isDeload && suggestedWeight) suggestedWeight = Math.round(suggestedWeight * 0.7 / 2.5) * 2.5;
+            // Deload −40 % (doctrine v13) — la suggestion en séance applique le même facteur
+            if (isDeload && suggestedWeight) suggestedWeight = Math.round(suggestedWeight * 0.6 / 2.5) * 2.5;
 
             exercises.push({
               exerciseId: exDef.id,
@@ -1923,7 +1939,7 @@ const MuscuExercises = (() => {
 
   return {
     getAll, getById, getByCategory, getCategoryInfo, getCategories,
-    search, getTemplate, generateWeekPlan, getHyroxRelevance, getFinisherBlock,
+    search, getTemplate, generateWeekPlan, isDeloadWeek, getHyroxRelevance, getFinisherBlock,
     getAbsSession, getTemplatesVersion, findAlternatives,
     HYROX_STATIONS, DB,
   };

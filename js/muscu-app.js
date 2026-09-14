@@ -186,7 +186,8 @@ const MuscuApp = (() => {
     const prs = MuscuStorage.getPRs();
     const objectives = MuscuStorage.getObjectives();
     const sessions = MuscuStorage.getSessions();
-    const isDeload = weekNum > 1 && weekNum % 4 === 0;
+    const profile = MuscuStorage.getProfile();
+    const isDeload = MuscuExercises.isDeloadWeek(weekNum, profile.goal);
 
     if (plan && plan.week !== weekNum) {
       // New week — regenerate (try AI, fallback local)
@@ -197,7 +198,7 @@ const MuscuApp = (() => {
     // Templates have evolved since this plan was generated → auto-regenerate
     const currentVersion = MuscuExercises.getTemplatesVersion ? MuscuExercises.getTemplatesVersion() : 0;
     if (plan && (plan.templatesVersion || 0) < currentVersion) {
-      _toast('Programme mis à jour (focus pec bas intégré) — régénération...', 'info');
+      _toast('Programme mis à jour — régénération de la semaine...', 'info');
       _autoRegenPlan(weekNum);
       return;
     }
@@ -725,7 +726,8 @@ const MuscuApp = (() => {
     logDayIndex = dayIndex;
     logExercises = day.exercises.map(ex => {
       // Smart suggestion based on last session
-      const suggestion = MuscuStorage.suggestNextLoad(ex.exerciseId, typeof ex.reps === 'number' ? ex.reps : null);
+      // Suggestion (double progression / deload) — les fourchettes '8-12' sont parsées côté storage
+      const suggestion = MuscuStorage.suggestNextLoad(ex.exerciseId, ex.reps, { deload: !!ex.isDeload });
       const startWeight = suggestion ? suggestion.weight : ex.suggestedWeight;
       return {
         exerciseId: ex.exerciseId,
@@ -737,6 +739,7 @@ const MuscuApp = (() => {
         smartSuggestion: suggestion,
         restSec: ex.restSec || _defaultRestFor(ex.category),
         isFinisher: !!ex.isFinisher,
+        isDeload: !!ex.isDeload,
         blockName: ex.blockName || '',
         notes: ex.notes || '',
         sets: [{ weight: startWeight || '', reps: typeof ex.reps === 'number' ? ex.reps : '', rpe: '', validated: false }],
@@ -780,7 +783,7 @@ const MuscuApp = (() => {
       const s = ex.smartSuggestion;
       let suggestionHtml = '';
       if (s) {
-        const arrow = s.trend === 'up' ? '↑' : s.trend === 'down' ? '↓' : s.trend === 'pain' ? '⚠️' : '→';
+        const arrow = s.trend === 'up' ? '↑' : s.trend === 'down' ? '↓' : s.trend === 'pain' ? '⚠️' : s.trend === 'deload' ? '🔋' : '→';
         const deltaStr = s.delta > 0 ? `+${s.delta}kg` : s.delta < 0 ? `${s.delta}kg` : 'maintien';
         suggestionHtml = `
           <div class="smart-suggestion smart-${s.trend}">
@@ -1766,7 +1769,8 @@ const MuscuApp = (() => {
 
     // Build per-exo state with smart suggestion & set list
     const exoData = day.exercises.map(ex => {
-      const suggestion = MuscuStorage.suggestNextLoad(ex.exerciseId, typeof ex.reps === 'number' ? ex.reps : null);
+      // Suggestion (double progression / deload) — les fourchettes '8-12' sont parsées côté storage
+      const suggestion = MuscuStorage.suggestNextLoad(ex.exerciseId, ex.reps, { deload: !!ex.isDeload });
       const startWeight = suggestion ? suggestion.weight : ex.suggestedWeight;
       const targetSets = typeof ex.sets === 'number' ? ex.sets : 3;
       return {
@@ -1779,6 +1783,7 @@ const MuscuApp = (() => {
         smartSuggestion: suggestion,
         restSec: ex.restSec || _defaultRestFor(ex.category),
         isFinisher: !!ex.isFinisher,
+        isDeload: !!ex.isDeload,
         blockName: ex.blockName || '',
         notes: ex.notes || '',
         sets: [],
@@ -1818,7 +1823,7 @@ const MuscuApp = (() => {
     const s = ex.smartSuggestion;
     let suggestionHtml = '';
     if (s) {
-      const arrow = s.trend === 'up' ? '↑' : s.trend === 'down' ? '↓' : s.trend === 'pain' ? '⚠️' : '→';
+      const arrow = s.trend === 'up' ? '↑' : s.trend === 'down' ? '↓' : s.trend === 'pain' ? '⚠️' : s.trend === 'deload' ? '🔋' : '→';
       const deltaStr = s.delta > 0 ? `+${s.delta}kg` : s.delta < 0 ? `${s.delta}kg` : 'maintien';
       suggestionHtml = `
         <div class="smart-suggestion smart-${s.trend}">
@@ -2174,7 +2179,7 @@ const MuscuApp = (() => {
     const ex = _workout.exoData[_workout.exoIdx];
     const oldName = ex.name;
     // Re-compute smart suggestion for the new exo
-    const suggestion = MuscuStorage.suggestNextLoad(newId, typeof ex.targetReps === 'number' ? ex.targetReps : null);
+    const suggestion = MuscuStorage.suggestNextLoad(newId, ex.targetReps, { deload: !!ex.isDeload });
     ex.exerciseId = newExo.id;
     ex.name = newExo.name;
     ex.category = newExo.category;

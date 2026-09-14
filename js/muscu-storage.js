@@ -254,15 +254,37 @@ const MuscuStorage = (() => {
   function _isCompound(id) { return COMPOUND_IDS.has(id); }
 
   /**
+   * Parse a rep target : 10 → {min:10,max:10} ; '8-12' → {min:8,max:12} ;
+   * '15' → {min:15,max:15}. Anything with a unit ('30m', '15-20 min', 'max propres')
+   * → null (pas de progression en charge sur ces exos).
+   */
+  function _parseRepTarget(target) {
+    if (typeof target === 'number') return { min: target, max: target };
+    if (typeof target !== 'string') return null;
+    const m = target.trim().match(/^(\d+)\s*(?:-\s*(\d+))?$/);
+    if (!m) return null;
+    const min = Number(m[1]);
+    const max = m[2] ? Number(m[2]) : min;
+    return { min, max: Math.max(min, max) };
+  }
+
+  /**
    * Suggest next load for an exercise based on last logged session.
    * Returns { weight, delta, reason, trend, lastWeight, lastRpe } or null if no history.
-   * Logic:
-   *   - Pain in last session             → -2.5kg, trend 'pain'
-   *   - RPE moy ≤ 7 & reps ≥ targetReps  → +2.5 (compound) / +1.25 (iso)
-   *   - RPE moy 7-8.5                    → maintien
-   *   - RPE moy ≥ 9 or reps shortfall    → -2.5 (compound) / -1.25 (iso)
+   * DOUBLE PROGRESSION (doctrine juil. 2026, charge modérée 8-15 reps RIR 1-2) :
+   *   - Douleur J+1 > 3/10                → -5 % (règle 24h), trend 'pain'
+   *   - Douleur signalée en séance        → -step, trend 'pain'
+   *   - RPE moy ≥ 9.5 (échec)            → -step (on vise RIR 1-2, pas l'échec)
+   *   - Fourchette '8-12' : TOUTES les séries au haut (≥12) → +step
+   *                          une série sous le bas (<8)   → -step
+   *                          sinon                        → même charge, gagner des reps
+   *   - Cible fixe (10) : moy ≥ cible → +step, sinon maintien
+   *   - Pas de cible (temps/distance) : RPE seul (≤7 ↑, sinon →)
+   *   - opts.deload = true → charge × 0.6 (semaine deload −40 %), prioritaire
+   * step = +2.5 (compound) / +1.25 (iso).
    */
-  function suggestNextLoad(exerciseId, targetReps) {
+  function suggestNextLoad(exerciseId, targetReps, opts) {
+    opts = opts || {};
     const sessions = getSessionsByExercise(exerciseId);
     if (!sessions.length) return null;
     const last = sessions[sessions.length - 1];
@@ -276,6 +298,7 @@ const MuscuStorage = (() => {
     const lastWeight = Math.max(...weights);
     const reps = workingSets.map(s => s.reps);
     const avgReps = reps.reduce((a, b) => a + b, 0) / reps.length;
+    const minReps = Math.min(...reps);
 
     const rpeSets = workingSets.filter(s => s.rpe);
     const lastRpe = rpeSets.length
@@ -285,43 +308,78 @@ const MuscuStorage = (() => {
     const hasPain = !!(last.painNotes && last.painNotes.trim());
     const painJ1 = typeof last.painNextDay === 'number' ? last.painNextDay : null;
     const step = _isCompound(exerciseId) ? 2.5 : 1.25;
-    const targetNum = typeof targetReps === 'number' ? targetReps : null;
-    const repsHit = targetNum ? avgReps >= targetNum - 0.5 : true;
+    const range = _parseRepTarget(targetReps);
+    const roundTo = v => Math.max(0, Math.round(v / step) * step);
+
+    // Semaine deload : −40 % sur la dernière charge, prioritaire sur tout le reste
+    if (opts.deload) {
+      const weight = roundTo(lastWeight * 0.6);
+      return {
+        weight, delta: weight - lastWeight, trend: 'deload',
+        reason: 'Semaine DELOAD — charge −40 %, séries −1, RIR 3-4 (on récupère, on ne teste pas)',
+        lastWeight, lastRpe: lastRpe ? Math.round(lastRpe * 10) / 10 : null, lastDate: last.date,
+      };
+    }
 
     let delta = 0;
     let trend = 'flat';
-    let reason = 'Maintien (RPE optimal)';
+    let reason = 'Maintien';
 
     // Règle 24h (BJSM 2019) : douleur J+1 pilote la charge
     if (painJ1 != null && painJ1 > 3) {
-      // Décharge auto -5% (arrondi au step)
-      delta = -Math.max(step, Math.round(lastWeight * 0.05 / 2.5) * 2.5);
+      delta = -Math.max(step, roundTo(lastWeight * 0.05));
       trend = 'pain';
       reason = `Douleur J+1 = ${painJ1}/10 — décharge auto (règle 24h)`;
     } else if (hasPain) {
       delta = -step;
       trend = 'pain';
       reason = 'Douleur signalée pendant séance — charge allégée';
-    } else if (lastRpe && lastRpe >= 9) {
-      delta = -step;
-      trend = 'down';
-      reason = `RPE ${lastRpe.toFixed(1)} trop élevé — déload`;
-    } else if (!repsHit) {
-      delta = -step;
-      trend = 'down';
-      reason = `Reps cible non atteintes (${avgReps.toFixed(0)}/${targetNum})`;
+    } else if (lastRpe && lastRpe >= 9.5) {
+      // Échec : si le haut de fourchette est quand même atteint → même charge, on
+      // s'arrête 1-2 reps avant ; sinon la charge est trop lourde → ↓
+      const topHit = range && minReps >= range.max;
+      delta = topHit ? 0 : -step;
+      trend = topHit ? 'flat' : 'down';
+      reason = topHit
+        ? `RPE ${lastRpe.toFixed(1)} = échec — même charge, arrête-toi 1-2 reps avant (RIR 1-2)`
+        : `RPE ${lastRpe.toFixed(1)} = échec sans atteindre la fourchette — charge allégée`;
+    } else if (range && range.max > range.min) {
+      // Double progression sur fourchette
+      if (minReps >= range.max) {
+        delta = step;
+        trend = 'up';
+        reason = `Haut de fourchette (${range.max}) atteint sur toutes les séries — charge ↑`;
+      } else if (minReps < range.min) {
+        delta = -step;
+        trend = 'down';
+        reason = `Sous la fourchette (${minReps} < ${range.min}) — charge ↓`;
+      } else {
+        delta = 0;
+        trend = 'flat';
+        reason = `Même charge — vise ${range.max} reps sur toutes les séries (dernier : ${reps.join('/')})`;
+      }
+    } else if (range) {
+      // Cible fixe
+      if (avgReps >= range.max - 0.5) {
+        delta = step;
+        trend = 'up';
+        reason = `${range.max} reps atteintes — charge ↑`;
+      } else {
+        delta = 0;
+        trend = 'flat';
+        reason = `Reps cible non atteintes (${avgReps.toFixed(0)}/${range.max}) — même charge`;
+      }
     } else if (lastRpe && lastRpe <= 7) {
       delta = step;
       trend = 'up';
       reason = `RPE ${lastRpe.toFixed(1)} confortable — progression`;
     } else if (!lastRpe) {
-      // No RPE recorded → conservative micro-progression if reps hit
-      delta = repsHit ? step : 0;
-      trend = repsHit ? 'up' : 'flat';
-      reason = repsHit ? 'Progression conservatrice (pas de RPE)' : 'Maintien';
+      reason = 'Maintien (pas de cible reps ni RPE)';
+    } else {
+      reason = 'Maintien (RPE optimal)';
     }
 
-    const weight = Math.max(0, Math.round((lastWeight + delta) / 2.5) * 2.5);
+    const weight = roundTo(lastWeight + delta);
     return {
       weight,
       delta: weight - lastWeight,

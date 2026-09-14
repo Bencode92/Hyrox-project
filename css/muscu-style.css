@@ -1218,6 +1218,10 @@ textarea { resize: vertical; min-height: 60px; }
   border-left-color: #8892a8;
   background: rgba(136,146,168,0.07);
 }
+.smart-suggestion.smart-deload {
+  border-left-color: #6fa8ff;
+  background: rgba(111,168,255,0.08);
+}
 
 /* ── Rest pill in exercise header ───────────────────────── */
 .rest-pill {
