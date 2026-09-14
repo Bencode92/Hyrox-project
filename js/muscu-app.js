@@ -356,7 +356,7 @@ const MuscuApp = (() => {
       <div class="swim-card-header">
         <div>
           <div class="swim-card-title">🏊 Plan piscine</div>
-          <div class="swim-card-sub">${day ? day.label.replace(/^J\d+ — Piscine · /, '') : 'Séance J4'}${total ? ` · ≈ ${total} m` : ''}</div>
+          <div class="swim-card-sub">${day ? day.label.replace(/^J\d+ — Piscine · /, '') : 'Séance J4'}${total ? ` · ${total} m de séries + échauffement` : ''}</div>
         </div>
         <span class="swim-card-phase">${race ? 'J-' + race.weeks + ' sem' : ''}</span>
       </div>
