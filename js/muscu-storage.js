@@ -33,7 +33,7 @@ const MuscuStorage = (() => {
       weight: 80,
       height: 183,         // cm
       focusZone: '',       // ex: "Pecs (bas surtout)"
-      goal: 'hybrid',      // 'hyrox' | 'hypertrophy' | 'hybrid' | 'recovery'
+      goal: 'muscle',      // 'muscle' (défaut, fenêtre muscle) | 'hybrid' (bloc spécifique) | 'hyrox' | 'hypertrophy'
       excludedExercises: [], // IDs à ne JAMAIS programmer (douleur, blessure)
       daysPerWeek: 4,
       level: 'intermediate', // beginner, intermediate, advanced
@@ -57,7 +57,11 @@ const MuscuStorage = (() => {
       let changed = false;
       if (p.height == null)    { p.height = 183; changed = true; }
       if (p.focusZone == null) { p.focusZone = 'Pecs (bas surtout) — faiblesse marquée'; changed = true; }
-      if (p.goal == null)      { p.goal = 'hybrid'; changed = true; }
+      if (p.goal == null)      { p.goal = 'muscle'; changed = true; }
+      // 2026-09-14 : Hyrox déc 2026 abandonné → retour fenêtre muscle (une seule fois,
+      // l'athlète reste libre de repasser en 'hybrid' ensuite).
+      if (!p.muscleWindow2026 && (p.goal === 'hybrid' || p.goal === 'recovery')) { p.goal = 'muscle'; p.muscleWindow2026 = true; changed = true; }
+      if (!p.muscleWindow2026) { p.muscleWindow2026 = true; changed = true; }
       if (p.excludedExercises == null) { p.excludedExercises = ['dips', 'weighted_dips']; changed = true; }
       if (changed) _set(KEYS.profile, p);
     } catch {}

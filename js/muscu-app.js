@@ -67,7 +67,7 @@ const MuscuApp = (() => {
       daysPerWeek: parseInt(document.getElementById('ob-days').value) || 4,
       level: document.getElementById('ob-level').value || 'intermediate',
       focusZone: document.getElementById('ob-focus').value.trim(),
-      goal: 'hybrid',
+      goal: 'muscle',
       injuryNotes: document.getElementById('ob-injury').value.trim(),
       createdAt: new Date().toISOString(),
     };
@@ -204,7 +204,11 @@ const MuscuApp = (() => {
     }
 
     document.getElementById('dash-week').textContent = `Semaine ${weekNum}`;
-    document.getElementById('dash-phase').textContent = _getPhaseLabel(weekNum);
+    const settings = MuscuStorage.getSettings();
+    const racePhase = MuscuExercises.getPhaseForRace(settings.raceDate || '2027-06-15');
+    const phaseEl = document.getElementById('dash-phase');
+    phaseEl.textContent = racePhase ? `${racePhase.label} · J-${racePhase.weeks} sem` : _getPhaseLabel(weekNum);
+    phaseEl.title = racePhase ? racePhase.hint : '';
     document.getElementById('dash-deload').style.display = isDeload ? 'inline-block' : 'none';
 
     // Stats (28 days)
@@ -1246,12 +1250,13 @@ const MuscuApp = (() => {
     document.getElementById('set-worker-url').value = settings.workerUrl || '';
     document.getElementById('set-ai-model').value = settings.aiModel || 'claude-sonnet-4-20250514';
     document.getElementById('set-finisher').checked = settings.finisherEnabled !== false;
+    document.getElementById('set-race-date').value = settings.raceDate || '2027-06-15';
     document.getElementById('set-weight').value = profile.weight || '';
     document.getElementById('set-height').value = profile.height || '';
     document.getElementById('set-days').value = profile.daysPerWeek || 4;
     document.getElementById('set-level').value = profile.level || 'intermediate';
     document.getElementById('set-focus').value = profile.focusZone || '';
-    document.getElementById('set-goal').value = profile.goal || 'hybrid';
+    document.getElementById('set-goal').value = profile.goal || 'muscle';
     document.getElementById('set-injury').value = profile.injuryNotes || '';
     modal.style.display = 'flex';
   }
@@ -1262,18 +1267,19 @@ const MuscuApp = (() => {
     settings.workerUrl = document.getElementById('set-worker-url').value.trim();
     settings.aiModel = document.getElementById('set-ai-model').value;
     settings.finisherEnabled = document.getElementById('set-finisher').checked;
+    settings.raceDate = document.getElementById('set-race-date').value || '2027-06-15';
     MuscuStorage.saveSettings(settings);
 
     // Update profile first, capturing what changes the plan
     const profile = MuscuStorage.getProfile();
-    const prevGoal = profile.goal || 'hybrid';
+    const prevGoal = profile.goal || 'muscle';
     const prevDays = profile.daysPerWeek;
     profile.weight = parseFloat(document.getElementById('set-weight').value) || profile.weight;
     profile.height = parseInt(document.getElementById('set-height').value) || profile.height;
     profile.daysPerWeek = parseInt(document.getElementById('set-days').value) || profile.daysPerWeek;
     profile.level = document.getElementById('set-level').value || profile.level;
     profile.focusZone = document.getElementById('set-focus').value.trim();
-    profile.goal = document.getElementById('set-goal').value || 'hybrid';
+    profile.goal = document.getElementById('set-goal').value || 'muscle';
     profile.injuryNotes = document.getElementById('set-injury').value.trim();
     MuscuStorage.saveProfile(profile);
 
