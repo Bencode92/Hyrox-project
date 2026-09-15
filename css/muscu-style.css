@@ -1361,6 +1361,12 @@ textarea { resize: vertical; min-height: 60px; }
 }
 .swim-dist { color: #38bdf8; font-weight: 800; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .swim-what { color: #fff; }
+.swim-pill {
+  display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 6px;
+  font-size: 10px; font-weight: 700; color: #38bdf8;
+  background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.3);
+  white-space: nowrap; vertical-align: 1px;
+}
 .swim-what small { display: block; color: var(--text-2, #8892a8); font-size: 10px; }
 .swim-row-warm { padding-bottom: 6px; }
 .swim-row-warm .swim-what { color: var(--text-2, #8892a8); }

@@ -1232,14 +1232,14 @@ const MuscuExercises = (() => {
         variants: [
           { minWeeksToRace: 28,
             label: 'J4 — Piscine · Phase 1 TECHNIQUE (~1 500 m)',
-            equipment: 'Lunettes + bonnet · PLANCHE (battements, prêtée par la piscine en général) · pull buoy OPTIONNEL (seulement sur le rattrapé si les jambes coulent, jamais sur le corps de séance) · tuba frontal = le meilleur achat de la phase (~25 €, Finis/Arena) : tu nages sans tourner la tête et tu ne penses qu\'à l\'alignement · PAS de plaquettes (épaule) · montre pour les repos, ou la pendule du bassin',
+            equipment: 'PLANCHE pour les battements (la piscine en prête presque toujours) · PULL BUOY optionnel — uniquement sur le rattrapé si les jambes coulent, jamais sur le corps de séance · TUBA FRONTAL (~25 €, Finis/Arena) = le meilleur achat de la phase : tu nages sans tourner la tête et tu ne penses qu\'à l\'alignement (2-3 des 6×100) · PAS DE PLAQUETTES : elles chargent l\'épaule, exactement ce qu\'on évite',
             focus: 'Sept → nov : on construit la technique crawl AVANT le volume. Tu sais nager 1 000 m — maintenant on apprend à le nager BIEN : respiration continue, alignement, allongement. 40-45 min, effort 5/10.',
             warmup: 'Échauffement 200 m : 100 NL souple + 100 dos crawlé',
             blocks: [
               { name: 'Éducatifs (6×50, repos 20 s)',
                 exercises: [
-                  { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'Battements bras devant (planche OK) · corps horizontal, regard fond, petits battements depuis la hanche' },
-                  { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'RATTRAPÉ (catch-up) : une main attend l\'autre devant · allongement + glisse' },
+                  { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'Battements bras devant · PLANCHE · corps horizontal, regard fond, petits battements depuis la hanche' },
+                  { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'RATTRAPÉ (catch-up) : une main attend l\'autre devant · PULL BUOY si les jambes coulent · allongement + glisse' },
                   { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'UN BRAS : 25 m bras gauche / 25 m bras droit, bras libre le long du corps · rotation des hanches' },
                 ]},
               { name: 'Respiration (4×50, repos 20 s)',
@@ -1248,7 +1248,7 @@ const MuscuExercises = (() => {
                 ]},
               { name: 'Corps de séance (6×100, repos 30 s)',
                 exercises: [
-                  { id: 'natation', sets: 6, reps: '100 m', rest: 30, notes: 'Crawl allure FACILE · 1 focus par 100 : ① tête dans l\'axe ② allongement devant ③ rotation hanches ④ coude haut ⑤ mains relâchées ⑥ glisse (moins de coups par longueur) · compte tes coups de bras sur 25 m : l\'objectif c\'est qu\'il BAISSE' },
+                  { id: 'natation', sets: 6, reps: '100 m', rest: 30, notes: 'Crawl allure FACILE · 1 focus par 100 : ① tête dans l\'axe ② allongement devant ③ rotation hanches ④ coude haut ⑤ mains relâchées ⑥ glisse (moins de coups par longueur) · TUBA FRONTAL sur 2-3 des 100 (sans matériel sur les autres) · compte tes coups de bras sur 25 m : l\'objectif c\'est qu\'il BAISSE' },
                 ]},
               { name: 'Récup',
                 exercises: [
@@ -1257,7 +1257,7 @@ const MuscuExercises = (() => {
             ] },
           { minWeeksToRace: 16,
             label: 'J4 — Piscine · Phase 2 AÉROBIE (~1 700 m)',
-            equipment: 'Lunettes + bonnet · montre chrono ou pendule du bassin (la régularité des 100 m se MESURE) · pull buoy pour le rappel technique · planche facultative · toujours PAS de plaquettes tant que l\'épaule n\'a pas 3 mois à zéro douleur en crawl',
+            equipment: 'MONTRE CHRONO ou pendule du bassin (la régularité des 100 m se MESURE) · PULL BUOY pour le rappel technique · planche facultative · toujours PAS DE PLAQUETTES tant que l\'épaule n\'a pas 3 mois à zéro douleur en crawl',
             focus: 'Déc → fév : la technique est posée, on monte le volume à allure régulière. Alterne semaine A (8×100) / semaine B (4×200). 45-50 min, effort 6/10.',
             warmup: 'Échauffement 300 m : 200 NL souple + 100 dos crawlé',
             blocks: [
@@ -1281,7 +1281,7 @@ const MuscuExercises = (() => {
             ] },
           { minWeeksToRace: 4,
             label: 'J4 — Piscine · Phase 3 SPÉCIFIQUE tri (~1 900 m)',
-            equipment: 'Lunettes TEINTÉES/miroir (eau libre, soleil) + bonnet · montre chrono (temps des 300) · COMBINAISON NÉOPRÈNE tri (location OK) : à essayer en piscine 1-2 fois AVANT l\'eau libre — elle change la flottaison et serre les épaules · bouée de sécurité eau libre (obligatoire seul) · vaseline cou',
+            equipment: 'MONTRE CHRONO (temps des 300) · COMBINAISON NÉOPRÈNE tri (location OK) : à essayer en piscine 1-2 fois AVANT l\'eau libre — elle change la flottaison et serre les épaules · BOUÉE de sécurité eau libre (obligatoire seul) · lunettes teintées pour dehors · vaseline cou',
             focus: 'Mars → mai : allure course sur la distance de l\'épreuve (750 m) + compétences eau libre (sighting, nager droit). Dès avril : 1 séance eau libre / 2 sem en combinaison si possible. 45-50 min, effort 7/10.',
             warmup: 'Échauffement 300 m : 200 NL + 100 dos, puis 4×25 m progressifs',
             blocks: [
@@ -1304,7 +1304,7 @@ const MuscuExercises = (() => {
             ] },
           { minWeeksToRace: -Infinity,
             label: 'J4 — Piscine · PRÉ-COMPÉT / TAPER (~1 250 m)',
-            equipment: 'Le matériel de COURSE, rien de neuf : lunettes déjà testées (+ une paire de secours), bonnet, combinaison si la température de l\'eau l\'autorise (règle FFTri : oblig. < 16 °C, interdite > 24,5 °C sur sprint) · montre',
+            equipment: 'Le matériel de COURSE, rien de neuf : combinaison si la température de l\'eau l\'autorise (règle FFTri : oblig. < 16 °C, interdite > 24,5 °C sur sprint) · montre · lunettes déjà testées + une paire de secours',
             focus: 'J-4 → course : on ne construit plus, on affûte. Un 750 m continu à allure course comme test, puis du court rapide. Semaine de course : 600 m facile + 4×25 vite, c\'est tout. 30 min, sortir frais.',
             warmup: 'Échauffement 200 m : 100 NL + 100 dos',
             blocks: [

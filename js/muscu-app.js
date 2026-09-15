@@ -329,10 +329,16 @@ const MuscuApp = (() => {
       <div class="swim-step ${i === activeIdx ? 'active' : i < activeIdx ? 'done' : ''}">${i + 1} · ${st.label}<small>${st.when}</small></div>`).join('');
 
     const GEAR = {
-      tech:  'Lunettes · bonnet · <b>planche</b> (battements) · pull buoy optionnel · <b>tuba frontal</b> conseillé (technique) · <b>pas de plaquettes</b> (épaule)',
-      aero:  'Lunettes · bonnet · <b>montre chrono</b> (régularité des 100) · pull buoy · toujours pas de plaquettes',
-      spec:  'Lunettes <b>teintées</b> · bonnet · montre · <b>combinaison néoprène</b> (à tester en piscine avant l\'eau libre) · bouée de sécurité eau libre',
-      taper: 'Matériel de <b>course</b> uniquement, rien de neuf : lunettes testées (+ secours) · bonnet · combinaison selon température · montre',
+      tech:  '<b>Planche</b> (battements — la piscine en prête) · <b>pull buoy</b> optionnel, rattrapé seulement · <b>tuba frontal</b> ~25 € = le meilleur achat de la phase · <b>pas de plaquettes</b> (épaule)',
+      aero:  '<b>Montre chrono</b> (la régularité des 100 se mesure) · <b>pull buoy</b> pour le rappel technique · toujours pas de plaquettes',
+      spec:  '<b>Montre chrono</b> · <b>combinaison néoprène</b> (à tester en piscine avant l\'eau libre) · <b>bouée</b> de sécurité eau libre',
+      taper: 'Matériel de <b>course</b> uniquement, rien de neuf : combinaison selon température · montre',
+    };
+    // Pastille matériel sur la ligne (détectée dans la consigne)
+    const gearPill = t => {
+      const n = String(t || '').toLowerCase();
+      const g = n.includes('planche') ? '🏄 planche' : n.includes('pull buoy') ? '🛟 pull buoy' : n.includes('tuba') ? '🤿 tuba' : '';
+      return g ? `<span class="swim-pill">${g}</span>` : '';
     };
     const KEY = {
       tech:  'Compte tes coups de bras sur 25 m : il doit BAISSER au fil des semaines (plus de glisse). Expire en continu sous l\'eau.',
@@ -344,7 +350,7 @@ const MuscuApp = (() => {
     // Fiche de séance : échauffement → blocs → lignes (séries × distance — consigne courte)
     // Consigne courte : 1er segment (avant « · »), + le 2ᵉ si le 1er est très court
     const short = t => {
-      const seg = String(t || '').split(' · ');
+      const seg = String(t || '').split(' · ').filter(x => !/^(PLANCHE|PULL BUOY|TUBA FRONTAL)/i.test(x));
       const txt = seg[0].length < 30 && seg[1] ? seg[0] + ' — ' + seg[1] : seg[0];
       return txt.replace(/\s*\(.*?\)\s*/g, ' ').trim();
     };
@@ -366,7 +372,7 @@ const MuscuApp = (() => {
         const sets = typeof ex.sets === 'number' ? ex.sets : 1;
         total += per * sets;
         const rest = (sets > 1 && ex.restSec) ? `<small>repos ${ex.restSec} s</small>` : '';
-        sheetHtml += `<div class="swim-row"><span class="swim-dist">${sets > 1 ? sets + ' × ' : ''}${ex.reps}</span><span class="swim-what">${short(ex.notes)}${rest}</span></div>`;
+        sheetHtml += `<div class="swim-row"><span class="swim-dist">${sets > 1 ? sets + ' × ' : ''}${ex.reps}</span><span class="swim-what">${short(ex.notes)}${gearPill(ex.notes)}${rest}</span></div>`;
       });
       sheetHtml += `<div class="swim-row swim-row-total"><span class="swim-dist">≈ ${total} m</span><span class="swim-what">Total séance (+ 100 m retour au calme)</span></div>`;
     }
