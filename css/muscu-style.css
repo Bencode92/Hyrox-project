@@ -1336,6 +1336,12 @@ textarea { resize: vertical; min-height: 60px; }
   border-color: #38bdf8; color: #fff;
 }
 .swim-step small { display: block; font-weight: 500; font-size: 9px; opacity: 0.8; margin-top: 2px; }
+.swim-gear {
+  font-size: 12px; line-height: 1.45; color: var(--text-2, #8892a8);
+  padding: 7px 10px; border-radius: 8px; margin: 0 0 10px;
+  background: rgba(255,255,255,0.03); border: 1px dashed rgba(56,189,248,0.35);
+}
+.swim-gear b { color: #fff; font-weight: 700; }
 .swim-sheet-title {
   font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
   color: #38bdf8; margin: 4px 0 6px;

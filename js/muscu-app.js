@@ -328,6 +328,12 @@ const MuscuApp = (() => {
     const timeline = STEPS.map((st, i) => `
       <div class="swim-step ${i === activeIdx ? 'active' : i < activeIdx ? 'done' : ''}">${i + 1} · ${st.label}<small>${st.when}</small></div>`).join('');
 
+    const GEAR = {
+      tech:  'Lunettes · bonnet · <b>planche</b> (battements) · pull buoy optionnel · <b>tuba frontal</b> conseillé (technique) · <b>pas de plaquettes</b> (épaule)',
+      aero:  'Lunettes · bonnet · <b>montre chrono</b> (régularité des 100) · pull buoy · toujours pas de plaquettes',
+      spec:  'Lunettes <b>teintées</b> · bonnet · montre · <b>combinaison néoprène</b> (à tester en piscine avant l\'eau libre) · bouée de sécurité eau libre',
+      taper: 'Matériel de <b>course</b> uniquement, rien de neuf : lunettes testées (+ secours) · bonnet · combinaison selon température · montre',
+    };
     const KEY = {
       tech:  'Compte tes coups de bras sur 25 m : il doit BAISSER au fil des semaines (plus de glisse). Expire en continu sous l\'eau.',
       aero:  'Même temps sur chaque 100 m (± 3 s). La régularité, pas la vitesse.',
@@ -375,6 +381,7 @@ const MuscuApp = (() => {
         <span class="swim-card-phase">${race ? 'J-' + race.weeks + ' sem' : ''}</span>
       </div>
       <div class="swim-timeline">${timeline}</div>
+      <div class="swim-gear">🎒 <b>À prendre :</b> ${GEAR[active.key]}</div>
       <div class="swim-sheet-title">Séance J4 de la semaine</div>
       <div class="swim-sheet">${sheetHtml}</div>
       <div class="swim-key">🎯 ${KEY[active.key]}</div>
@@ -573,7 +580,7 @@ const MuscuApp = (() => {
     const day = plan.days[dayIndex];
     const modal = document.getElementById('day-detail-modal');
     document.getElementById('day-detail-title').textContent = day.label;
-    document.getElementById('day-detail-focus').textContent = day.focus;
+    document.getElementById('day-detail-focus').innerHTML = `${day.focus || ''}${day.equipment ? `<div class="swim-gear" style="margin-top:8px">🎒 <b>Matériel :</b> ${day.equipment}</div>` : ''}`;
 
     // Show warmup if available
     let exHtml = '';
