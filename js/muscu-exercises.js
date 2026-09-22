@@ -686,7 +686,7 @@ const MuscuExercises = (() => {
       hyrox: [], primary: ['cardio','dos','épaules'], secondary: ['pectoraux'],
       videoUrl: 'https://www.youtube.com/watch?v=5HLW2AI1Ink',
       cues: ['Reps = distance (m) par répétition · le contenu exact est dans la note de la série', 'JAMBES : ~10 % de la propulsion, et elles flottent seules en combinaison — leur rôle est de te garder horizontal. Battement depuis la HANCHE (pas le genou), jambes quasi tendues, chevilles relâchées, petite amplitude. Si elles coulent : regarde le FOND (pas devant) et expire, le reste suit', 'Crawl : tête dans l\'axe (regard fond), expiration CONTINUE sous l\'eau, respiration bilatérale 3 temps, coude haut, doigts relâchés', 'Dos crawlé = récup + ouverture pec : rotation externe d\'épaule, zéro compression', 'Si l\'épaule tire en crawl → bascule dos crawlé, règle J+1 comme en muscu', 'JAMAIS de papillon (opposé de ce que ton épaule/haut du dos demandent)'],
-      mistakes: ['Bloquer la respiration puis souffler-inspirer en un temps (= essoufflement)', 'Lever la tête pour respirer (les hanches coulent)', 'Forcer le crawl si l\'épaule tire', 'Nager toujours à la même allure sans structure (le 1000 m en continu = 0 progrès technique)'] },
+      mistakes: ['Bloquer la respiration puis souffler-inspirer en un temps (= essoufflement)', 'Lever la tête pour respirer (les hanches coulent)', '⚠ ENTRÉE DE MAIN qui croise l\'axe du corps, pouce en premier = cause n°1 de conflit sous-acromial → entrée DEVANT l\'épaule, main à plat', '⚠ Douleur pendant le retour aérien ou à l\'entrée de main → STOP, bascule dos crawlé', 'Chercher le « coude haut » sous l\'eau tant que la position n\'est pas stable', '⚠ Nager le même jour qu\'une séance pectoraux/épaules : la fatigue dégrade le geste', 'Nager toujours à la même allure sans structure (le 1000 m en continu = 0 progrès technique)'] },
 
     { id: 'natation_technique', name: 'Piscine post-muscu — technique (20-25 min)', category: 'conditioning', subcategory: 'cardio', equipment: 'pool',
       hyrox: [], primary: ['cardio','dos','épaules'], secondary: ['pectoraux'],
@@ -697,8 +697,8 @@ const MuscuExercises = (() => {
     { id: 'natation_continu', name: 'Piscine CONTINU — tuba + pull buoy (25-30 min)', category: 'conditioning', subcategory: 'cardio', equipment: 'pool',
       hyrox: [], primary: ['cardio','dos','épaules'], secondary: ['pectoraux'],
       videoUrl: 'https://www.youtube.com/watch?v=5HLW2AI1Ink',
-      cues: ['SÉANCE B de la semaine (la A = technique 25 m). Ici on ne s\'arrête pas : le tuba enlève la respiration du problème, le pull buoy enlève les jambes', 'Échauffement 100 m souple', 'Bloc continu : 300 m en UNE fois, TRÈS lent, tuba + pull buoy · un seul focus : allongement devant · +50 m par semaine (300 → 350 → 400…)', 'Puis 4×50 SANS tuba, respiration 2 temps de ton côté, repos 30 s — tu transfères la position trouvée avec le tuba', 'Fin 100 m dos crawlé souple', 'Si tu dois t\'arrêter pendant le bloc continu : c\'est que tu vas trop vite, pas que tu manques de souffle — ralentis encore'],
-      mistakes: ['Nager vite : le bloc continu est un exercice de POSITION, pas de cardio', 'Garder le tuba sur tout (le transfert sans tuba est le but)', 'Ajouter du volume avant de tenir le bloc en entier', 'Faire la séance A et la B le même jour'] },
+      cues: ['SÉANCE B de la semaine (la A = technique 25 m). Ici on ne s\'arrête pas : le tuba enlève la respiration du problème', '⚠ TUBA ET TON DOS (avis expert) : tuba + regard mal placé = nuque en extension et trapèzes sous tension — exactement ta zone douloureuse. REGARD AU FOND, NUQUE LONGUE. Si le haut du dos tire à J+1, le tuba est le PREMIER outil à réduire', '⚠ Le tuba supprime aussi la rotation → risque d\'ancrer une nage « à plat ». Plafond 30-40 % du volume, jamais plus', 'Échauffement 100 m souple', 'Bloc continu : 300 m en UNE fois, TRÈS lent, tuba (+ pull buoy la 1ʳᵉ moitié seulement) · un seul focus : allongement devant · pense à ROULER les épaules, le tuba ne doit pas t\'aplatir · +50 m par semaine (300 → 350 → 400…)', 'Puis 4×50 SANS tuba, respiration 2 temps de ton côté, repos 30 s — tu transfères la position trouvée avec le tuba', 'Fin 100 m dos crawlé souple', 'Si tu dois t\'arrêter pendant le bloc continu : c\'est que tu vas trop vite, pas que tu manques de souffle — ralentis encore'],
+      mistakes: ['Nager vite : le bloc continu est un exercice de POSITION, pas de cardio', 'Garder le tuba sur tout (le transfert sans tuba est le but)', 'Ajouter du volume avant de tenir le bloc en entier', 'Faire la séance A et la B le même jour', 'Programmer la nage le jour d\'une séance pectoraux/épaules (ni après, ni avant)'] },
 
     { id: 'velo_z2', name: 'Vélo Zone 2 (base Ironman)', category: 'conditioning', subcategory: 'cardio', equipment: 'bike',
       hyrox: [], primary: ['cardio','jambes'], secondary: [],
@@ -1238,8 +1238,8 @@ const MuscuExercises = (() => {
         variants: [
           { minWeeksToRace: 34,
             label: 'J4 — Piscine · Phase 1a FONDATIONS (~1 000 m)',
-            equipment: 'TUBA FRONTAL (~25 €, Finis/Arena) = l\'achat n°1 : tu respires en continu sans tourner la tête · PALMES COURTES (~25-30 €) = l\'achat n°2 : elles compensent les chevilles raides (course/vélo) et te font enfin SENTIR un battement efficace · PULL BUOY — utilise-le largement, il règle le problème des jambes qui coulent · PLANCHE seulement pour les battements sur le côté · PAS DE PLAQUETTES (épaule)',
-            focus: 'Recalibrée après ta 1ʳᵉ séance : tout en 25 m, gros repos, respiration du côté que tu préfères (PAS bilatérale). ⚠ Les jambes n\'apportent que ~10 % de la propulsion et flottent seules en combinaison : leur rôle est de te garder HORIZONTAL, pas d\'avancer. On ne s\'acharne pas dessus — palmes courtes + pull buoy. 30-35 min, effort 4/10.',
+            equipment: 'TUBA FRONTAL (~25 €, Finis/Arena) = achat n°1, MAIS plafonné à 30-40 % du volume et toujours suivi d\'un bloc sans · PALMES COURTES (~25-30 €) = achat n°2, chevilles raides de squatteur · PULL BUOY = dosé, PAS massif (position artificielle, transfert faible) : au moins la MOITIÉ des 50 m sans · CHRONO = pendule du bassin ou montre (temps + coups = SWOLF, ta vraie métrique) · PAS DE PLANCHE en séries de jambes · PAS DE PLAQUETTES (épaule)',
+            focus: 'Tout en 25 m, gros repos, respiration 2 temps de ton côté. ⚠ CORRIGÉ APRÈS AVIS EXPERT — les jambes ne sont PAS un sujet de propulsion mais de TRAÎNÉE : un gabarit musclé coule des jambes, et des jambes qui coulent doublent la résistance. La combinaison masquera ça en course, mais tu t\'entraînes 9 mois sans elle. Donc : battement léger 2 temps entretenu, chevilles mobilisées, et pas de pull buoy permanent. 30-35 min, effort 4/10.',
             warmup: 'Échauffement 200 m libre (crawl souple + dos crawlé, comme tu veux) — sans consigne technique, juste se mettre dans l\'eau',
             blocks: [
               { name: 'Souffle à l\'arrêt (au bord, 2 min — le plus important)',
@@ -1248,18 +1248,18 @@ const MuscuExercises = (() => {
                 ]},
               { name: 'Éducatifs 8×25 (repos 30 s — prends-les vraiment)',
                 exercises: [
-                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'Battements SUR LE CÔTÉ (une épaule dans l\'eau, bras du dessous tendu devant, l\'autre le long du corps) · PALMES COURTES · battement depuis la HANCHE, jambes quasi tendues, chevilles RELÂCHÉES (pieds en « ballerine », jamais fléchis) · petit et lent : 20-30 cm d\'amplitude · objectif = rester horizontal, PAS avancer' },
-                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'RATTRAPÉ · PULL BUOY autorisé · une main attend l\'autre devant · si c\'est le bazar : fais-le en 12 m puis marche, c\'est normal au début' },
-                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'UN BRAS : 25 m bras droit, bras gauche tendu DEVANT (pas le long du corps, plus facile) · PULL BUOY autorisé · respire du côté du bras qui travaille' },
+                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'Battements SUR LE CÔTÉ (une épaule dans l\'eau, bras du dessous tendu devant) · PALMES COURTES · depuis la HANCHE, jambes quasi tendues, chevilles RELÂCHÉES (jamais fléchies), amplitude 20-30 cm · ZÉRO série à la planche · objectif = ne pas couler des jambes (la traînée, pas la propulsion) · ⚠ mobilité cheville en flexion plantaire 3 min/JOUR à la maison : tes chevilles de squatteur sont le vrai blocage' },
+                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'RATTRAPÉ · pull buoy OK ici (mais pas partout) · une main attend l\'autre devant · si c\'est le bazar : fais-le en 12 m puis marche, c\'est normal au début' },
+                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'UN BRAS : 25 m bras droit, bras gauche tendu DEVANT · pull buoy OK · respire du côté du bras qui travaille · ⚠ ENTRÉE DE MAIN devant l\'épaule, main à plat — ne JAMAIS croiser l\'axe du corps, pouce en premier (cause n°1 de conflit d\'épaule)' },
                   { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'UN BRAS, l\'autre côté · même chose · celui qui coince = ton côté faible, c\'est normal' },
                 ]},
               { name: 'Respiration 6×25 (repos 30 s) — 2 temps, TON côté',
                 exercises: [
-                  { id: 'natation', sets: 6, reps: '25 m', rest: 30, notes: 'Crawl en respirant TOUS LES 2 MOUVEMENTS, toujours du MÊME côté (celui qui te va) · oublie le 3 temps bilatéral, c\'est un exo de nageur confirmé · la seule règle : expirer en continu sous l\'eau, ne JAMAIS bloquer son souffle · 2-3 des 25 avec le TUBA (aucune respiration à gérer)' },
+                  { id: 'natation', sets: 6, reps: '25 m', rest: 30, notes: 'Crawl, respiration TOUS LES 2 MOUVEMENTS · la seule règle : expirer en continu sous l\'eau, ne JAMAIS bloquer son souffle · la 3 temps bilatérale n\'est PAS un prérequis eau libre (avis expert) — en revanche il te faut savoir respirer DES DEUX CÔTÉS : dès que les 6×25 passent sans arrêt, fais 1-2 longueurs à gauche / la suivante à droite (alternance PAR LONGUEUR, zéro coût en souffle) · 2 des 25 avec le TUBA, jamais plus' },
                 ]},
               { name: 'Nage libre (3×50, repos 45 s)',
                 exercises: [
-                  { id: 'natation', sets: 3, reps: '50 m', rest: 45, notes: 'Crawl allure FACILE, un seul focus : ① tête dans l\'axe (regard fond) ② allongement devant ③ mains relâchées · compte tes coups de bras sur 25 m et note le chiffre : c\'est ton repère de progrès (il doit BAISSER) · dos crawlé si l\'épaule tire' },
+                  { id: 'natation', sets: 3, reps: '50 m', rest: 45, notes: 'Crawl allure FACILE, un seul focus : ① tête dans l\'axe (regard fond) ② allongement devant ③ mains relâchées · AU MOINS la moitié SANS pull buoy · note COUPS DE BRAS **et** TEMPS sur 25 m (pendule du bassin) : le compte seul se triche en planant trop — c\'est le duo (SWOLF) qui compte · dos crawlé si l\'épaule tire' },
                 ]},
               { name: 'Récup',
                 exercises: [
@@ -1268,19 +1268,19 @@ const MuscuExercises = (() => {
             ] },
           { minWeeksToRace: 28,
             label: 'J4 — Piscine · Phase 1b TECHNIQUE (~1 500 m)',
-            equipment: 'TUBA FRONTAL sur 2-3 des 100 · PALMES COURTES sur les battements · PULL BUOY sur le rattrapé · PLANCHE (battements sur le côté) · PAS DE PLAQUETTES (épaule)',
-            focus: 'À faire quand la 1a passe bien (critère : 6×25 respiration 2 temps sans t\'arrêter + rattrapé propre sur 25 m). On allonge à 50 et 100 m. 40-45 min, effort 5/10.',
+            equipment: 'TUBA plafonné à 30-40 % du volume, toujours suivi d\'un bloc sans · PALMES COURTES sur les battements · PULL BUOY dosé (moitié des nages sans) · CHRONO (temps + coups) · PAS DE PLAQUETTES (épaule)',
+            focus: 'À faire quand la 1a passe bien. CRITÈRE (complété par l\'expert) : 6×25 sans arrêt + rattrapé propre + coups de bras STABLES sur les 6×25 (écart ≤ 2 entre le 1ᵉʳ et le 6ᵉ) + effort ≤ 5/10. « Sans arrêt » en se dégradant = faux positif. On allonge à 50 et 100 m. 40-45 min, effort 5/10.',
             warmup: 'Échauffement 200 m : 100 crawl souple + 100 dos crawlé',
             blocks: [
               { name: 'Éducatifs (6×50, repos 25 s)',
                 exercises: [
-                  { id: 'natation', sets: 2, reps: '50 m', rest: 25, notes: 'Battements SUR LE CÔTÉ · PALMES COURTES · depuis la hanche, chevilles relâchées, petite amplitude · corps horizontal, regard fond' },
+                  { id: 'natation', sets: 2, reps: '50 m', rest: 25, notes: 'Battements SUR LE CÔTÉ · PALMES COURTES · depuis la hanche, chevilles relâchées, petite amplitude · en nage : battement LÉGER à 2 temps (une jambe par bras), juste pour ne pas couler' },
                   { id: 'natation', sets: 2, reps: '50 m', rest: 25, notes: 'RATTRAPÉ (catch-up) : une main attend l\'autre devant · PULL BUOY si les jambes coulent · allongement + glisse' },
                   { id: 'natation', sets: 2, reps: '50 m', rest: 25, notes: 'UN BRAS : 25 m bras gauche / 25 m bras droit, bras libre devant · rotation des hanches' },
                 ]},
               { name: 'Respiration (4×50, repos 25 s)',
                 exercises: [
-                  { id: 'natation', sets: 4, reps: '50 m', rest: 25, notes: 'Crawl respiration 2 temps de ton côté · expirer EN CONTINU sous l\'eau · essayer 1 des 4 en 3 temps bilatéral, sans forcer : c\'est un bonus, pas un objectif' },
+                  { id: 'natation', sets: 4, reps: '50 m', rest: 25, notes: 'Crawl respiration 2 temps · ALTERNE PAR LONGUEUR : 1 longueur côté gauche, la suivante côté droit (aptitude des 2 côtés pour l\'eau libre — vagues, soleil, voisin) · expirer EN CONTINU · la 3 temps reste facultative' },
                 ]},
               { name: 'Corps de séance (6×100, repos 30 s)',
                 exercises: [
@@ -1318,7 +1318,7 @@ const MuscuExercises = (() => {
           { minWeeksToRace: 4,
             label: 'J4 — Piscine · Phase 3 SPÉCIFIQUE tri (~1 900 m)',
             equipment: 'MONTRE CHRONO (temps des 300) · COMBINAISON NÉOPRÈNE tri (location OK) : à essayer en piscine 1-2 fois AVANT l\'eau libre — elle change la flottaison et serre les épaules · BOUÉE de sécurité eau libre (obligatoire seul) · lunettes teintées pour dehors · vaseline cou',
-            focus: 'Mars → mai : allure course sur la distance de l\'épreuve (750 m) + compétences eau libre (sighting, nager droit). Dès avril : 1 séance eau libre / 2 sem en combinaison si possible. 45-50 min, effort 7/10.',
+            focus: 'Mars → mai : allure course sur 750 m + eau libre. ⚠ POINT SOULEVÉ PAR L\'EXPERT : le facteur d\'abandon en tri sprint n\'est pas la technique, c\'est LA PANIQUE AU DÉPART (froid, combinaison, contact). Non négociable : 3-4 sorties EAU LIBRE en combinaison avant juin + 1 simulation de DÉPART EN GROUPE. 45-50 min, effort 7/10.',
             warmup: 'Échauffement 300 m : 200 NL + 100 dos, puis 4×25 m progressifs',
             blocks: [
               { name: 'Rappel technique (4×50, repos 20 s)',
@@ -1677,7 +1677,19 @@ const MuscuExercises = (() => {
   //   horizontalité, pas propulsion. Battements planche → battements SUR LE CÔTÉ
   //   avec PALMES COURTES (chevilles raides course/vélo), depuis la hanche, chevilles
   //   relâchées. Palmes ajoutées au matériel, pull buoy assumé.
-  const TEMPLATES_VERSION = 23;
+  // v24 (2026-09-22) : intégration de l'avis expert natation.
+  //   - Jambes : raisonnement corrigé (TRAÎNÉE, pas propulsion) — battement léger
+  //     2 temps entretenu, mobilité cheville 3 min/j, pull buoy DOSÉ (≥ moitié des
+  //     nages sans), zéro série à la planche.
+  //   - Chrono ajouté : temps + coups (SWOLF) ; le compte seul se triche en planant.
+  //   - Tuba : plafond 30-40 % du volume + risque nuque/trapèzes (zone douloureuse)
+  //     et nage « à plat » → regard au fond, 1ᵉʳ outil à réduire si J+1 tire.
+  //   - Respiration : 2 temps gardée, alternance PAR LONGUEUR pour l'aptitude 2 côtés.
+  //   - Critère de passage 1a→1b : + coups stables (écart ≤ 2) + effort ≤ 5/10.
+  //   - Alertes épaule : entrée de main hors axe, douleur retour aérien, pas de nage
+  //     le jour d'une séance pec/épaules.
+  //   - Eau libre : 3-4 sorties en combinaison + simulation de départ en groupe.
+  const TEMPLATES_VERSION = 24;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────

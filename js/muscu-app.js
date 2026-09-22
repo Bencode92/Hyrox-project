@@ -330,7 +330,7 @@ const MuscuApp = (() => {
       <div class="swim-step ${i === activeIdx ? 'active' : i < activeIdx ? 'done' : ''}">${i + 1} · ${st.label}<small>${st.when}</small></div>`).join('');
 
     const GEAR = {
-      found: '<b>Tuba frontal</b> ~25 € (achat n°1) · <b>palmes courtes</b> ~25-30 € (achat n°2 : chevilles raides) · <b>pull buoy</b> — largement, il règle les jambes qui coulent · planche pour les battements sur le côté · <b>pas de plaquettes</b> (épaule)',
+      found: '<b>Tuba frontal</b> ~25 € — plafonné à 30-40 % du volume · <b>palmes courtes</b> ~25-30 € (chevilles raides) · <b>pull buoy</b> dosé, <b>pas massif</b> : au moins la moitié des 50 m sans · <b>chrono</b> (pendule du bassin) · pas de plaquettes, pas de planche',
       tech:  '<b>Planche</b> (battements — la piscine en prête) · <b>pull buoy</b> optionnel, rattrapé seulement · <b>tuba frontal</b> ~25 € = le meilleur achat de la phase · <b>pas de plaquettes</b> (épaule)',
       aero:  '<b>Montre chrono</b> (la régularité des 100 se mesure) · <b>pull buoy</b> pour le rappel technique · toujours pas de plaquettes',
       spec:  '<b>Montre chrono</b> · <b>combinaison néoprène</b> (à tester en piscine avant l\'eau libre) · <b>bouée</b> de sécurité eau libre',
@@ -343,7 +343,7 @@ const MuscuApp = (() => {
       return g ? `<span class="swim-pill">${g}</span>` : '';
     };
     const KEY = {
-      found: 'Deux règles, pas plus : <b>expirer en continu sous l\'eau</b> (jamais bloquer son souffle) et respirer tous les 2 mouvements du même côté. <b>Les jambes ne sont pas le sujet</b> — ~10 % de la propulsion, et la combinaison les fait flotter : battement depuis la hanche, chevilles relâchées, petit. <b>Critère pour passer en 1b :</b> 6×25 sans t\'arrêter + rattrapé propre sur 25 m.',
+      found: '<b>Expire en continu sous l\'eau</b>, jamais bloquer son souffle — 80 % de l\'essoufflement vient de là et d\'une allure trop haute. Les jambes : enjeu <b>traînée</b>, pas propulsion — battement léger, chevilles mobilisées 3 min/jour, et <b>pas de pull buoy permanent</b>. <b>Passage en 1b :</b> 6×25 sans arrêt + rattrapé propre + coups de bras stables (écart ≤ 2 du 1ᵉʳ au 6ᵉ) + effort ≤ 5/10.',
       tech:  'Compte tes coups de bras sur 25 m : il doit BAISSER au fil des semaines (plus de glisse). Expire en continu sous l\'eau.',
       aero:  'Même temps sur chaque 100 m (± 3 s). La régularité, pas la vitesse.',
       spec:  'Tiens l\'allure course sur les 3×300. Lève les yeux tous les 8 cycles (sighting).',
@@ -397,7 +397,7 @@ const MuscuApp = (() => {
       <div class="swim-option"><b>2 séances / semaine = le plus gros levier.</b><br>
         <b>A · technique</b> = la séance J4 ci-dessus (25 m + repos : on construit le geste).<br>
         <b>B · continu</b> = 🔄 swap le cardio de fin d'une séance muscu → « <b>Piscine CONTINU — tuba + pull buoy</b> » : 300 m d'un seul bloc très lent (+50 m/sem), puis 4×50 sans tuba. C'est là que tu nages sans t'arrêter.<br>
-        Jamais A et B le même jour. 🤿 Le tuba (~25 €) est ce qui rend B possible.</div>
+        Jamais A et B le même jour, et <b>jamais de nage le jour d\'une séance pec/épaules</b> — la fatigue dégrade le geste. 🤿 Tuba : ≤ 30-40 % du volume, regard au fond, nuque longue (si le haut du dos tire à J+1, c\'est le premier outil à réduire).</div>
       ${dayIdx >= 0 ? `<button class="btn btn-swim" onclick="MuscuApp.showDayDetail(${dayIdx})">🏊 Ouvrir la séance piscine (consignes complètes)</button>` : ''}
     `;
   }
