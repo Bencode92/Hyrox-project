@@ -395,9 +395,10 @@ const MuscuApp = (() => {
       <div class="swim-sheet">${sheetHtml}</div>
       <div class="swim-key">🎯 ${KEY[active.key] || ''}</div>
       <div class="swim-option"><b>2 séances / semaine = le plus gros levier.</b><br>
-        <b>A · technique</b> = la séance J4 ci-dessus (25 m + repos : on construit le geste).<br>
-        <b>B · continu</b> = 🔄 swap le cardio de fin d'une séance muscu → « <b>Piscine CONTINU — tuba + pull buoy</b> » : 300 m d'un seul bloc très lent (+50 m/sem), puis 4×50 sans tuba. C'est là que tu nages sans t'arrêter.<br>
-        Jamais A et B le même jour, et <b>jamais de nage le jour d\'une séance pec/épaules</b> — la fatigue dégrade le geste. 🤿 Tuba : ≤ 30-40 % du volume, regard au fond, nuque longue (si le haut du dos tire à J+1, c\'est le premier outil à réduire).</div>
+        <b>A · technique</b> = la séance J4 ci-dessus, sur son propre jour (25 m + repos : on construit le geste).<br>
+        <b>B · continu</b> = « <b>Piscine CONTINU — tuba + pull buoy</b> » : 300 m d'un seul bloc très lent (+50 m/sem), puis 4×50 sans tuba. C'est là que tu nages sans t'arrêter.<br>
+        <b>Où caler B :</b> sur un <b>jour de repos</b> (25-30 min faciles, pas une vraie charge) — sinon <b>AVANT</b> J3 jambes. <b>Jamais</b> les jours pec/épaules (J1, J5), ni après J2 dos ; et ne troque pas le vélo Z2 de J2, c\'est ton test dos.<br>
+        🤿 Tuba ≤ 30-40 % du volume, regard au fond, nuque longue — premier outil à réduire si le haut du dos tire à J+1.</div>
       ${dayIdx >= 0 ? `<button class="btn btn-swim" onclick="MuscuApp.showDayDetail(${dayIdx})">🏊 Ouvrir la séance piscine (consignes complètes)</button>` : ''}
     `;
   }
