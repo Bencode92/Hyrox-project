@@ -694,6 +694,12 @@ const MuscuExercises = (() => {
       cues: ['Option « muscu + piscine » : swap 🔄 du cardio de fin de séance, même durée (20-25 min, ≈ 800 m)', 'Échauffement 100 m : 50 NL souple + 50 dos', 'Éducatifs 6×50 R20 : 2× battements bras devant (planche OK) · 2× rattrapé (une main attend l\'autre devant) · 2× un bras (25 G / 25 D, bras libre le long du corps)', 'Respiration 4×50 R20 : crawl 3 temps bilatéral, expirer en continu sous l\'eau', 'Fin 100 m dos crawlé souple', 'Allure FACILE — après la muscu, c\'est de la technique, pas du volume'],
       mistakes: ['Faire du volume après une séance muscu haut du corps (épaules déjà chargées)', 'Enchaîner sans repos entre les 50 (l\'éducatif se dégrade)', 'Sauter les éducatifs pour « juste nager »'] },
 
+    { id: 'natation_continu', name: 'Piscine CONTINU — tuba + pull buoy (25-30 min)', category: 'conditioning', subcategory: 'cardio', equipment: 'pool',
+      hyrox: [], primary: ['cardio','dos','épaules'], secondary: ['pectoraux'],
+      videoUrl: 'https://www.youtube.com/watch?v=5HLW2AI1Ink',
+      cues: ['SÉANCE B de la semaine (la A = technique 25 m). Ici on ne s\'arrête pas : le tuba enlève la respiration du problème, le pull buoy enlève les jambes', 'Échauffement 100 m souple', 'Bloc continu : 300 m en UNE fois, TRÈS lent, tuba + pull buoy · un seul focus : allongement devant · +50 m par semaine (300 → 350 → 400…)', 'Puis 4×50 SANS tuba, respiration 2 temps de ton côté, repos 30 s — tu transfères la position trouvée avec le tuba', 'Fin 100 m dos crawlé souple', 'Si tu dois t\'arrêter pendant le bloc continu : c\'est que tu vas trop vite, pas que tu manques de souffle — ralentis encore'],
+      mistakes: ['Nager vite : le bloc continu est un exercice de POSITION, pas de cardio', 'Garder le tuba sur tout (le transfert sans tuba est le but)', 'Ajouter du volume avant de tenir le bloc en entier', 'Faire la séance A et la B le même jour'] },
+
     { id: 'velo_z2', name: 'Vélo Zone 2 (base Ironman)', category: 'conditioning', subcategory: 'cardio', equipment: 'bike',
       hyrox: [], primary: ['cardio','jambes'], secondary: [],
       videoUrl: 'https://www.youtube.com/watch?v=1nLxfM0MSqM',
@@ -1662,7 +1668,11 @@ const MuscuExercises = (() => {
   //   (tout en 25 m, repos 30 s, respiration 2 temps du côté préféré, souffle au bord,
   //   pull buoy large, ~1 000 m) puis 1b (l'ancienne, à partir de J-34 sem / quand le
   //   critère passe). Le cardio n'est pas le facteur limitant (1 000 m tenus).
-  const TEMPLATES_VERSION = 21;
+  // v22 (2026-09-22) : séance B « piscine continu » (natation_continu) — tuba +
+  //   pull buoy, 300 m d'un bloc +50 m/sem puis 4×50 sans tuba. Répond au besoin
+  //   « progresser sans m'arrêter tout le temps » : A construit le geste (25 m),
+  //   B l'installe en continu. Swappable sur les cardios de fin de séance.
+  const TEMPLATES_VERSION = 22;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────

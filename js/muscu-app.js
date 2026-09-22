@@ -394,7 +394,10 @@ const MuscuApp = (() => {
       <div class="swim-sheet-title">Séance J4 de la semaine</div>
       <div class="swim-sheet">${sheetHtml}</div>
       <div class="swim-key">🎯 ${KEY[active.key] || ''}</div>
-      <div class="swim-option">🔄 <b>Muscu + piscine le même jour :</b> sur la séance muscu, swap le cardio de fin → « Piscine post-muscu — technique » (≈ 800 m, 20-25 min).</div>
+      <div class="swim-option"><b>2 séances / semaine = le plus gros levier.</b><br>
+        <b>A · technique</b> = la séance J4 ci-dessus (25 m + repos : on construit le geste).<br>
+        <b>B · continu</b> = 🔄 swap le cardio de fin d'une séance muscu → « <b>Piscine CONTINU — tuba + pull buoy</b> » : 300 m d'un seul bloc très lent (+50 m/sem), puis 4×50 sans tuba. C'est là que tu nages sans t'arrêter.<br>
+        Jamais A et B le même jour. 🤿 Le tuba (~25 €) est ce qui rend B possible.</div>
       ${dayIdx >= 0 ? `<button class="btn btn-swim" onclick="MuscuApp.showDayDetail(${dayIdx})">🏊 Ouvrir la séance piscine (consignes complètes)</button>` : ''}
     `;
   }
