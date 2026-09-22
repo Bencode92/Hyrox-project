@@ -330,7 +330,7 @@ const MuscuApp = (() => {
       <div class="swim-step ${i === activeIdx ? 'active' : i < activeIdx ? 'done' : ''}">${i + 1} · ${st.label}<small>${st.when}</small></div>`).join('');
 
     const GEAR = {
-      found: '<b>Planche</b> · <b>pull buoy</b> — utilise-le largement en 1a (il enlève le souci des jambes) · <b>tuba frontal</b> ~25 € = l\'achat qui change tout ici · <b>pas de plaquettes</b> (épaule)',
+      found: '<b>Tuba frontal</b> ~25 € (achat n°1) · <b>palmes courtes</b> ~25-30 € (achat n°2 : chevilles raides) · <b>pull buoy</b> — largement, il règle les jambes qui coulent · planche pour les battements sur le côté · <b>pas de plaquettes</b> (épaule)',
       tech:  '<b>Planche</b> (battements — la piscine en prête) · <b>pull buoy</b> optionnel, rattrapé seulement · <b>tuba frontal</b> ~25 € = le meilleur achat de la phase · <b>pas de plaquettes</b> (épaule)',
       aero:  '<b>Montre chrono</b> (la régularité des 100 se mesure) · <b>pull buoy</b> pour le rappel technique · toujours pas de plaquettes',
       spec:  '<b>Montre chrono</b> · <b>combinaison néoprène</b> (à tester en piscine avant l\'eau libre) · <b>bouée</b> de sécurité eau libre',
@@ -343,7 +343,7 @@ const MuscuApp = (() => {
       return g ? `<span class="swim-pill">${g}</span>` : '';
     };
     const KEY = {
-      found: 'Respire tous les 2 mouvements, TOUJOURS du même côté — oublie le 3 temps bilatéral. La seule règle : expirer en continu sous l\'eau, jamais bloquer son souffle. <b>Critère pour passer en 1b :</b> 6×25 sans t\'arrêter + rattrapé propre sur 25 m.',
+      found: 'Deux règles, pas plus : <b>expirer en continu sous l\'eau</b> (jamais bloquer son souffle) et respirer tous les 2 mouvements du même côté. <b>Les jambes ne sont pas le sujet</b> — ~10 % de la propulsion, et la combinaison les fait flotter : battement depuis la hanche, chevilles relâchées, petit. <b>Critère pour passer en 1b :</b> 6×25 sans t\'arrêter + rattrapé propre sur 25 m.',
       tech:  'Compte tes coups de bras sur 25 m : il doit BAISSER au fil des semaines (plus de glisse). Expire en continu sous l\'eau.',
       aero:  'Même temps sur chaque 100 m (± 3 s). La régularité, pas la vitesse.',
       spec:  'Tiens l\'allure course sur les 3×300. Lève les yeux tous les 8 cycles (sighting).',
