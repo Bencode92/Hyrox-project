@@ -318,7 +318,8 @@ const MuscuApp = (() => {
     const day = dayIdx >= 0 ? plan.days[dayIdx] : null;
 
     const STEPS = [
-      { key: 'tech',  label: 'Technique',   when: 'sept → nov',   min: 28, goal: 'Apprendre à nager BIEN avant de nager plus', effort: '40-45 min · effort 5/10' },
+      { key: 'found', label: 'Fondations', when: 'maintenant',    min: 34, goal: 'Un geste propre sur 25 m — souffle et alignement', effort: '30-35 min · effort 4/10' },
+      { key: 'tech',  label: 'Technique',   when: 'à partir d\'oct', min: 28, goal: 'Même travail allongé à 50 et 100 m', effort: '40-45 min · effort 5/10' },
       { key: 'aero',  label: 'Aérobie',     when: 'déc → fév',    min: 16, goal: 'Monter le volume à allure régulière',        effort: '45-50 min · effort 6/10' },
       { key: 'spec',  label: 'Spécifique',  when: 'mars → mai',   min: 4,  goal: 'Allure course sur 750 m + eau libre',        effort: '45-50 min · effort 7/10' },
       { key: 'taper', label: 'Pré-compét',  when: 'J-4 → course', min: -Infinity, goal: 'Affûter, ne plus construire',          effort: '30 min · sortir frais' },
@@ -329,6 +330,7 @@ const MuscuApp = (() => {
       <div class="swim-step ${i === activeIdx ? 'active' : i < activeIdx ? 'done' : ''}">${i + 1} · ${st.label}<small>${st.when}</small></div>`).join('');
 
     const GEAR = {
+      found: '<b>Planche</b> · <b>pull buoy</b> — utilise-le largement en 1a (il enlève le souci des jambes) · <b>tuba frontal</b> ~25 € = l\'achat qui change tout ici · <b>pas de plaquettes</b> (épaule)',
       tech:  '<b>Planche</b> (battements — la piscine en prête) · <b>pull buoy</b> optionnel, rattrapé seulement · <b>tuba frontal</b> ~25 € = le meilleur achat de la phase · <b>pas de plaquettes</b> (épaule)',
       aero:  '<b>Montre chrono</b> (la régularité des 100 se mesure) · <b>pull buoy</b> pour le rappel technique · toujours pas de plaquettes',
       spec:  '<b>Montre chrono</b> · <b>combinaison néoprène</b> (à tester en piscine avant l\'eau libre) · <b>bouée</b> de sécurité eau libre',
@@ -341,6 +343,7 @@ const MuscuApp = (() => {
       return g ? `<span class="swim-pill">${g}</span>` : '';
     };
     const KEY = {
+      found: 'Respire tous les 2 mouvements, TOUJOURS du même côté — oublie le 3 temps bilatéral. La seule règle : expirer en continu sous l\'eau, jamais bloquer son souffle. <b>Critère pour passer en 1b :</b> 6×25 sans t\'arrêter + rattrapé propre sur 25 m.',
       tech:  'Compte tes coups de bras sur 25 m : il doit BAISSER au fil des semaines (plus de glisse). Expire en continu sous l\'eau.',
       aero:  'Même temps sur chaque 100 m (± 3 s). La régularité, pas la vitesse.',
       spec:  'Tiens l\'allure course sur les 3×300. Lève les yeux tous les 8 cycles (sighting).',
@@ -390,7 +393,7 @@ const MuscuApp = (() => {
       <div class="swim-gear">🎒 <b>À prendre :</b> ${GEAR[active.key]}</div>
       <div class="swim-sheet-title">Séance J4 de la semaine</div>
       <div class="swim-sheet">${sheetHtml}</div>
-      <div class="swim-key">🎯 ${KEY[active.key]}</div>
+      <div class="swim-key">🎯 ${KEY[active.key] || ''}</div>
       <div class="swim-option">🔄 <b>Muscu + piscine le même jour :</b> sur la séance muscu, swap le cardio de fin → « Piscine post-muscu — technique » (≈ 800 m, 20-25 min).</div>
       ${dayIdx >= 0 ? `<button class="btn btn-swim" onclick="MuscuApp.showDayDetail(${dayIdx})">🏊 Ouvrir la séance piscine (consignes complètes)</button>` : ''}
     `;

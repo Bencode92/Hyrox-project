@@ -1230,25 +1230,55 @@ const MuscuExercises = (() => {
         finisher: '',
         cooldown: 'Retour au calme 100 m très lent + mobilité dans l\'eau (bras en cercles, étirement pec au mur). Si l\'épaule tire en crawl → dos crawlé · JAMAIS de papillon.',
         variants: [
-          { minWeeksToRace: 28,
-            label: 'J4 — Piscine · Phase 1 TECHNIQUE (~1 500 m)',
-            equipment: 'PLANCHE pour les battements (la piscine en prête presque toujours) · PULL BUOY optionnel — uniquement sur le rattrapé si les jambes coulent, jamais sur le corps de séance · TUBA FRONTAL (~25 €, Finis/Arena) = le meilleur achat de la phase : tu nages sans tourner la tête et tu ne penses qu\'à l\'alignement (2-3 des 6×100) · PAS DE PLAQUETTES : elles chargent l\'épaule, exactement ce qu\'on évite',
-            focus: 'Sept → nov : on construit la technique crawl AVANT le volume. Tu sais nager 1 000 m — maintenant on apprend à le nager BIEN : respiration continue, alignement, allongement. 40-45 min, effort 5/10.',
-            warmup: 'Échauffement 200 m : 100 NL souple + 100 dos crawlé',
+          { minWeeksToRace: 34,
+            label: 'J4 — Piscine · Phase 1a FONDATIONS (~1 000 m)',
+            equipment: 'PLANCHE (la piscine en prête presque toujours) · PULL BUOY — en phase 1a tu peux l\'utiliser LARGEMENT, il t\'enlève le souci des jambes pour ne penser qu\'aux bras et au souffle · TUBA FRONTAL (~25 €, Finis/Arena) = l\'achat qui change tout ici : tu respires en continu sans tourner la tête · PAS DE PLAQUETTES (épaule)',
+            focus: 'Recalibrée après ta 1ʳᵉ séance : tout en 25 m, gros repos, respiration du côté que tu préfères (PAS bilatérale). Objectif = un seul geste propre sur 25 m, pas la distance. 30-35 min, effort 4/10. Tu tiens 1 000 m à ta façon : ce n\'est pas le cardio qu\'on travaille.',
+            warmup: 'Échauffement 200 m libre (crawl souple + dos crawlé, comme tu veux) — sans consigne technique, juste se mettre dans l\'eau',
             blocks: [
-              { name: 'Éducatifs (6×50, repos 20 s)',
+              { name: 'Souffle à l\'arrêt (au bord, 2 min — le plus important)',
                 exercises: [
-                  { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'Battements bras devant · PLANCHE · corps horizontal, regard fond, petits battements depuis la hanche' },
-                  { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'RATTRAPÉ (catch-up) : une main attend l\'autre devant · PULL BUOY si les jambes coulent · allongement + glisse' },
-                  { id: 'natation', sets: 2, reps: '50 m', rest: 20, notes: 'UN BRAS : 25 m bras gauche / 25 m bras droit, bras libre le long du corps · rotation des hanches' },
+                  { id: 'natation', sets: 6, reps: '5 m', rest: 20, notes: 'Debout dans l\'eau : visage dans l\'eau, SOUFFLER des bulles en continu 5 s, sortir la bouche, inspirer 1 s, replonger · c\'est LE geste qui manque quand on est essoufflé · puis 2 longueurs bras devant en soufflant, tête dans l\'eau, respirer quand tu veux' },
                 ]},
-              { name: 'Respiration (4×50, repos 20 s)',
+              { name: 'Éducatifs 8×25 (repos 30 s — prends-les vraiment)',
                 exercises: [
-                  { id: 'natation', sets: 4, reps: '50 m', rest: 20, notes: 'Crawl respiration 3 temps (bilatérale) · EXPIRER EN CONTINU sous l\'eau (bulles), une seule oreille sort · si essoufflé : 2 temps mais expire quand même' },
+                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'Battements bras devant · PLANCHE · tête dans l\'eau, tu respires en relevant la tête quand tu veux · petits battements depuis la hanche' },
+                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'RATTRAPÉ · PULL BUOY autorisé · une main attend l\'autre devant · si c\'est le bazar : fais-le en 12 m puis marche, c\'est normal au début' },
+                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'UN BRAS : 25 m bras droit, bras gauche tendu DEVANT (pas le long du corps, plus facile) · PULL BUOY autorisé · respire du côté du bras qui travaille' },
+                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'UN BRAS, l\'autre côté · même chose · celui qui coince = ton côté faible, c\'est normal' },
+                ]},
+              { name: 'Respiration 6×25 (repos 30 s) — 2 temps, TON côté',
+                exercises: [
+                  { id: 'natation', sets: 6, reps: '25 m', rest: 30, notes: 'Crawl en respirant TOUS LES 2 MOUVEMENTS, toujours du MÊME côté (celui qui te va) · oublie le 3 temps bilatéral, c\'est un exo de nageur confirmé · la seule règle : expirer en continu sous l\'eau, ne JAMAIS bloquer son souffle · 2-3 des 25 avec le TUBA (aucune respiration à gérer)' },
+                ]},
+              { name: 'Nage libre (3×50, repos 45 s)',
+                exercises: [
+                  { id: 'natation', sets: 3, reps: '50 m', rest: 45, notes: 'Crawl allure FACILE, un seul focus : ① tête dans l\'axe (regard fond) ② allongement devant ③ mains relâchées · compte tes coups de bras sur 25 m et note le chiffre : c\'est ton repère de progrès (il doit BAISSER) · dos crawlé si l\'épaule tire' },
+                ]},
+              { name: 'Récup',
+                exercises: [
+                  { id: 'natation', sets: 1, reps: '100 m', rest: 0, notes: 'Dos crawlé souple · ouverture pec' },
+                ]},
+            ] },
+          { minWeeksToRace: 28,
+            label: 'J4 — Piscine · Phase 1b TECHNIQUE (~1 500 m)',
+            equipment: 'PLANCHE · PULL BUOY sur le rattrapé si les jambes coulent · TUBA FRONTAL sur 2-3 des 100 · PAS DE PLAQUETTES (épaule)',
+            focus: 'À faire quand la 1a passe bien (critère : 6×25 respiration 2 temps sans t\'arrêter + rattrapé propre sur 25 m). On allonge à 50 et 100 m. 40-45 min, effort 5/10.',
+            warmup: 'Échauffement 200 m : 100 crawl souple + 100 dos crawlé',
+            blocks: [
+              { name: 'Éducatifs (6×50, repos 25 s)',
+                exercises: [
+                  { id: 'natation', sets: 2, reps: '50 m', rest: 25, notes: 'Battements bras devant · PLANCHE · corps horizontal, regard fond, petits battements depuis la hanche' },
+                  { id: 'natation', sets: 2, reps: '50 m', rest: 25, notes: 'RATTRAPÉ (catch-up) : une main attend l\'autre devant · PULL BUOY si les jambes coulent · allongement + glisse' },
+                  { id: 'natation', sets: 2, reps: '50 m', rest: 25, notes: 'UN BRAS : 25 m bras gauche / 25 m bras droit, bras libre devant · rotation des hanches' },
+                ]},
+              { name: 'Respiration (4×50, repos 25 s)',
+                exercises: [
+                  { id: 'natation', sets: 4, reps: '50 m', rest: 25, notes: 'Crawl respiration 2 temps de ton côté · expirer EN CONTINU sous l\'eau · essayer 1 des 4 en 3 temps bilatéral, sans forcer : c\'est un bonus, pas un objectif' },
                 ]},
               { name: 'Corps de séance (6×100, repos 30 s)',
                 exercises: [
-                  { id: 'natation', sets: 6, reps: '100 m', rest: 30, notes: 'Crawl allure FACILE · 1 focus par 100 : ① tête dans l\'axe ② allongement devant ③ rotation hanches ④ coude haut ⑤ mains relâchées ⑥ glisse (moins de coups par longueur) · TUBA FRONTAL sur 2-3 des 100 (sans matériel sur les autres) · compte tes coups de bras sur 25 m : l\'objectif c\'est qu\'il BAISSE' },
+                  { id: 'natation', sets: 6, reps: '100 m', rest: 30, notes: 'Crawl allure FACILE · 1 focus par 100 : ① tête dans l\'axe ② allongement devant ③ rotation hanches ④ coude haut ⑤ mains relâchées ⑥ glisse · TUBA sur 2-3 des 100 · compte tes coups de bras sur 25 m : l\'objectif c\'est qu\'il BAISSE' },
                 ]},
               { name: 'Récup',
                 exercises: [
@@ -1626,7 +1656,13 @@ const MuscuExercises = (() => {
   //   >28 technique ~1 500 m · 17-28 aérobie ~1 900 m · 5-16 spécifique 750 m +
   //   sighting · ≤4 pré-compét/taper. Nouvel exo 'natation_technique' (post-muscu
   //   20-25 min, swap 🔄 des cardios de fin de séance) pour l'option « muscu + piscine ».
-  const TEMPLATES_VERSION = 20;
+  // v21 (2026-09-22) : retour terrain 1ʳᵉ séance piscine — 4×50 respiration 3 temps
+  //   et 6×100 infaisables. Diagnostic : bilatérale = exo de confirmé, et 50/100 m
+  //   trop longs pour tenir une consigne technique. Phase 1 scindée : 1a FONDATIONS
+  //   (tout en 25 m, repos 30 s, respiration 2 temps du côté préféré, souffle au bord,
+  //   pull buoy large, ~1 000 m) puis 1b (l'ancienne, à partir de J-34 sem / quand le
+  //   critère passe). Le cardio n'est pas le facteur limitant (1 000 m tenus).
+  const TEMPLATES_VERSION = 21;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
