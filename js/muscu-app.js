@@ -330,7 +330,7 @@ const MuscuApp = (() => {
       <div class="swim-step ${i === activeIdx ? 'active' : i < activeIdx ? 'done' : ''}">${i + 1} · ${st.label}<small>${st.when}</small></div>`).join('');
 
     const GEAR = {
-      found: '<b>Tuba frontal</b> ~25 € — plafonné à 30-40 % du volume · <b>palmes courtes</b> ~25-30 € (chevilles raides) · <b>pull buoy</b> dosé, <b>pas massif</b> : au moins la moitié des 50 m sans · <b>chrono</b> (pendule du bassin) · pas de plaquettes, pas de planche',
+      found: '<b>Pull kick</b> (déjà acheté : pull buoy + planche) — dosé, au moins la moitié des 50 m sans · <b>chrono</b> (pendule du bassin) · <b>palmes courtes</b> optionnelles, sur les battements · <b>pas de tuba</b> : c\'est la respiration qu\'il faut apprendre · pas de plaquettes',
       tech:  '<b>Planche</b> (battements — la piscine en prête) · <b>pull buoy</b> optionnel, rattrapé seulement · <b>tuba frontal</b> ~25 € = le meilleur achat de la phase · <b>pas de plaquettes</b> (épaule)',
       aero:  '<b>Montre chrono</b> (la régularité des 100 se mesure) · <b>pull buoy</b> pour le rappel technique · toujours pas de plaquettes',
       spec:  '<b>Montre chrono</b> · <b>combinaison néoprène</b> (à tester en piscine avant l\'eau libre) · <b>bouée</b> de sécurité eau libre',
@@ -405,9 +405,9 @@ const MuscuApp = (() => {
       <div class="swim-key">🎯 ${KEY[active.key] || ''}</div>
       <div class="swim-option"><b>2 séances / semaine = le plus gros levier.</b><br>
         <b>A · technique</b> = la séance J4 ci-dessus, sur son propre jour (25 m + repos : on construit le geste).<br>
-        <b>B · continu</b> = « <b>Piscine CONTINU — tuba + pull buoy</b> » : 300 m d'un seul bloc très lent (+50 m/sem), puis 4×50 sans tuba. C'est là que tu nages sans t'arrêter.<br>
+        <b>B · continu</b> = « <b>Piscine CONTINU — nage longue et lente</b> » : 300 m d'un seul bloc très lent (+50 m/sem), puis 4×50 sans pull buoy. C'est là que tu nages sans t'arrêter.<br>
         <b>Où caler B :</b> sur un <b>jour de repos</b> (25-30 min faciles, pas une vraie charge) — sinon <b>AVANT</b> J3 jambes. <b>Jamais</b> les jours pec/épaules (J1, J5), ni après J2 dos ; et ne troque pas le vélo Z2 de J2, c\'est ton test dos.<br>
-        🤿 Tuba ≤ 30-40 % du volume, regard au fond, nuque longue — premier outil à réduire si le haut du dos tire à J+1.</div>
+        🛟 Pull buoy sur la 1ʳᵉ moitié du bloc continu seulement : le transfert sans aide est le but.</div>
       ${dayIdx >= 0 ? `<button class="btn btn-swim" onclick="MuscuApp.showDayDetail(${dayIdx})">🏊 Ouvrir la séance piscine (consignes complètes)</button>` : ''}
     `;
   }
