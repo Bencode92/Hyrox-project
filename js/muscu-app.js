@@ -336,10 +336,19 @@ const MuscuApp = (() => {
       spec:  '<b>Montre chrono</b> · <b>combinaison néoprène</b> (à tester en piscine avant l\'eau libre) · <b>bouée</b> de sécurité eau libre',
       taper: 'Matériel de <b>course</b> uniquement, rien de neuf : combinaison selon température · montre',
     };
-    // Pastille matériel sur la ligne (détectée dans la consigne)
+    // Pastille matériel : seules les prescriptions EN MAJUSCULES comptent, et on
+    // ignore les mentions négatives (« ZÉRO série à la planche », « SANS pull buoy »)
     const gearPill = t => {
-      const n = String(t || '').toLowerCase();
-      const g = n.includes('planche') ? '🏄 planche' : n.includes('pull buoy') ? '🛟 pull buoy' : n.includes('tuba') ? '🤿 tuba' : '';
+      const raw = String(t || '');
+      const prescribed = up => {
+        const i = raw.indexOf(up);
+        if (i < 0) return false;
+        return !/(sans|zéro|jamais|pas de|moitié)\s*$/i.test(raw.slice(Math.max(0, i - 24), i).trim() + ' ');
+      };
+      const g = prescribed('PALMES COURTES') ? '🦶 palmes'
+        : prescribed('TUBA') ? '🤿 tuba'
+        : prescribed('PULL BUOY') ? '🛟 pull buoy'
+        : prescribed('PLANCHE') ? '🏄 planche' : '';
       return g ? `<span class="swim-pill">${g}</span>` : '';
     };
     const KEY = {
@@ -363,7 +372,7 @@ const MuscuApp = (() => {
     if (day) {
       const warm = firstMeters(day.warmup);
       total += warm;
-      if (day.warmup) sheetHtml += `<div class="swim-row swim-row-warm"><span class="swim-dist">${warm ? warm + ' m' : ''}</span><span class="swim-what">Échauffement — ${day.warmup.replace(/^Échauffement\s*\d*\s*m?\s*:\s*/i, '')}</span></div>`;
+      if (day.warmup) sheetHtml += `<div class="swim-row swim-row-warm"><span class="swim-dist">${warm ? warm + ' m' : ''}</span><span class="swim-what">Échauffement — ${day.warmup.replace(/^Échauffement\s*\d*\s*m?\s*(libre)?\s*[:(]?\s*/i, '').replace(/^\(/, '')}</span></div>`;
       let lastBlock = null;
       (day.exercises || []).forEach(ex => {
         if (ex.blockName !== lastBlock) {

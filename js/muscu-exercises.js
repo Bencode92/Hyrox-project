@@ -1240,17 +1240,17 @@ const MuscuExercises = (() => {
             label: 'J4 — Piscine · Phase 1a FONDATIONS (~1 000 m)',
             equipment: 'TUBA FRONTAL (~25 €, Finis/Arena) = achat n°1, MAIS plafonné à 30-40 % du volume et toujours suivi d\'un bloc sans · PALMES COURTES (~25-30 €) = achat n°2, chevilles raides de squatteur · PULL BUOY = dosé, PAS massif (position artificielle, transfert faible) : au moins la MOITIÉ des 50 m sans · CHRONO = pendule du bassin ou montre (temps + coups = SWOLF, ta vraie métrique) · PAS DE PLANCHE en séries de jambes · PAS DE PLAQUETTES (épaule)',
             focus: 'Tout en 25 m, gros repos, respiration 2 temps de ton côté. ⚠ CORRIGÉ APRÈS AVIS EXPERT — les jambes ne sont PAS un sujet de propulsion mais de TRAÎNÉE : un gabarit musclé coule des jambes, et des jambes qui coulent doublent la résistance. La combinaison masquera ça en course, mais tu t\'entraînes 9 mois sans elle. Donc : battement léger 2 temps entretenu, chevilles mobilisées, et pas de pull buoy permanent. 30-35 min, effort 4/10.',
-            warmup: 'Échauffement 200 m libre (crawl souple + dos crawlé, comme tu veux) — sans consigne technique, juste se mettre dans l\'eau',
+            warmup: '200 m libre, crawl souple + dos crawlé comme tu veux — sans consigne technique, juste se mettre dans l\'eau',
             blocks: [
               { name: 'Souffle à l\'arrêt (au bord, 2 min — le plus important)',
                 exercises: [
-                  { id: 'natation', sets: 6, reps: '5 m', rest: 20, notes: 'Debout dans l\'eau : visage dans l\'eau, SOUFFLER des bulles en continu 5 s, sortir la bouche, inspirer 1 s, replonger · c\'est LE geste qui manque quand on est essoufflé · puis 2 longueurs bras devant en soufflant, tête dans l\'eau, respirer quand tu veux' },
+                  { id: 'natation', sets: 6, reps: '5 s', rest: 20, notes: 'Debout dans l\'eau : visage dans l\'eau, SOUFFLER des bulles en continu 5 s, sortir la bouche, inspirer 1 s, replonger · c\'est LE geste qui manque quand on est essoufflé · puis 2 longueurs bras devant en soufflant, tête dans l\'eau, respirer quand tu veux' },
                 ]},
               { name: 'Éducatifs 8×25 (repos 30 s — prends-les vraiment)',
                 exercises: [
                   { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'Battements SUR LE CÔTÉ (une épaule dans l\'eau, bras du dessous tendu devant) · PALMES COURTES · depuis la HANCHE, jambes quasi tendues, chevilles RELÂCHÉES (jamais fléchies), amplitude 20-30 cm · ZÉRO série à la planche · objectif = ne pas couler des jambes (la traînée, pas la propulsion) · ⚠ mobilité cheville en flexion plantaire 3 min/JOUR à la maison : tes chevilles de squatteur sont le vrai blocage' },
-                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'RATTRAPÉ · pull buoy OK ici (mais pas partout) · une main attend l\'autre devant · si c\'est le bazar : fais-le en 12 m puis marche, c\'est normal au début' },
-                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'UN BRAS : 25 m bras droit, bras gauche tendu DEVANT · pull buoy OK · respire du côté du bras qui travaille · ⚠ ENTRÉE DE MAIN devant l\'épaule, main à plat — ne JAMAIS croiser l\'axe du corps, pouce en premier (cause n°1 de conflit d\'épaule)' },
+                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'RATTRAPÉ · PULL BUOY OK ici (mais pas partout) · une main attend l\'autre devant · si c\'est le bazar : fais-le en 12 m puis marche, c\'est normal au début' },
+                  { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'UN BRAS : 25 m bras droit, bras gauche tendu DEVANT · PULL BUOY OK · respire du côté du bras qui travaille · ⚠ ENTRÉE DE MAIN devant l\'épaule, main à plat — ne JAMAIS croiser l\'axe du corps, pouce en premier (cause n°1 de conflit d\'épaule)' },
                   { id: 'natation', sets: 2, reps: '25 m', rest: 30, notes: 'UN BRAS, l\'autre côté · même chose · celui qui coince = ton côté faible, c\'est normal' },
                 ]},
               { name: 'Respiration 6×25 (repos 30 s) — 2 temps, TON côté',
@@ -1689,7 +1689,12 @@ const MuscuExercises = (() => {
   //   - Alertes épaule : entrée de main hors axe, douleur retour aérien, pas de nage
   //     le jour d'une séance pec/épaules.
   //   - Eau libre : 3-4 sorties en combinaison + simulation de départ en groupe.
-  const TEMPLATES_VERSION = 24;
+  // v25 (2026-09-23) : 3 bugs vus sur la carte piscine en semaine de deload.
+  //   (1) le deload s'appliquait à la piscine et Math.max(2, sets-1) transformait le
+  //   1×100 m de récup en 2×100 m → deload désormais ignoré sur tout exo `pool`, et
+  //   plus jamais de hausse de séries ; (2) bloc souffle en '5 m' au lieu de '5 s' ;
+  //   (3) prescriptions matériel passées en MAJUSCULES (la pastille les détecte).
+  const TEMPLATES_VERSION = 25;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
@@ -1929,25 +1934,29 @@ const MuscuExercises = (() => {
           block.exercises.forEach(exDef => {
             const info = getById(exDef.id);
             const pr = prs[exDef.id];
+            // Deload : jamais sur la piscine (une séance technique ne se « déloade »
+            // pas), et jamais à la hausse — Math.max(2, …) transformait un 1×100 m
+            // de récup en 2×100 m.
+            const deloadHere = isDeload && !(info && info.equipment === 'pool');
             let suggestedWeight = null;
             if (pr && pr.history && pr.history.length > 0) {
               const avg = pr.history.slice(-3).reduce((s, e) => s + e.weight, 0) / Math.min(3, pr.history.length);
               suggestedWeight = Math.round(avg / 2.5) * 2.5;
             }
             // Deload −40 % (doctrine v13) — la suggestion en séance applique le même facteur
-            if (isDeload && suggestedWeight) suggestedWeight = Math.round(suggestedWeight * 0.6 / 2.5) * 2.5;
+            if (deloadHere && suggestedWeight) suggestedWeight = Math.round(suggestedWeight * 0.6 / 2.5) * 2.5;
 
             exercises.push({
               exerciseId: exDef.id,
               name: info ? info.name : exDef.id,
               category: info ? info.category : 'functional',
-              sets: isDeload ? Math.max(2, exDef.sets - 1) : exDef.sets,
+              sets: deloadHere ? Math.max(1, exDef.sets - 1) : exDef.sets,
               reps: exDef.reps,
               suggestedWeight,
               restSec: exDef.rest || 60,
               notes: exDef.notes || '',
               blockName: block.name,
-              isDeload,
+              isDeload: deloadHere,
             });
           });
         });
