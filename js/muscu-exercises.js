@@ -1255,11 +1255,11 @@ const MuscuExercises = (() => {
                 ]},
               { name: 'Respiration 6×25 (repos 30 s) — 2 temps, TON côté',
                 exercises: [
-                  { id: 'natation', sets: 6, reps: '25 m', rest: 30, notes: 'Crawl, respiration TOUS LES 2 MOUVEMENTS · la seule règle : expirer en continu sous l\'eau, ne JAMAIS bloquer son souffle · la 3 temps bilatérale n\'est PAS un prérequis eau libre (avis expert) — en revanche il te faut savoir respirer DES DEUX CÔTÉS : dès que les 6×25 passent sans arrêt, fais 1-2 longueurs à gauche / la suivante à droite (alternance PAR LONGUEUR, zéro coût en souffle) · 2 des 25 avec le TUBA, jamais plus' },
+                  { id: 'natation', sets: 6, reps: '25 m', rest: 30, notes: 'Crawl, respiration TOUS LES 2 MOUVEMENTS · la seule règle : expirer en continu sous l\'eau, ne JAMAIS bloquer son souffle · la 3 temps bilatérale n\'est PAS un prérequis eau libre (avis expert) — en revanche il te faut savoir respirer DES DEUX CÔTÉS : dès que les 6×25 passent sans arrêt, fais 1-2 longueurs à gauche / la suivante à droite (alternance PAR LONGUEUR, zéro coût en souffle)' },
                 ]},
               { name: 'Nage libre (3×50, repos 45 s)',
                 exercises: [
-                  { id: 'natation', sets: 3, reps: '50 m', rest: 45, notes: 'Crawl allure FACILE, un seul focus : ① tête dans l\'axe (regard fond) ② allongement devant ③ mains relâchées · AU MOINS la moitié SANS pull buoy · note COUPS DE BRAS **et** TEMPS sur 25 m (pendule du bassin) : le compte seul se triche en planant trop — c\'est le duo (SWOLF) qui compte · dos crawlé si l\'épaule tire' },
+                  { id: 'natation', sets: 3, reps: '50 m', rest: 45, notes: 'Crawl allure FACILE, un seul focus : ① tête dans l\'axe (regard fond) ② allongement devant ③ mains relâchées · le 1ᵉʳ 50 avec le TUBA (aucune respiration à gérer = tu ne penses qu\'à la position), les 2 autres sans · AU MOINS la moitié SANS pull buoy · sur un 50 sans tuba : note COUPS DE BRAS **et** TEMPS sur 25 m (le compte seul se triche en planant trop — c\'est le duo SWOLF qui compte) · dos crawlé si l\'épaule tire' },
                 ]},
               { name: 'Récup',
                 exercises: [
@@ -1694,7 +1694,11 @@ const MuscuExercises = (() => {
   //   1×100 m de récup en 2×100 m → deload désormais ignoré sur tout exo `pool`, et
   //   plus jamais de hausse de séries ; (2) bloc souffle en '5 m' au lieu de '5 s' ;
   //   (3) prescriptions matériel passées en MAJUSCULES (la pastille les détecte).
-  const TEMPLATES_VERSION = 25;
+  // v26 (2026-09-23) : incohérence signalée — le TUBA était prescrit dans le bloc
+  //   RESPIRATION (avec un tuba on ne respire pas sur le côté : l'exo s'annule).
+  //   Tuba retiré du bloc respiration, déplacé sur le 1ᵉʳ 50 m de nage libre
+  //   (travail de position pure), les 2 autres 50 sans.
+  const TEMPLATES_VERSION = 26;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
