@@ -33,7 +33,7 @@ const MuscuStorage = (() => {
       weight: 80,
       height: 183,         // cm
       focusZone: '',       // ex: "Pecs (bas surtout)"
-      goal: 'muscle',      // 'muscle' (défaut, fenêtre muscle) | 'hybrid' (bloc spécifique) | 'hyrox' | 'hypertrophy'
+      goal: 'triathlon',    // 'triathlon' (défaut) | 'muscle' (fenêtre muscle) | 'hybrid' (bloc spécifique) | 'hyrox' | 'hypertrophy'
       excludedExercises: [], // IDs à ne JAMAIS programmer (douleur, blessure)
       daysPerWeek: 4,
       level: 'intermediate', // beginner, intermediate, advanced
@@ -62,6 +62,13 @@ const MuscuStorage = (() => {
       // l'athlète reste libre de repasser en 'hybrid' ensuite).
       if (!p.muscleWindow2026 && (p.goal === 'hybrid' || p.goal === 'recovery')) { p.goal = 'muscle'; p.muscleWindow2026 = true; changed = true; }
       if (!p.muscleWindow2026) { p.muscleWindow2026 = true; changed = true; }
+      // 2026-11-23 : préparation triathlon (juin 2027). Une seule fois, l'athlète
+      // reste libre de revenir à un autre objectif dans ⚙️.
+      if (!p.triathlon2026) {
+        p.goal = 'triathlon'; p.triathlon2026 = true; changed = true;
+        const s = getSettings();
+        if (!s.raceDate || s.raceDate === '2027-06-15') { s.raceDate = '2027-06-15'; saveSettings(s); }
+      }
       if (p.excludedExercises == null) { p.excludedExercises = ['dips', 'weighted_dips']; changed = true; }
       if (changed) _set(KEYS.profile, p);
     } catch {}

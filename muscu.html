@@ -13,7 +13,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/muscu-style.css?v=35">
+  <link rel="stylesheet" href="css/muscu-style.css?v=36">
 </head>
 <body>
 
@@ -66,10 +66,15 @@
         </div>
       </div>
 
+      <!-- Triathlon (objectif 'triathlon' seulement) -->
+      <div class="card tri-card" id="dash-triathlon-card" style="display:none">
+        <div id="dash-triathlon-content"></div>
+      </div>
+
       <!-- Week Plan -->
       <div class="card">
         <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
-          Plan de la semaine
+          <span id="dash-plan-title">Plan de la semaine</span>
           <button class="btn btn-sm btn-ghost" onclick="MuscuApp.regeneratePlan()">Régénérer</button>
         </div>
         <div id="dash-plan"></div>
@@ -445,7 +450,8 @@
       <div class="input-group">
         <label>Objectif principal</label>
         <select id="set-goal">
-          <option value="muscle">💪 Fenêtre muscle — pec à fond, cardio entretien (recommandé jusqu'à ~février 2027)</option>
+          <option value="triathlon">🏊 Triathlon sprint : 2 piscines, 2 vélos, 2 courses, 3 muscu, tennis</option>
+          <option value="muscle">💪 Fenêtre muscle — pec à fond, cardio entretien</option>
           <option value="hybrid">🏃 Hybride Hyrox — bloc spécifique course + stations (à partir de ~mars 2027)</option>
           <option value="hyrox">Hyrox performance pure (avec barre lourde)</option>
           <option value="hypertrophy">Hypertrophie (avec barre lourde)</option>
@@ -578,10 +584,11 @@
 
   <!-- ══════════════ SCRIPTS ══════════════ -->
   <!-- ?v= = cache-busting : bumper à chaque changement JS pour forcer le rechargement navigateur -->
-  <script src="js/muscu-storage.js?v=35"></script>
-  <script src="js/muscu-exercises.js?v=35"></script>
-  <script src="js/muscu-ai-coach.js?v=35"></script>
-  <script src="js/muscu-app.js?v=35"></script>
+  <script src="js/muscu-storage.js?v=36"></script>
+  <script src="js/muscu-exercises.js?v=36"></script>
+  <script src="js/muscu-triathlon.js?v=36"></script>
+  <script src="js/muscu-ai-coach.js?v=36"></script>
+  <script src="js/muscu-app.js?v=36"></script>
 
 </body>
 </html>

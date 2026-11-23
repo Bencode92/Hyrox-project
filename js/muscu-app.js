@@ -67,7 +67,8 @@ const MuscuApp = (() => {
       daysPerWeek: parseInt(document.getElementById('ob-days').value) || 4,
       level: document.getElementById('ob-level').value || 'intermediate',
       focusZone: document.getElementById('ob-focus').value.trim(),
-      goal: 'muscle',
+      goal: 'triathlon',
+      triathlon2026: true,
       injuryNotes: document.getElementById('ob-injury').value.trim(),
       createdAt: new Date().toISOString(),
     };
@@ -128,11 +129,13 @@ const MuscuApp = (() => {
     _renderAll();
 
     // Then try AI upgrade in background
-    _toast('Plan local affiché — génération IA en cours...', 'info');
+    if (MuscuStorage.getProfile().goal !== 'triathlon') _toast('Plan local affiché — génération IA en cours...', 'info');
     _tryAIUpgrade();
   }
 
   async function _tryAIUpgrade() {
+    // Le plan triathlon est calé semaine par semaine : l'IA ne doit pas l'écraser
+    if (MuscuStorage.getProfile().goal === 'triathlon') return;
     _showRunnerLoading();
     try {
       const aiPlan = await MuscuAI.generateWeekPlan();
@@ -189,7 +192,14 @@ const MuscuApp = (() => {
     const profile = MuscuStorage.getProfile();
     const isDeload = MuscuExercises.isDeloadWeek(weekNum, profile.goal);
 
-    if (plan && plan.week !== weekNum) {
+    const isTriathlon = profile.goal === 'triathlon';
+    const triathlon = isTriathlon ? MuscuTriathlon.getState() : null;
+    // Triathlon : la semaine va du lundi au dimanche, calée sur le plan de course
+    if (isTriathlon && (!plan || plan.triathlonKey !== triathlon.key)) {
+      _autoRegenPlan(weekNum);
+      return;
+    }
+    if (plan && !isTriathlon && plan.week !== weekNum) {
       // New week — regenerate (try AI, fallback local)
       _autoRegenPlan(weekNum);
       return;
@@ -203,12 +213,16 @@ const MuscuApp = (() => {
       return;
     }
 
-    document.getElementById('dash-week').textContent = `Semaine ${weekNum}`;
+    document.getElementById('dash-week').textContent = isTriathlon ? `Semaine ${triathlon.index + 1}` : `Semaine ${weekNum}`;
     const settings = MuscuStorage.getSettings();
     const racePhase = MuscuExercises.getPhaseForRace(settings.raceDate || '2027-06-15');
     const phaseEl = document.getElementById('dash-phase');
     phaseEl.textContent = racePhase ? `${racePhase.label} · J-${racePhase.weeks} sem` : _getPhaseLabel(weekNum);
     phaseEl.title = racePhase ? racePhase.hint : '';
+    if (isTriathlon) {
+      phaseEl.textContent = `Triathlon · ${triathlon.phase.label} · J-${Math.max(0, triathlon.daysToRace)}`;
+      phaseEl.title = triathlon.phase.why;
+    }
     document.getElementById('dash-deload').style.display = isDeload ? 'inline-block' : 'none';
 
     // Stats (28 days)
@@ -221,6 +235,8 @@ const MuscuApp = (() => {
     document.getElementById('dash-prs').textContent = Object.keys(prs).length;
 
     _renderPainPrompt();
+    MuscuTriathlon.render();
+    document.getElementById('dash-plan-title').textContent = isTriathlon ? 'Muscu et piscine de la semaine' : 'Plan de la semaine';
     _renderWeekPlan(plan);
     _renderSwimCard(plan);
     _renderAbsCard(weekNum);
@@ -317,6 +333,7 @@ const MuscuApp = (() => {
     const dayIdx = (plan && plan.days) ? plan.days.findIndex(d => /piscine/i.test(d.label || '')) : -1;
     const day = dayIdx >= 0 ? plan.days[dayIdx] : null;
 
+    const isTriathlon = MuscuStorage.getProfile().goal === 'triathlon';
     const STEPS = [
       { key: 'found', label: 'Fondations', when: 'maintenant',    min: 34, goal: 'Un geste propre sur 25 m — souffle et alignement', effort: '30-35 min · effort 4/10' },
       { key: 'tech',  label: 'Technique',   when: 'à partir d\'oct', min: 28, goal: 'Même travail allongé à 50 et 100 m', effort: '40-45 min · effort 5/10' },
@@ -331,7 +348,7 @@ const MuscuApp = (() => {
 
     const GEAR = {
       found: '<b>Pull kick</b> (déjà acheté : pull buoy + planche) — dosé, au moins la moitié des 50 m sans · <b>chrono</b> (pendule du bassin) · <b>palmes courtes</b> optionnelles, sur les battements · <b>pas de tuba</b> : c\'est la respiration qu\'il faut apprendre · pas de plaquettes',
-      tech:  '<b>Planche</b> (battements — la piscine en prête) · <b>pull buoy</b> optionnel, rattrapé seulement · <b>tuba frontal</b> ~25 € = le meilleur achat de la phase · <b>pas de plaquettes</b> (épaule)',
+      tech:  '<b>pull buoy</b> optionnel, rattrapé seulement · <b>pas de tuba</b> · <b>pas de plaquettes</b> (épaule)',
       aero:  '<b>Montre chrono</b> (la régularité des 100 se mesure) · <b>pull buoy</b> pour le rappel technique · toujours pas de plaquettes',
       spec:  '<b>Montre chrono</b> · <b>combinaison néoprène</b> (à tester en piscine avant l\'eau libre) · <b>bouée</b> de sécurité eau libre',
       taper: 'Matériel de <b>course</b> uniquement, rien de neuf : combinaison selon température · montre',
@@ -400,14 +417,14 @@ const MuscuApp = (() => {
       </div>
       <div class="swim-timeline">${timeline}</div>
       <div class="swim-gear">🎒 <b>À prendre :</b> ${GEAR[active.key]}</div>
-      <div class="swim-sheet-title">Séance J4 de la semaine</div>
+      <div class="swim-sheet-title">${isTriathlon ? 'Séance du lundi' : 'Séance J4 de la semaine'}</div>
       <div class="swim-sheet">${sheetHtml}</div>
       <div class="swim-key">🎯 ${KEY[active.key] || ''}</div>
-      <div class="swim-option"><b>2 séances / semaine = le plus gros levier.</b><br>
+      ${isTriathlon ? `<div class="swim-option"><b>A · technique</b> le lundi (ci-dessus), <b>B · continu</b> le jeudi (bloc long et lent, +50 m par semaine). Jamais le jour ni le lendemain d'une séance du haut du corps.</div>` : `<div class="swim-option"><b>2 séances / semaine = le plus gros levier.</b><br>
         <b>A · technique</b> = la séance J4 ci-dessus, sur son propre jour (25 m + repos : on construit le geste).<br>
         <b>B · continu</b> = « <b>Piscine CONTINU — nage longue et lente</b> » : 300 m d'un seul bloc très lent (+50 m/sem), puis 4×50 sans pull buoy. C'est là que tu nages sans t'arrêter.<br>
         <b>Où caler B :</b> sur un <b>jour de repos</b> (25-30 min faciles, pas une vraie charge) — sinon <b>AVANT</b> J3 jambes. <b>Jamais</b> les jours pec/épaules (J1, J5), ni après J2 dos ; et ne troque pas le vélo Z2 de J2, c\'est ton test dos.<br>
-        🛟 Pull buoy sur la 1ʳᵉ moitié du bloc continu seulement : le transfert sans aide est le but.</div>
+        🛟 Pull buoy sur la 1ʳᵉ moitié du bloc continu seulement : le transfert sans aide est le but.</div>`}
       ${dayIdx >= 0 ? `<button class="btn btn-swim" onclick="MuscuApp.showDayDetail(${dayIdx})">🏊 Ouvrir la séance piscine (consignes complètes)</button>` : ''}
     `;
   }
@@ -1156,9 +1173,9 @@ const MuscuApp = (() => {
               <span class="history-date">${_formatDate(s.date)}</span>
               <span class="rpe-badge rpe-${_rpeColor(s.globalRpe)}">RPE ${s.globalRpe || '?'}</span>
             </div>
-            <div class="history-exercises text-sm">${exNames}</div>
+            <div class="history-exercises text-sm">${exNames || s.theme || ''}</div>
             <div class="history-stats text-muted text-sm">
-              ${(s.exercises || []).length} exercices · ${totalVolume}kg volume
+              ${(s.exercises || []).length ? `${s.exercises.length} exercices · ${totalVolume}kg volume` : (s.durationMin ? s.durationMin + ' min' : '')}
               ${s.painNotes ? ' · ⚠️ ' + s.painNotes : ''}
             </div>
           </div>`;
@@ -1370,6 +1387,7 @@ const MuscuApp = (() => {
   function saveSettings() {
     const settings = MuscuStorage.getSettings();
     const prevFinisher = settings.finisherEnabled !== false;
+    const prevRace = settings.raceDate;
     settings.workerUrl = document.getElementById('set-worker-url').value.trim();
     settings.aiModel = document.getElementById('set-ai-model').value;
     settings.finisherEnabled = document.getElementById('set-finisher').checked;
@@ -1394,6 +1412,7 @@ const MuscuApp = (() => {
     const goalChanged = prevGoal !== profile.goal;
     const planChanged = goalChanged
       || prevDays !== profile.daysPerWeek
+      || (profile.goal === 'triathlon' && prevRace !== settings.raceDate)
       || prevFinisher !== settings.finisherEnabled;
     if (planChanged) {
       const weekNum = MuscuStorage.getWeekNumber();
@@ -1424,7 +1443,7 @@ const MuscuApp = (() => {
     const localPlan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), weekNum);
     MuscuStorage.saveWeekPlan(localPlan);
     renderDashboard();
-    _toast('Plan local affiché — demande au Coach IA (Opus)...', 'info');
+    _toast(MuscuStorage.getProfile().goal === 'triathlon' ? 'Semaine régénérée' : 'Plan local affiché — demande au Coach IA (Opus)...', 'info');
 
     // AI upgrade in background
     _tryAIUpgrade();

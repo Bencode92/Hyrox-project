@@ -1550,10 +1550,15 @@ const MuscuExercises = (() => {
     ],
   };
 
+  // Phases natation tri-sprint, partagées avec le plan triathlon (muscu-triathlon.js)
+  function getSwimVariants() { return MUSCLE_CARDIO_TEMPLATE.days.find(d => d.variants).variants; }
+
   function getTemplate(daysPerWeek, goal) {
     // 'muscle' (DÉFAUT depuis 2026-09-14, fenêtre muscle → ~fév 2027) → MUSCLE_CARDIO_TEMPLATE.
     // 'hybrid' → semaine hybride bloc spécifique Hyrox (course dédiée + stations), ~mars 2027.
     // 'hyrox' / 'hypertrophy' → templates classiques avec barre lourde.
+    // 'triathlon' (DÉFAUT depuis 2026-11-23) → muscu-triathlon.js
+    if (goal === 'triathlon' && typeof MuscuTriathlon !== 'undefined') return MuscuTriathlon.TEMPLATE;
     if (goal === 'hybrid') return HYROX_HYBRID_TEMPLATE;
     if (goal === 'hyrox' || goal === 'hypertrophy') return TEMPLATES[daysPerWeek] || TEMPLATES[4];
     return MUSCLE_CARDIO_TEMPLATE;
@@ -1704,7 +1709,8 @@ const MuscuExercises = (() => {
   //   signalé par l'expert) ; (3) il tient déjà 1 000 m en continu, donc il n'en a
   //   pas besoin pour faire du volume continu. Séance B reformulée sans tuba.
   //   Matériel = pull kick (acheté) + chrono ; palmes courtes optionnelles.
-  const TEMPLATES_VERSION = 27;
+  // v28 (2026-11-23) : objectif 'triathlon' (muscu-triathlon.js), nouveau défaut.
+  const TEMPLATES_VERSION = 28;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
@@ -1905,13 +1911,16 @@ const MuscuExercises = (() => {
   }
 
   function _isCustomProgram(template) {
-    return template === MUSCLE_CARDIO_TEMPLATE || template === HYROX_HYBRID_TEMPLATE;
+    return template === MUSCLE_CARDIO_TEMPLATE || template === HYROX_HYBRID_TEMPLATE
+      || (typeof MuscuTriathlon !== 'undefined' && template === MuscuTriathlon.TEMPLATE);
   }
 
   // Deload toutes les 6 sem sur nos programmes (tendons s'adaptent plus lentement
   // que le muscle) ; toutes les 4 sem sur les templates classiques avec barre.
   // Source unique de vérité : dashboard (badge) + generateWeekPlan.
   function isDeloadWeek(weekNum, goal) {
+    // Triathlon : la muscu se décharge avec le cardio (semaines allégées + affûtage)
+    if (goal === 'triathlon' && typeof MuscuTriathlon !== 'undefined') return MuscuTriathlon.isCutWeek();
     const template = getTemplate(4, goal);
     const deloadEvery = _isCustomProgram(template) ? 6 : 4;
     return weekNum > 1 && weekNum % deloadEvery === 0;
@@ -1935,6 +1944,7 @@ const MuscuExercises = (() => {
       week: weekNum,
       isDeload,
       templateName: template.name,
+      triathlonKey: (profile.goal === 'triathlon' && typeof MuscuTriathlon !== 'undefined') ? MuscuTriathlon.getState().key : null,
       templatesVersion: TEMPLATES_VERSION,
       generatedAt: new Date().toISOString(),
       days: template.days.map((rawDay, dayIndex) => {
@@ -2004,6 +2014,10 @@ const MuscuExercises = (() => {
         };
       }),
     };
+    if (plan.triathlonKey) {
+      const planned = MuscuTriathlon.plannedIdx();
+      plan.days.forEach(d => { if (!planned.has(d.dayIndex)) d.status = 'skipped'; });
+    }
     return plan;
   }
 
@@ -2172,7 +2186,7 @@ const MuscuExercises = (() => {
 
   return {
     getAll, getById, getByCategory, getCategoryInfo, getCategories,
-    search, getTemplate, generateWeekPlan, isDeloadWeek, getPhaseForRace, resolveDay, getHyroxRelevance, getFinisherBlock,
+    getSwimVariants, search, getTemplate, generateWeekPlan, isDeloadWeek, getPhaseForRace, resolveDay, getHyroxRelevance, getFinisherBlock,
     getAbsSession, getTemplatesVersion, findAlternatives,
     HYROX_STATIONS, DB,
   };
