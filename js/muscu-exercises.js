@@ -1712,7 +1712,8 @@ const MuscuExercises = (() => {
   // v28 (2026-11-23) : objectif 'triathlon' (muscu-triathlon.js), nouveau défaut.
   // v29 (2026-11-23) : retour d'expert triathlon (haut B sans pec, piscine sur critère,
   //   respiration 2 temps partout).
-  const TEMPLATES_VERSION = 29;
+  // v30 (2026-11-23) : jours choisis par l'athlète (jambes lun, pec mar, piscine mer, dos ven).
+  const TEMPLATES_VERSION = 30;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
