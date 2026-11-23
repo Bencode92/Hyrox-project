@@ -3,10 +3,11 @@
    750 m nage · 20 km vélo · 5 km course
    Profil : cardio tennis, AUCUNE base de course, AUCUNE base vélo, dos chronique,
    tient 1 000 m en nage mais sans technique. Hiver : tapis, vélo de salle, piscine.
-   - 2 piscines (lun, jeu) · 2 vélos (mer, dim) · 2 tapis (mar, sam) · 3 muscu · 1-2 tennis
+   - 2 piscines (lun, jeu) · 2 vélos (mer, dim) · 2 tapis (mar, sam) · 3 muscu · vendredi libre
    - Enchaînement vélo → course le dimanche à partir de la semaine 9.
    - Semaine allégée toutes les 4 sem (la muscu se décharge en même temps).
-   - Tennis = l'intensité de l'hiver → pas de course rapide avant la sem 13.
+   - Tennis HORS PLAN : 1 fois par semaine au plus, mercredi OU samedi. Le vendredi libre
+     sert à décaler la séance qu'il remplace. Pas de course rapide avant la sem 13.
    - Nage jamais le jour ni le lendemain d'une séance du haut du corps.
    Le plan fait 29 semaines ; il s'étire ou se compresse (23 min) selon la date.
    ════════════════════════════════════════════════════════════ */
@@ -112,7 +113,7 @@ const MuscuTriathlon = (() => {
     { key: 'reprise', label: 'Reprise',  max: 6,  why: "Tapis en marche-course, vélo de salle facile, technique en piscine. Ton cœur est prêt (tennis), pas tes tibias ni tes tendons d'Achille.", key2: "Course : parle en phrases complètes, sinon ralentis le tapis. Vélo : buste relevé, note ton dos le lendemain." },
     { key: 'base',    label: 'Base',     max: 12, why: "Course continue, vélo avec quelques blocs soutenus, premiers enchaînements vélo puis tapis. Tout reste à l'intérieur.", key2: "Le vélo décide de ton triathlon : si le dos reste à 3/10 ou moins le lendemain, fais l'étude posturale puis achète ou loue le vélo avant mars." },
     { key: 'dev',     label: 'Développement', max: 20, why: "Course soutenue le mardi, vélo long dehors dès que la météo le permet, enchaînement chaque dimanche. Test 5 km en fin de phase.", key2: "Sur l'enchaînement, pars lentement : les jambes lourdes passent en 5 minutes." },
-    { key: 'spec',    label: 'Spécifique', max: 27, why: "Allure course, transitions et eau libre. La muscu des jambes passe en entretien. Un seul tennis par semaine.", key2: "La panique au départ est la première cause d'abandon : 3 à 4 nages en eau libre encadrées, en combinaison, et un départ en groupe simulé." },
+    { key: 'spec',    label: 'Spécifique', max: 27, why: "Allure course, transitions et eau libre. La muscu des jambes passe en entretien.", key2: "La panique au départ est la première cause d'abandon : 3 à 4 nages en eau libre encadrées, en combinaison, et un départ en groupe simulé." },
     { key: 'taper',   label: 'Affûtage', max: 99, why: "On ne construit plus rien, on arrive frais. Pas de tennis.", key2: "Rien de neuf le jour J : combinaison, chaussures, lunettes et ravitaillement déjà testés." },
   ];
   function _phaseOf(w) { return PHASES.find(p => w.id <= p.max); }
@@ -166,7 +167,7 @@ const MuscuTriathlon = (() => {
       { d: 'Lun', items: [{ id: 'pool', type: 'piscine', icon: '🏊', title: 'Piscine A, technique', planIdx: 0, min: w.race || w.pre ? 25 : 40, txt: w.race || w.pre ? '600 m facile dont 4 × 25 m vite' : 'Séance détaillée plus bas (carte piscine)' }] },
       { d: 'Mar', items: [
         run('run_1', w.r1.hard ? 'Course qualité' : 'Course facile', w.r1),
-        strength('haut_a', 1, 'Muscu haut A', indoor ? 'Après la course. 2ᵉ tennis possible à la place du tapis' : 'Après la course'),
+        strength('haut_a', 1, 'Muscu haut A', 'Après la course'),
       ] },
       { d: 'Mer', items: [
         { id: 'velo_1', type: 'velo', icon: '🚴', title: w.b1.hard ? 'Vélo qualité' : 'Vélo facile', min: w.b1.min, txt: w.b1.txt, hard: w.b1.hard, where: indoor ? 'salle' : 'salle ou dehors' },
@@ -174,9 +175,8 @@ const MuscuTriathlon = (() => {
       ] },
       { d: 'Jeu', items: [{ id: 'pool_b', type: 'piscine', icon: '🏊', title: openWater ? 'Eau libre (encadrée) ou piscine B' : 'Piscine B, continu', min: w.race || w.pre ? 20 : 30,
         txt: w.race || w.pre ? '400 m facile' : `100 m souple, ${w.sw} m d'un bloc très lent, 4 × 50 m, 100 m dos` + (openWater ? '. En eau libre : combinaison, bouée, jamais seul' : '') }] },
-      { d: 'Ven', items: w.id >= 28 || w.cut
-        ? [off('off_ven', w.race ? 'Retrait du dossard, vélo vérifié' : 'Semaine allégée : vrai jour sans sport')]
-        : [{ id: 'tennis1', type: 'tennis', icon: '🎾', title: 'Tennis', min: 75, txt: "Ta séance d'intensité. Pas de match prévu : repos" }] },
+      { d: 'Ven', items: [off('off_ven', w.race ? 'Retrait du dossard, vélo vérifié'
+        : w.cut ? 'Semaine allégée : vrai jour sans sport' : "Ou la séance décalée par un tennis")] },
       { d: 'Sam', items: w.race
         ? [off('off_sam', 'Sac prêt, coucher tôt')]
         : [run('run_2', 'Course facile', w.r2), strength('haut_b', 3, 'Muscu haut B', '2ᵉ dose pec + dos, courte (35-40 min)')] },
@@ -214,7 +214,7 @@ const MuscuTriathlon = (() => {
     ] };
 
   const TEMPLATE = {
-    name: '🏊🚴🏃 Triathlon sprint : 2 piscines, 2 vélos, 2 courses, 3 muscu, tennis',
+    name: '🏊🚴🏃 Triathlon sprint : 2 piscines, 2 vélos, 2 courses, 3 muscu',
     days: [
       {
         // Plan natation tri-sprint existant (5 phases calées sur la date), tel quel
@@ -460,7 +460,7 @@ const MuscuTriathlon = (() => {
           <li><b>Dos après le vélo</b> au-dessus de 3/10 le lendemain : selle et guidon plus relevés, durée réduite d'un tiers. Si ça continue 3 semaines, avis médical avant tout achat de vélo.</li>
           <li><b>Séance ratée</b> : elle est perdue, on ne la rattrape pas. Priorité si tu manques de temps : piscine A, vélo du dimanche, course du mardi, piscine B, vélo du mercredi, course du samedi, muscu.</li>
           <li><b>Semaine ratée</b> : utilise le bouton ci-dessous plutôt que de sauter une marche.</li>
-          <li><b>Jours de tennis différents</b> : déplace-les, jamais la veille du vélo long en phase Spécifique. 2 tennis par semaine au plus, 1 seul à partir de la phase Développement.</li>
+          <li><b>Tennis</b> (hors plan, une fois par semaine, mercredi ou samedi) : mercredi, le vélo passe au vendredi. Samedi, la course saute et la muscu haut B passe au vendredi. En semaine allégée, la séance remplacée saute. Aucun tennis dans les 2 semaines avant la course.</li>
           <li><b>Nuit courte ou jambes lourdes deux jours de suite</b> : la course du samedi devient un repos.</li>
           <li><b>Pec, dos, épaules</b> : douleur J+1 de 3/10 au maximum. Le service au tennis compte comme une charge d'épaule.</li>
           <li><b>Nage</b> : jamais le jour ni le lendemain d'une séance du haut. Lundi et jeudi sont placés pour ça.</li>
