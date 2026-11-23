@@ -283,7 +283,7 @@ const MuscuStorage = (() => {
    * Suggest next load for an exercise based on last logged session.
    * Returns { weight, delta, reason, trend, lastWeight, lastRpe } or null if no history.
    * DOUBLE PROGRESSION (doctrine juil. 2026, charge modérée 8-15 reps RIR 1-2) :
-   *   - Douleur J+1 > 3/10                → -5 % (règle 24h), trend 'pain'
+   *   - Douleur J+1 4-5/10 → -20 %, ≥ 6/10 → -30 % (règle 24h), trend 'pain'
    *   - Douleur signalée en séance        → -step, trend 'pain'
    *   - RPE moy ≥ 9.5 (échec)            → -step (on vise RIR 1-2, pas l'échec)
    *   - Fourchette '8-12' : TOUTES les séries au haut (≥12) → +step
@@ -338,9 +338,12 @@ const MuscuStorage = (() => {
 
     // Règle 24h (BJSM 2019) : douleur J+1 pilote la charge
     if (painJ1 != null && painJ1 > 3) {
-      delta = -Math.max(step, roundTo(lastWeight * 0.05));
+      // 4-5/10 → −20 % · ≥ 6/10 → −30 % et exercice à remplacer (2026-11-23)
+      delta = -Math.max(step, roundTo(lastWeight * (painJ1 >= 6 ? 0.30 : 0.20)));
       trend = 'pain';
-      reason = `Douleur J+1 = ${painJ1}/10 — décharge auto (règle 24h)`;
+      reason = painJ1 >= 6
+        ? `Douleur J+1 = ${painJ1}/10 : charge −30 %, remplace l'exercice (swap 🔄)`
+        : `Douleur J+1 = ${painJ1}/10 : charge −20 % (règle 24h)`;
     } else if (hasPain) {
       delta = -step;
       trend = 'pain';

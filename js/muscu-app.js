@@ -316,9 +316,9 @@ const MuscuApp = (() => {
     closePainPrompt();
     const msg = score <= 3
       ? `Douleur ${score}/10 · OK, progression maintenue 👍`
-      : score <= 6
-        ? `Douleur ${score}/10 · Charge auto-baissée la prochaine séance`
-        : `Douleur ${score}/10 · Charge fortement baissée · consulter si persiste`;
+      : score <= 5
+        ? `Douleur ${score}/10 · charge −20 % la prochaine séance`
+        : `Douleur ${score}/10 · charge −30 %, remplace l'exercice · consulter si ça persiste`;
     _toast(msg, score <= 3 ? 'success' : score <= 6 ? 'info' : 'error');
     renderDashboard();
   }
@@ -341,7 +341,9 @@ const MuscuApp = (() => {
       { key: 'spec',  label: 'Spécifique',  when: 'mars → mai',   min: 4,  goal: 'Allure course sur 750 m + eau libre',        effort: '45-50 min · effort 7/10' },
       { key: 'taper', label: 'Pré-compét',  when: 'J-4 → course', min: -Infinity, goal: 'Affûter, ne plus construire',          effort: '30 min · sortir frais' },
     ];
-    const activeIdx = Math.max(0, STEPS.findIndex(st => weeks > st.min));
+    const swim = isTriathlon ? MuscuTriathlon.swimStatus() : null;
+    if (swim) STEPS.forEach((st, i) => { st.when = i === 4 ? 'J-4 → course' : i === 0 ? 'départ' : 'sur critère'; });
+    const activeIdx = swim ? swim.index : Math.max(0, STEPS.findIndex(st => weeks > st.min));
     const active = STEPS[activeIdx];
     const timeline = STEPS.map((st, i) => `
       <div class="swim-step ${i === activeIdx ? 'active' : i < activeIdx ? 'done' : ''}">${i + 1} · ${st.label}<small>${st.when}</small></div>`).join('');
@@ -420,7 +422,7 @@ const MuscuApp = (() => {
       <div class="swim-sheet-title">${isTriathlon ? 'Séance du lundi' : 'Séance J4 de la semaine'}</div>
       <div class="swim-sheet">${sheetHtml}</div>
       <div class="swim-key">🎯 ${KEY[active.key] || ''}</div>
-      ${isTriathlon ? `<div class="swim-option"><b>A · technique</b> le lundi (ci-dessus), <b>B · continu</b> le jeudi (bloc long et lent, +50 m par semaine). Jamais le jour ni le lendemain d'une séance du haut du corps.</div>` : `<div class="swim-option"><b>2 séances / semaine = le plus gros levier.</b><br>
+      ${isTriathlon ? `${swim.criterion ? `<div class="swim-option"><b>Pour passer à la phase suivante :</b> ${swim.criterion}.</div><button class="btn btn-sm btn-ghost" onclick="MuscuTriathlon.setSwimLevel(1)">✓ Critère tenu</button>` : ''}${swim.waiting ? '<div class="swim-option">Critère tenu. La phase suivante ouvre plus tard, selon la date de course.</div>' : ''}${swim.canBack ? '<button class="btn btn-sm btn-ghost" onclick="MuscuTriathlon.setSwimLevel(-1)">Revenir d\'une phase</button>' : ''}<div class="swim-option"><b>A · technique</b> le lundi (ci-dessus), <b>B · continu</b> le jeudi (bloc long et lent, +50 m par semaine). Jamais le jour ni le lendemain d'une séance du haut du corps.</div>` : `<div class="swim-option"><b>2 séances / semaine = le plus gros levier.</b><br>
         <b>A · technique</b> = la séance J4 ci-dessus, sur son propre jour (25 m + repos : on construit le geste).<br>
         <b>B · continu</b> = « <b>Piscine CONTINU — nage longue et lente</b> » : 300 m d'un seul bloc très lent (+50 m/sem), puis 4×50 sans pull buoy. C'est là que tu nages sans t'arrêter.<br>
         <b>Où caler B :</b> sur un <b>jour de repos</b> (25-30 min faciles, pas une vraie charge) — sinon <b>AVANT</b> J3 jambes. <b>Jamais</b> les jours pec/épaules (J1, J5), ni après J2 dos ; et ne troque pas le vélo Z2 de J2, c\'est ton test dos.<br>
@@ -1427,9 +1429,27 @@ const MuscuApp = (() => {
 
   function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
 
+  // Triathlon : une régénération dans la même semaine ne perd pas les séances faites
+  function _carryStatus(plan) {
+    const old = MuscuStorage.getWeekPlan();
+    if (!old || !plan.triathlonKey || old.triathlonKey !== plan.triathlonKey) return;
+    plan.days.forEach((d, i) => {
+      const o = old.days[i];
+      if (o && o.status === 'done') d.status = 'done';
+    });
+  }
+
+  function regenKeepStatus() {
+    const plan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), MuscuStorage.getWeekNumber());
+    _carryStatus(plan);
+    MuscuStorage.saveWeekPlan(plan);
+    renderDashboard();
+  }
+
   function _autoRegenPlan(weekNum) {
     // Local first, AI in background
     const plan = MuscuExercises.generateWeekPlan(MuscuStorage.getProfile(), weekNum);
+    _carryStatus(plan);
     MuscuStorage.saveWeekPlan(plan);
     renderDashboard();
     _tryAIUpgrade();
@@ -2410,7 +2430,7 @@ const MuscuApp = (() => {
     coachPreset, coachSend, sendCoachMessage,
     showObjectives, saveObjectives, closeObjectives,
     showSettings, saveSettings, closeSettings,
-    regeneratePlan, resetAllData,
+    regeneratePlan, regenKeepStatus, resetAllData,
     // Feedback
     saveFeedback, skipFeedback,
     // Exercise bank

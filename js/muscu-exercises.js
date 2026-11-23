@@ -685,13 +685,13 @@ const MuscuExercises = (() => {
     { id: 'natation', name: 'Natation (crawl / dos crawlé)', category: 'conditioning', subcategory: 'cardio', equipment: 'pool',
       hyrox: [], primary: ['cardio','dos','épaules'], secondary: ['pectoraux'],
       videoUrl: 'https://www.youtube.com/watch?v=5HLW2AI1Ink',
-      cues: ['Reps = distance (m) par répétition · le contenu exact est dans la note de la série', 'JAMBES : ~10 % de la propulsion, et elles flottent seules en combinaison — leur rôle est de te garder horizontal. Battement depuis la HANCHE (pas le genou), jambes quasi tendues, chevilles relâchées, petite amplitude. Si elles coulent : regarde le FOND (pas devant) et expire, le reste suit', 'Crawl : tête dans l\'axe (regard fond), expiration CONTINUE sous l\'eau, respiration bilatérale 3 temps, coude haut, doigts relâchés', 'Dos crawlé = récup + ouverture pec : rotation externe d\'épaule, zéro compression', 'Si l\'épaule tire en crawl → bascule dos crawlé, règle J+1 comme en muscu', 'JAMAIS de papillon (opposé de ce que ton épaule/haut du dos demandent)'],
+      cues: ['Reps = distance (m) par répétition · le contenu exact est dans la note de la série', 'JAMBES : ~10 % de la propulsion, et elles flottent seules en combinaison — leur rôle est de te garder horizontal. Battement depuis la HANCHE (pas le genou), jambes quasi tendues, chevilles relâchées, petite amplitude. Si elles coulent : regarde le FOND (pas devant) et expire, le reste suit', 'Crawl : tête dans l\'axe (regard fond), expiration CONTINUE sous l\'eau, respiration 2 temps en alternant le côté à chaque longueur, coude haut, doigts relâchés', 'Dos crawlé = récup + ouverture pec : rotation externe d\'épaule, zéro compression', 'Si l\'épaule tire en crawl → bascule dos crawlé, règle J+1 comme en muscu', 'JAMAIS de papillon (opposé de ce que ton épaule/haut du dos demandent)'],
       mistakes: ['Bloquer la respiration puis souffler-inspirer en un temps (= essoufflement)', 'Lever la tête pour respirer (les hanches coulent)', '⚠ ENTRÉE DE MAIN qui croise l\'axe du corps, pouce en premier = cause n°1 de conflit sous-acromial → entrée DEVANT l\'épaule, main à plat', '⚠ Douleur pendant le retour aérien ou à l\'entrée de main → STOP, bascule dos crawlé', 'Chercher le « coude haut » sous l\'eau tant que la position n\'est pas stable', '⚠ Nager le même jour qu\'une séance pectoraux/épaules : la fatigue dégrade le geste', 'Nager toujours à la même allure sans structure (le 1000 m en continu = 0 progrès technique)'] },
 
     { id: 'natation_technique', name: 'Piscine post-muscu — technique (20-25 min)', category: 'conditioning', subcategory: 'cardio', equipment: 'pool',
       hyrox: [], primary: ['cardio','dos','épaules'], secondary: ['pectoraux'],
       videoUrl: 'https://www.youtube.com/watch?v=5HLW2AI1Ink',
-      cues: ['Option « muscu + piscine » : swap 🔄 du cardio de fin de séance, même durée (20-25 min, ≈ 800 m)', 'Échauffement 100 m : 50 NL souple + 50 dos', 'Éducatifs 6×50 R20 : 2× battements bras devant (planche OK) · 2× rattrapé (une main attend l\'autre devant) · 2× un bras (25 G / 25 D, bras libre le long du corps)', 'Respiration 4×50 R20 : crawl 3 temps bilatéral, expirer en continu sous l\'eau', 'Fin 100 m dos crawlé souple', 'Allure FACILE — après la muscu, c\'est de la technique, pas du volume'],
+      cues: ['Option « muscu + piscine » : swap 🔄 du cardio de fin de séance, même durée (20-25 min, ≈ 800 m)', 'Échauffement 100 m : 50 NL souple + 50 dos', 'Éducatifs 6×50 R20 : 2× battements bras devant (planche OK) · 2× rattrapé (une main attend l\'autre devant) · 2× un bras (25 G / 25 D, bras libre le long du corps)', 'Respiration 4×50 R20 : crawl 2 temps en alternant le côté, expirer en continu sous l\'eau', 'Fin 100 m dos crawlé souple', 'Allure FACILE — après la muscu, c\'est de la technique, pas du volume'],
       mistakes: ['Faire du volume après une séance muscu haut du corps (épaules déjà chargées)', 'Enchaîner sans repos entre les 50 (l\'éducatif se dégrade)', 'Sauter les éducatifs pour « juste nager »'] },
 
     { id: 'natation_continu', name: 'Piscine CONTINU — nage longue et lente (25-30 min)', category: 'conditioning', subcategory: 'cardio', equipment: 'pool',
@@ -1304,7 +1304,7 @@ const MuscuExercises = (() => {
                 ]},
               { name: 'Corps de séance — semaine A : 8×100 R20 · semaine B : 4×200 R30',
                 exercises: [
-                  { id: 'natation', sets: 8, reps: '100 m', rest: 20, notes: 'Crawl allure RÉGULIÈRE (même temps sur chaque 100, ±3 s) · respiration 3 temps · semaine B : regroupe en 4×200 repos 30 s' },
+                  { id: 'natation', sets: 8, reps: '100 m', rest: 20, notes: 'Crawl allure RÉGULIÈRE (même temps sur chaque 100, ±3 s) · respiration 2 temps, alterne le côté à chaque longueur · semaine B : regroupe en 4×200 repos 30 s' },
                 ]},
               { name: 'Vitesse (4×50, repos 30 s)',
                 exercises: [
@@ -1710,7 +1710,9 @@ const MuscuExercises = (() => {
   //   pas besoin pour faire du volume continu. Séance B reformulée sans tuba.
   //   Matériel = pull kick (acheté) + chrono ; palmes courtes optionnelles.
   // v28 (2026-11-23) : objectif 'triathlon' (muscu-triathlon.js), nouveau défaut.
-  const TEMPLATES_VERSION = 28;
+  // v29 (2026-11-23) : retour d'expert triathlon (haut B sans pec, piscine sur critère,
+  //   respiration 2 temps partout).
+  const TEMPLATES_VERSION = 29;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────
