@@ -1,5 +1,16 @@
 # Document de reprise — nouvel ordinateur
 
+> **Mise à jour du 23/11/2026 : le programme par défaut est désormais le plan triathlon
+> sprint (`goal = 'triathlon'`, fichier `js/muscu-triathlon.js`, plan v4).** Les sections
+> ci-dessous décrivent l'état de septembre et restent valables pour la musculation
+> (double progression), la natation et le déploiement.
+>
+> Semaine v4 : lundi piscine B + jambes · mardi course facile + pec/triceps · mercredi
+> piscine A + vélo · jeudi repos · vendredi dos/biceps · samedi course soutenue · dimanche
+> vélo long + enchaînement (dès la semaine 10). Tennis hors plan, une fois par semaine.
+> Piscine A : phase sur critère (`settings.swimLevel`). Allures : `settings.tri5k`.
+> Version affichée dans l'app : `PLAN_VERSION` dans `js/muscu-triathlon.js`.
+
 > Écrit le 9 octobre 2026, après panne de l'ancien poste.
 > **À donner à lire à Claude Code au premier lancement sur la nouvelle machine.**
 > Couvre la session de travail du 14 au 23 septembre 2026 sur `Hyrox-project`.
@@ -60,7 +71,7 @@ sans framework, données en `localStorage` du navigateur.
 
 1. Bumper `TEMPLATES_VERSION` dans `js/muscu-exercises.js` si un template change
    → force la régénération des plans déjà enregistrés chez l'utilisateur.
-2. **Bumper le `?v=N` sur les 5 références de `muscu.html`** (4 scripts + le CSS).
+2. **Bumper le `?v=N` sur les 6 références de `muscu.html`** (5 scripts + le CSS).
    ⚠️ **Piège vécu** : le 23/09, quatre commits JS d'affilée sont partis sans bump
    (les remplacements `sed`/python ne matchaient plus) → le navigateur a servi
    l'ancien JS. Corrigé par `d25dde2`. **Toujours vérifier avec `grep -n '?v=' muscu.html`
@@ -68,7 +79,7 @@ sans framework, données en `localStorage` du navigateur.
 3. `git push origin main` → Pages se redéploie seul.
 4. Vérifier : `curl -s https://bencode92.github.io/Hyrox-project/muscu.html | grep -o 'muscu-app.js?v=[0-9]*'`
 
-**État actuel : `TEMPLATES_VERSION = 27`, cache-buster `?v=35`, HEAD = `d25dde2`.**
+**État au 23/11/2026 : `TEMPLATES_VERSION = 30`, cache-buster `?v=40` (6 références dans `muscu.html`).**
 
 ---
 

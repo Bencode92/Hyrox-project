@@ -12,6 +12,7 @@
    Le plan fait 29 semaines ; il s'étire ou se compresse (23 min) selon la date.
    ════════════════════════════════════════════════════════════ */
 const MuscuTriathlon = (() => {
+  const PLAN_VERSION = 'v4 · 23 nov 2026';   // affichée en bas de la carte : à changer à chaque évolution du plan
   const DEFAULT_START = '2026-11-23';
   const DEFAULT_RACE  = '2027-06-15';
   const LOG_KEY = 'mf_triathlon_log';
@@ -511,6 +512,7 @@ const MuscuTriathlon = (() => {
         <div class="tri-pace-head"><b>Vitesses</b><button class="btn btn-sm btn-ghost" onclick="MuscuTriathlon.set5k()">${t5 ? '5 km en ' + Math.floor(t5 / 60) + ':' + String(t5 % 60).padStart(2, '0') : 'Saisir mon 5 km'}</button></div>
         ${t5 ? `<div class="tri-zones">${_zones(18000 / t5)}</div>` : `<div class="text-muted text-sm">Jusqu'au test 5 km de la semaine 20, cours à l'effort : <b>facile</b> = phrases complètes (3-4/10), <b>soutenu</b> = quelques mots (6-7/10). Tapis à 1 % de pente, marche entre 5 et 5,5 km/h.</div>`}
       </div>
+      <div class="text-muted text-sm" style="margin-top:8px">Version du plan : ${PLAN_VERSION}</div>
       <details class="tri-rules"><summary>Règles et substitutions</summary>
         <ul>
           <li><b>Douleur au tibia, au tendon d'Achille ou au genou au-dessus de 3/10</b> (pendant, ou le lendemain) : remplace la course par le même nombre de minutes de vélo ou de nage.</li>
