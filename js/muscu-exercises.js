@@ -1713,7 +1713,8 @@ const MuscuExercises = (() => {
   // v29 (2026-11-23) : retour d'expert triathlon (haut B sans pec, piscine sur critère,
   //   respiration 2 temps partout).
   // v30 (2026-11-23) : jours choisis par l'athlète (jambes lun, pec mar, piscine mer, dos ven).
-  const TEMPLATES_VERSION = 30;
+  // v31 : course lundi + mardi, piscine mercredi + dimanche, vélo long samedi.
+  const TEMPLATES_VERSION = 31;
   function getTemplatesVersion() { return TEMPLATES_VERSION; }
 
   // ── 7-day rotating ABS program ───────────────────────────────

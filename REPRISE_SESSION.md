@@ -1,13 +1,13 @@
 # Document de reprise — nouvel ordinateur
 
 > **Mise à jour du 23/11/2026 : le programme par défaut est désormais le plan triathlon
-> sprint (`goal = 'triathlon'`, fichier `js/muscu-triathlon.js`, plan v4).** Les sections
+> sprint (`goal = 'triathlon'`, fichier `js/muscu-triathlon.js`, plan v5).** Les sections
 > ci-dessous décrivent l'état de septembre et restent valables pour la musculation
 > (double progression), la natation et le déploiement.
 >
-> Semaine v4 : lundi piscine B + jambes · mardi course facile + pec/triceps · mercredi
-> piscine A + vélo · jeudi repos · vendredi dos/biceps · samedi course soutenue · dimanche
-> vélo long + enchaînement (dès la semaine 10). Tennis hors plan, une fois par semaine.
+> Semaine v5 : lundi course soutenue + jambes · mardi course facile + pec/triceps · mercredi
+> piscine A + vélo · jeudi repos · vendredi dos/biceps · samedi vélo long +
+> enchaînement (dès la semaine 10) · dimanche piscine B. Tennis hors plan, une fois par semaine.
 > Piscine A : phase sur critère (`settings.swimLevel`). Allures : `settings.tri5k`.
 > Version affichée dans l'app : `PLAN_VERSION` dans `js/muscu-triathlon.js`.
 
@@ -79,7 +79,7 @@ sans framework, données en `localStorage` du navigateur.
 3. `git push origin main` → Pages se redéploie seul.
 4. Vérifier : `curl -s https://bencode92.github.io/Hyrox-project/muscu.html | grep -o 'muscu-app.js?v=[0-9]*'`
 
-**État au 23/11/2026 : `TEMPLATES_VERSION = 30`, cache-buster `?v=40` (6 références dans `muscu.html`).**
+**État au 23/11/2026 : `TEMPLATES_VERSION = 31`, cache-buster `?v=41` (6 références dans `muscu.html`).**
 
 ---
 

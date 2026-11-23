@@ -3,8 +3,8 @@
    750 m nage · 20 km vélo · 5 km course
    Profil : cardio tennis, AUCUNE base de course, AUCUNE base vélo, dos chronique,
    tient 1 000 m en nage mais sans technique. Hiver : tapis, vélo de salle, piscine.
-   - 2 piscines (lun, mer) · 2 vélos (mer, dim) · 2 courses (mar, sam) · 3 muscu (jambes lun, pec mar, dos ven) · jeudi libre
-   - Enchaînement vélo → course le dimanche à partir de la semaine 10 (15 min max, 20 après la sem 20).
+   - 2 piscines (mer, dim) · 2 vélos (mer, sam) · 2 courses (lun, mar) · 3 muscu (jambes lun, pec mar, dos ven) · jeudi libre
+   - Enchaînement vélo → course le samedi à partir de la semaine 10 (15 min max, 20 après la sem 20).
    - Semaine allégée toutes les 4 sem (la muscu se décharge en même temps).
    - Tennis HORS PLAN : 1 fois par semaine, mercredi et samedi en alternance ; il REMPLACE
      une séance, le jeudi reste un repos.
@@ -12,7 +12,7 @@
    Le plan fait 29 semaines ; il s'étire ou se compresse (23 min) selon la date.
    ════════════════════════════════════════════════════════════ */
 const MuscuTriathlon = (() => {
-  const PLAN_VERSION = 'v4 · 23 nov 2026';   // affichée en bas de la carte : à changer à chaque évolution du plan
+  const PLAN_VERSION = 'v5 · 23 nov 2026';   // affichée en bas de la carte : à changer à chaque évolution du plan
   const DEFAULT_START = '2026-11-23';
   const DEFAULT_RACE  = '2027-06-15';
   const LOG_KEY = 'mf_triathlon_log';
@@ -34,9 +34,9 @@ const MuscuTriathlon = (() => {
   const vz = min => ({ min, txt: `${min}' facile, buste relevé, 85-95 tours/min` });
   const vq = (min, txt) => ({ min, txt, hard: true });
 
-  // r1 = course soutenue (samedi) · r2 = facile (mardi) · b1 = mercredi vélo · l = dimanche vélo long
-  // br = minutes de course enchaînées juste après le vélo du dimanche
-  // sw = bloc de nage continue du lundi (mètres)
+  // r1 = course soutenue (lundi) · r2 = facile (mardi) · b1 = mercredi vélo · l = samedi vélo long
+  // br = minutes de course enchaînées juste après le vélo du samedi
+  // sw = bloc de nage continue du dimanche (mètres)
   const wr55 = { min: 26, txt: "4 × (5'30 course / 1' marche)" };
   const WEEKS = [
     { id: 1,  r1: wr(8, 2, 1), r2: wr(8, 2, 1), b1: vz(35), l: 45, br: 0, sw: 300 },
@@ -115,7 +115,7 @@ const MuscuTriathlon = (() => {
   const PHASES = [
     { key: 'reprise', label: 'Reprise',  max: 6,  why: "Tapis en marche-course, vélo de salle facile, technique en piscine. Ton cœur est prêt (tennis), pas tes tibias ni tes tendons d'Achille.", key2: "Course : parle en phrases complètes, sinon ralentis le tapis. Vélo : buste relevé, note ton dos le lendemain." },
     { key: 'base',    label: 'Base',     max: 12, why: "Course continue à partir de la semaine 9, vélo avec quelques blocs soutenus, premiers enchaînements. Tout reste à l'intérieur.", key2: "La salle, buste relevé, ne teste ni la nuque ni le haut du dos. Réserve un vélo de route à louer pour mars." },
-    { key: 'dev',     label: 'Développement', max: 20, why: "Course soutenue le samedi, vélo long dehors, enchaînement le dimanche. Test du dos : 3 sorties de 60 à 90 min sur un vélo de route loué. Test 5 km en fin de phase.", key2: "Sur l'enchaînement, pars lentement : les jambes lourdes passent en 5 minutes." },
+    { key: 'dev',     label: 'Développement', max: 20, why: "Course soutenue le lundi, vélo long dehors, enchaînement le samedi. Test du dos : 3 sorties de 60 à 90 min sur un vélo de route loué. Test 5 km en fin de phase.", key2: "Sur l'enchaînement, pars lentement : les jambes lourdes passent en 5 minutes." },
     { key: 'spec',    label: 'Spécifique', max: 27, why: "Allure course, transitions et eau libre. La muscu des jambes passe en entretien.", key2: "La panique au départ est la première cause d'abandon : 3 à 4 nages en eau libre encadrées, en combinaison, et un départ en groupe simulé." },
     { key: 'taper',   label: 'Affûtage', max: 99, why: "On ne construit plus rien, on arrive frais. Pas de tennis.", key2: "Rien de neuf le jour J : combinaison, chaussures, lunettes et ravitaillement déjà testés." },
   ];
@@ -203,20 +203,27 @@ const MuscuTriathlon = (() => {
     const bikeOut = w.id >= 15;
     const openWater = k === 'spec' && w.id >= 24;
 
-    // Mardi = la course facile (lendemain des jambes), samedi = la course soutenue.
-    const easyFirst = !w.pre && !w.race && w.r1.hard && !w.r2.hard;
-    const rTue = easyFirst ? w.r2 : w.r1, rSat = easyFirst ? w.r1 : w.r2;
+    // Lundi = la course soutenue (avant les jambes), mardi = la course facile.
+    // Semaine 27 : lendemain de la répétition générale → facile lundi, soutenu mardi.
+    const hardIsR2 = (w.r2.hard && !w.r1.hard) || w.id === 27;
+    const rMon = hardIsR2 ? w.r2 : w.r1, rTue = hardIsR2 ? w.r1 : w.r2;
     const short = w.race || w.pre;
+    const combo = w.swimBike || w.id === 26;   // nage + vélo + course le même dimanche
+    const bikeLong = [
+      { id: 'velo_l', type: 'velo', icon: '🚴', title: w.pre ? 'Vélo activation' : 'Vélo long', min: w.l, txt: w.pre ? "30' facile dont 3 × 1' allure course, avec le vélo de la course" : w.tag || (w.road1 ? `Première sortie sur route, ${w.l}' : terrain plat, freinage et virages avant tout` : '') || `${w.l}' facile, buste relevé, lève-toi de la selle toutes les 10'`, where: bikeOut ? 'dehors si possible' : 'salle', hard: !!w.tag },
+      ...(w.br ? [{ id: 'brick', type: 'course', icon: '🏃', title: 'Enchaînement', min: w.br, txt: `${w.br}' de course tout de suite après le vélo`, where: bikeOut ? 'tapis ou dehors' : 'tapis' }] : []),
+    ];
+    const poolB = { id: 'pool_b', type: 'piscine', icon: '🏊', title: openWater ? 'Eau libre (encadrée) ou piscine B' : w.wet ? 'Piscine B + essai de combinaison' : 'Piscine B, continu', min: short ? 20 : 30,
+      txt: short ? '400 m facile' : `100 m souple, ${w.sw} m d'un bloc très lent, 4 × 50 m, 100 m dos` + (w.id >= 21 && !openWater ? '. Ajoute 4 × 25 m regard devant' : '') + (openWater ? '. Regard devant tous les 8 cycles. Eau libre : combinaison, bouée, jamais seul' : '') };
     const days = [
       { d: 'Lun', items: [
-        { id: 'pool_b', type: 'piscine', icon: '🏊', title: openWater ? 'Eau libre (encadrée) ou piscine B' : w.wet ? 'Piscine B + essai de combinaison' : 'Piscine B, continu', min: short ? 20 : 30,
-          txt: short ? '400 m facile' : `Avant les jambes : 100 m souple, ${w.sw} m d'un bloc très lent, 4 × 50 m, 100 m dos` + (w.id >= 21 && !openWater ? '. Ajoute 4 × 25 m regard devant' : '') + (openWater ? ". Regard devant tous les 8 cycles. Eau libre : le jour du créneau encadré, combinaison, bouée, jamais seul" : '') },
-        strength('jambes', 0, w.race ? 'Mobilité' : w.pre ? 'Jambes, activation légère' : 'Muscu jambes', w.race ? 'Gainage seulement, zéro charge' : 'Bi-sets mollets + tibias, hanche + ischios'),
+        run('run_1', rMon.txt.startsWith('TEST') ? 'Test 5 km' : rMon.hard ? 'Course qualité' : 'Course facile', rMon),
+        strength('jambes', 0, w.race ? 'Mobilité' : w.pre ? 'Jambes, activation légère' : 'Muscu jambes', w.race ? 'Gainage seulement, zéro charge' : 'Après la course, ou 6 h plus tard'),
         ...(w.id === 4 ? [{ id: 'rdv', type: 'repos', icon: '🩺', title: 'Clinicien cette semaine', txt: 'Avec tes expositions : 8 séries de pec, 15 de tirage, environ 1 600 m nagés, heures de tennis, ressenti couché et front squat' }] : []),
       ] },
       { d: 'Mar', items: [
-        run('run_1', rTue.hard ? 'Course qualité' : 'Course facile', rTue),
-        strength('haut_a', 1, 'Muscu pec + triceps', 'Après la course'),
+        ...(rTue.min ? [run('run_2', rTue.hard ? 'Course qualité' : 'Course facile', rTue)] : []),
+        strength('haut_a', 1, 'Muscu pec + triceps', rTue.min ? 'Après la course' : 'Léger'),
       ] },
       { d: 'Mer', items: [
         { id: 'pool', type: 'piscine', icon: '🏊', title: 'Piscine A, technique', planIdx: 2, min: short ? 25 : 40, txt: short ? '600 m facile dont 4 × 25 m vite' : COACH[w.id] && !w.ext ? `Avec un coach (${COACH[w.id]} sur 3) : regard extérieur sur le geste` : 'Séance détaillée plus bas (carte piscine)' },
@@ -225,21 +232,14 @@ const MuscuTriathlon = (() => {
       { d: 'Jeu', items: [off('off_jeu', w.cut ? 'Semaine allégée : vrai jour sans sport' : 'Le repos de la semaine')] },
       { d: 'Ven', items: short ? [off('off_ven', w.race ? 'Retrait du dossard, vélo vérifié' : 'Marche et mobilité')]
         : [strength('haut_b', 3, 'Muscu dos + biceps', 'Seule séance du jour, jambes au repos')] },
-      { d: 'Sam', items: w.race
-        ? [off('off_sam', 'Sac prêt, coucher tôt')]
-        : [run('run_2', rSat.txt.startsWith('TEST') ? 'Test 5 km' : rSat.hard ? 'Course qualité' : 'Course facile', rSat)] },
+      { d: 'Sam', items: w.race ? [off('off_sam', 'Sac prêt, coucher tôt')]
+        : combo ? [off('off_sam', 'Jambes fraîches pour demain')] : bikeLong },
       { d: 'Dim', items: w.race
         ? [{ id: 'race', type: 'triathlon', icon: '🏁', title: 'TRIATHLON SPRINT', min: 0, txt: '750 m de nage, 20 km de vélo, 5 km de course' }]
-        : [
-          ...(w.swimBike ? [{ id: 'pool_c', type: 'piscine', icon: '🏊', title: 'Nage puis vélo', min: 20, txt: '500 m continus, sortie rapide, puis vélo dans les 10 min' }] : []),
-          { id: 'velo_l', type: 'velo', icon: '🚴', title: 'Vélo long', min: w.l, txt: w.tag || (w.road1 ? `Première sortie sur route, ${w.l}' : terrain plat, freinage et virages avant tout` : '') || `${w.l}' facile, buste relevé, lève-toi de la selle toutes les 10'`, where: bikeOut ? 'dehors si possible' : 'salle', hard: !!w.tag },
-          ...(w.br ? [{ id: 'brick', type: 'course', icon: '🏃', title: 'Enchaînement', min: w.br, txt: `${w.br}' de course tout de suite après le vélo`, where: bikeOut ? 'tapis ou dehors' : 'tapis' }] : []),
-        ] },
+        : combo
+          ? [{ id: 'pool_c', type: 'piscine', icon: '🏊', title: w.swimBike ? 'Nage puis vélo' : 'Nage, 750 m', min: 20, txt: w.swimBike ? '500 m continus, sortie rapide, puis vélo dans les 10 min' : 'En combinaison, puis vélo dans les 10 min' }, ...bikeLong]
+          : [poolB] },
     ];
-    if (w.pre) {   // course en début de semaine suivante : activation courte, jamais de charge
-      days[5].items = [{ id: 'run_2', type: 'course', icon: '🏃', title: 'Course facile', min: 15, txt: "15' très facile", where: 'dehors si possible' }];
-      days[6].items = [{ id: 'velo_l', type: 'velo', icon: '🚴', title: 'Vélo activation', min: 30, txt: "30' facile dont 3 × 1' allure course, avec le vélo de la course" }];
-    }
     if (w.race) {
       const r = ctx.raceDow;
       days.forEach((x, i) => {
@@ -262,11 +262,11 @@ const MuscuTriathlon = (() => {
     days: [
       {
         label: 'Lundi : Jambes',
-        focus: '', warmup: 'Piscine B avant, ou 8 min vélo', blocks: [], finisher: '',
+        focus: '', warmup: 'Déjà fait par la course', blocks: [], finisher: '',
         cooldown: 'Mollets, hanches, ischios : 5 min',
         variants: [
           { minWeeksToRace: 10,
-            focus: 'La seule séance jambes de la semaine, au lendemain du vélo long : si les jambes sont lourdes, RIR 3. Mollets et tibias = ton assurance anti-blessure, ne les saute pas.',
+            focus: 'La seule séance jambes de la semaine, après la course : si les jambes sont lourdes, RIR 3. Mollets et tibias = ton assurance anti-blessure, ne les saute pas.',
             blocks: [
               { name: 'Front squat (séries classiques)', exercises: [
                 { id: 'front_squat', sets: 3, reps: '8-10', rest: 120, notes: 'SEUL · LÉGER, RIR 2-3 · douleur dos J+1 ≤ 3/10 sinon leg press (swap 🔄)' } ] },
@@ -412,7 +412,7 @@ const MuscuTriathlon = (() => {
 
   function set5k() {
     const s = _settings();
-    const v = prompt('Temps sur 5 km, en min:s (test du samedi de la semaine 20). Vide = effacer.', s.tri5k ? `${Math.floor(s.tri5k / 60)}:${String(s.tri5k % 60).padStart(2, '0')}` : '');
+    const v = prompt('Temps sur 5 km, en min:s (test du lundi de la semaine 20). Vide = effacer.', s.tri5k ? `${Math.floor(s.tri5k / 60)}:${String(s.tri5k % 60).padStart(2, '0')}` : '');
     if (v === null) return;
     const m = v.trim().match(/^(\d{1,2})[:' ](\d{1,2})$/);
     const sec = m ? Number(m[1]) * 60 + Number(m[2]) : 0;
@@ -504,7 +504,7 @@ const MuscuTriathlon = (() => {
         <button class="btn btn-sm btn-ghost" aria-label="Semaine suivante" ${vi === st.total - 1 ? 'disabled' : ''} onclick="MuscuTriathlon.nav(1)">›</button>
       </div>
       <div class="tri-days">${rows}</div>
-      <div class="text-muted text-sm" style="margin:6px 0">🎾 ${tennisDay(ctx) ? `Tennis possible cette semaine : <b>${tennisDay(ctx)}</b>. ${tennisDay(ctx) === 'samedi' ? 'Il remplace la course.' : 'Il remplace le vélo.'}` : 'Pas de tennis cette semaine.'}</div>
+      <div class="text-muted text-sm" style="margin:6px 0">🎾 ${tennisDay(ctx) ? `Tennis possible cette semaine : <b>${tennisDay(ctx)}</b>. ${tennisDay(ctx) === 'samedi' ? 'Le vélo long passe au dimanche, après la piscine, sans enchaînement.' : 'Il remplace le vélo.'}` : 'Pas de tennis cette semaine.'}</div>
       <div class="tri-key">🎯 ${ctx.phase.key2}</div>
       <div class="tri-bars">${bars}</div>
       <div class="text-muted text-sm tri-legend">Minutes de course et de vélo par semaine. Pâle = semaine allégée. Touche une barre pour voir la semaine.</div>
@@ -518,12 +518,13 @@ const MuscuTriathlon = (() => {
           <li><b>Douleur au tibia, au tendon d'Achille ou au genou au-dessus de 3/10</b> (pendant, ou le lendemain) : remplace la course par le même nombre de minutes de vélo ou de nage.</li>
           <li><b>Douleur précise sur l'os, qui fait boiter ou réveille la nuit</b> : plus de course, rendez-vous médical (fracture de fatigue à écarter).</li>
           <li><b>Test du dos</b> (mars) : 3 sorties de 60 à 90 min sur un vélo de route loué, douleur à 3/10 au plus pendant et le lendemain, sans irradiation. Sinon, guidon plat : un sprint se finit très bien avec.</li>
-          <li><b>Séance ratée</b> : elle est perdue, on ne la rattrape pas. Priorité si tu manques de temps : course du samedi, vélo du dimanche, piscine A, vélo du mercredi, course du mardi, piscine B, muscu.</li>
+          <li><b>Course lundi et mardi</b> : deux jours d'impact de suite. Si un tibia ou un tendon dépasse 3/10 le mardi matin, la course du mardi devient du vélo facile.</li>
+          <li><b>Séance ratée</b> : elle est perdue, on ne la rattrape pas. Priorité si tu manques de temps : course du lundi, vélo du samedi, piscine A, vélo du mercredi, piscine B, course du mardi, muscu.</li>
           <li><b>Semaine ratée</b> : utilise le bouton ci-dessous. Le plan retire une semaine de développement, jamais l'affûtage. Après la semaine 19, une semaine ratée est perdue, on continue.</li>
-          <li><b>Tennis</b> (hors plan, une fois par semaine) : il remplace une séance. Mercredi, le vélo saute ; nage avant le tennis. Samedi, la course saute. Jeudi reste un repos. Pas de tennis les deux dernières semaines.</li>
+          <li><b>Tennis</b> (hors plan, une fois par semaine) : mercredi, le vélo saute ; nage avant le tennis. Samedi, le vélo long passe au dimanche après la piscine, sans enchaînement. Jeudi reste un repos. Pas de tennis les deux dernières semaines.</li>
           <li><b>Nuit courte ou jambes lourdes deux jours de suite</b> : la course du mardi devient un repos.</li>
           <li><b>Pec, dos, épaules</b> : on juge la douleur du lendemain. Jusqu'à 3/10, rien ne change. 4 ou 5 : charge −20 %. À partir de 6 : −30 % et exercice remplacé. Le service au tennis compte comme une charge d'épaule.</li>
-          <li><b>Nage du mercredi</b> : elle suit la séance pec. Technique seulement, dos crawlé si l'épaule tire. Douleur au-dessus de 3/10 le matin : nage le jeudi à la place. Piscine B toujours avant les jambes. 3 séances avec un coach : semaines 2, 6 et 10.</li>
+          <li><b>Nage du mercredi</b> : elle suit la séance pec. Technique seulement, dos crawlé si l'épaule tire. Douleur au-dessus de 3/10 le matin : nage le jeudi à la place. 3 séances avec un coach : semaines 2, 6 et 10.</li>
           <li><b>Eau libre</b> : site surveillé ou club, jamais seul, combinaison et bouée.</li>
         </ul>
       </details>
