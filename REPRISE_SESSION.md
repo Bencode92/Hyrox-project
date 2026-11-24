@@ -1,7 +1,7 @@
 # Document de reprise — nouvel ordinateur
 
 > **Mise à jour du 23/11/2026 : le programme par défaut est désormais le plan triathlon
-> sprint (`goal = 'triathlon'`, fichier `js/muscu-triathlon.js`, plan v6).** Les sections
+> sprint (`goal = 'triathlon'`, fichier `js/muscu-triathlon.js`, plan v7).** Les sections
 > ci-dessous décrivent l'état de septembre et restent valables pour la musculation
 > (double progression), la natation et le déploiement.
 >
@@ -79,7 +79,7 @@ sans framework, données en `localStorage` du navigateur.
 3. `git push origin main` → Pages se redéploie seul.
 4. Vérifier : `curl -s https://bencode92.github.io/Hyrox-project/muscu.html | grep -o 'muscu-app.js?v=[0-9]*'`
 
-**État au 23/11/2026 : `TEMPLATES_VERSION = 31`, cache-buster `?v=42` (6 références dans `muscu.html`).**
+**État au 23/11/2026 : `TEMPLATES_VERSION = 31`, cache-buster `?v=43` (6 références dans `muscu.html`).**
 
 ---
 

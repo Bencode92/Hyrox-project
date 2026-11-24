@@ -2478,3 +2478,5 @@ textarea { resize: vertical; min-height: 60px; }
 .tri-chip.done { opacity: 0.55; }
 .tri-caret { color: #a3adc2; text-align: right; }
 .tri-rowbtn:focus-visible, .tri-btn:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+
+.tri-chip em.d { font-weight: 600; color: #a3adc2; }

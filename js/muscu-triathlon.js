@@ -12,7 +12,7 @@
    Le plan fait 29 semaines ; il s'étire ou se compresse (23 min) selon la date.
    ════════════════════════════════════════════════════════════ */
 const MuscuTriathlon = (() => {
-  const PLAN_VERSION = 'v6 · 24 nov 2026';   // affichée en bas de la carte : à changer à chaque évolution du plan
+  const PLAN_VERSION = 'v7 · 24 nov 2026';   // affichée en bas de la carte : à changer à chaque évolution du plan
   const DEFAULT_START = '2026-11-23';
   const DEFAULT_RACE  = '2027-06-15';
   const LOG_KEY = 'mf_triathlon_log';
@@ -481,62 +481,91 @@ const MuscuTriathlon = (() => {
 
   // ── Déroulé d'une séance, étape par étape ──
   // kind : walk | easy | hard | swim
-  function getSteps(it) {
+  // Vitesses de réglage (km/h) : repères de départ, recalés dès que le 5 km est saisi
+  const WALK = 5, BIKE = 23;
+  function _speeds() {
     const t5 = _settings().tri5k, v5 = t5 ? 18000 / t5 : 0;
-    const sp = (lo, hi) => `${(v5 * lo).toFixed(1)} à ${(v5 * hi).toFixed(1)} km/h`;
-    const easyRun = v5 ? sp(0.70, 0.80) : 'environ 8 à 9 km/h, tu dois pouvoir parler en phrases';
-    const PACE = {
-      'soutenu': v5 ? sp(0.89, 0.95) : 'effort 6-7/10, quelques mots seulement',
-      'allure 5 km': v5 ? sp(0.98, 1.02) : 'effort 7-8/10',
-      'allure course': 'effort 6-7/10, tenable 40 min',
-    };
+    const r = x => Math.round(x * 2) / 2;
+    return v5 ? { easy: r(v5 * 0.75), 'soutenu': r(v5 * 0.92), 'allure 5 km': r(v5) } : { easy: 8.5, 'soutenu': 10.5, 'allure 5 km': 11.5 };
+  }
+  const _n = x => String(Math.round(x * 10) / 10).replace('.', ',');
+  const _kmOf = (min, kmh) => min * kmh / 60;
+
+  function getSteps(it) {
+    const V = _speeds(), E = V.easy;
     const txt = it.txt || '';
+    const walk = (min, what, how) => ({ min, kind: 'walk', what, how, km: _kmOf(min, WALK) });
     if (it.type === 'course' && it.id !== 'race') {
+      const easyHow = "si tu ne peux pas parler en phrases, baisse la vitesse";
       let m = txt.match(/^(\d+) × \((\d+)'(\d*) course \/ (\d+)' marche\)/);
       if (m) {
-        const n = +m[1], run = +m[2] + (m[3] ? +m[3] / 60 : 0), walk = +m[4];
+        const n = +m[1], run = +m[2] + (m[3] ? +m[3] / 60 : 0), wk = +m[4];
         const rl = m[3] ? `${m[2]} min ${m[3]}` : `${m[2]} min`;
-        return { list: [
-          { min: 5, kind: 'walk', what: 'Marche rapide', how: '5 à 5,5 km/h, pente 1 %' },
-          { min: n * (run + walk), kind: 'easy', rep: n, run, walk, what: `${n} fois : ${rl} de course, ${walk} min de marche`, how: `course ${easyRun}, marche à 5 km/h` },
-          { min: 3, kind: 'walk', what: 'Marche pour finir', how: 'puis mollets, 2 min' } ] };
+        return _sum([
+          walk(5, `Marche à ${WALK} km/h`, 'échauffement, pente 1 %'),
+          { min: n * (run + wk), kind: 'easy', rep: n, run, walk: wk, km: n * (_kmOf(run, E) + _kmOf(wk, WALK)),
+            what: `Cours ${rl} à ${_n(E)} km/h, puis marche ${wk} min à ${WALK} km/h. À faire ${n} fois`, how: easyHow },
+          walk(3, `Marche à ${WALK} km/h`, 'puis étire tes mollets, 2 min') ]);
       }
-      if (/^TEST/.test(txt)) return { list: [
-        { min: 15, kind: 'easy', what: 'Échauffement facile', how: easyRun },
-        { min: Math.max(1, it.min - 23), kind: 'hard', what: '5 km chrono', how: 'allure régulière, pas de départ rapide' },
-        { min: 8, kind: 'easy', what: 'Retour au calme', how: 'trot ou marche' } ] };
+      if (/^TEST/.test(txt)) return _sum([
+        { min: 15, kind: 'easy', what: `Cours 15 min à ${_n(E)} km/h`, how: 'échauffement', km: _kmOf(15, E) },
+        { min: Math.max(1, it.min - 23), kind: 'hard', what: 'Cours 5 km, chronomètre lancé', how: 'allure régulière, pas de départ rapide', km: 5 },
+        { min: 8, kind: 'easy', what: 'Trot ou marche, 8 min', how: 'retour au calme', km: _kmOf(8, 6) } ]);
       m = txt.match(/^(\d+)' facile, (\d+) × (\d+)' (soutenu|allure 5 km) \(récup (\d+)' trot\)/);
-      if (m) return _intervals(it.min, m, easyRun, PACE, 'trot', 'de course');
-      if (it.id === 'brick') return { list: [{ min: it.min, kind: 'easy', what: `${it.min} min de course, juste après le vélo`, how: 'pars lentement, les jambes lourdes passent en 5 min' }] };
-      return { list: [
-        { min: 5, kind: 'walk', what: 'Marche rapide', how: '5 à 5,5 km/h' },
-        { min: it.min, kind: 'easy', what: `${it.min} min de course facile, en continu`, how: easyRun },
-        { min: 3, kind: 'walk', what: 'Marche pour finir', how: 'puis mollets, 2 min' } ] };
+      if (m) {
+        const warm = +m[1], n = +m[2], d = +m[3], r = +m[5], main = n * d + (n - 1) * r, end = Math.max(1, it.min - warm - main), H = V[m[4]], R = 7;
+        return _sum([
+          { min: warm, kind: 'easy', what: `Cours ${warm} min à ${_n(E)} km/h`, how: 'échauffement', km: _kmOf(warm, E) },
+          { min: main, kind: 'hard', rep: n, run: d, walk: r, what: `Cours ${d} min à ${_n(H)} km/h, puis trotte ${r} min à ${R} km/h. À faire ${n} fois`,
+            how: m[4] === 'soutenu' ? 'effort 6-7/10 : quelques mots seulement' : 'effort 7-8/10', km: n * _kmOf(d, H) + (n - 1) * _kmOf(r, R) },
+          { min: end, kind: 'easy', what: `Trotte ${end} min à ${R} km/h`, how: 'retour au calme', km: _kmOf(end, R) } ]);
+      }
+      if (it.id === 'brick') return _sum([{ min: it.min, kind: 'easy', what: `Cours ${it.min} min à ${_n(E)} km/h, juste après le vélo`, how: 'pars lentement, les jambes lourdes passent en 5 min', km: _kmOf(it.min, E) }]);
+      return _sum([
+        walk(5, `Marche à ${WALK} km/h`, 'échauffement'),
+        { min: it.min, kind: 'easy', what: `Cours ${it.min} min sans t'arrêter, à ${_n(E)} km/h`, how: easyHow, km: _kmOf(it.min, E) },
+        walk(3, `Marche à ${WALK} km/h`, 'puis étire tes mollets, 2 min') ]);
     }
     if (it.type === 'velo') {
       const m = txt.match(/^(\d+)' facile, (\d+) × (\d+)' (soutenu|allure course) \(récup (\d+)'\)/);
-      if (m) return _intervals(it.min, m, 'buste relevé, 85-95 tours/min', PACE, 'souple', 'à vélo');
-      if (it.hard || it.tag) return { list: [{ min: it.min, kind: 'easy', what: txt, how: '' }] };
-      return { list: [{ min: it.min, kind: 'easy', what: txt.startsWith('Première') || txt.includes('dont') ? txt : `${it.min} min faciles`, how: 'buste relevé, 85-95 tours/min, debout sur les pédales toutes les 10 min' }] };
+      if (m) {
+        const warm = +m[1], n = +m[2], d = +m[3], r = +m[5], main = n * d + (n - 1) * r, end = Math.max(1, it.min - warm - main);
+        return _sum([
+          { min: warm, kind: 'easy', what: `Pédale ${warm} min facile`, how: 'buste relevé, 85-95 tours/min', km: _kmOf(warm, BIKE) },
+          { min: main, kind: 'hard', rep: n, run: d, walk: r, what: `Pédale ${d} min plus fort, puis ${r} min souple. À faire ${n} fois`, how: 'monte la résistance : effort 6-7/10, quelques mots seulement', km: _kmOf(n * d, 27) + _kmOf((n - 1) * r, 20) },
+          { min: end, kind: 'easy', what: `Pédale ${end} min très facile`, how: 'retour au calme', km: _kmOf(end, 20) } ]);
+      }
+      const special = it.hard || txt.startsWith('Première') || txt.startsWith('RÉPÉTITION') || txt.includes('dont');
+      return _sum([{ min: it.min, kind: 'easy', what: special ? txt : `Pédale ${it.min} min facile`, how: special ? '' : 'buste relevé, 85-95 tours/min, debout sur les pédales toutes les 10 min', km: _kmOf(it.min, BIKE) }]);
     }
     if (it.id === 'pool_b') {
       const m = txt.match(/(\d+) m d'un bloc/);
-      if (!m) return { list: [{ kind: 'swim', what: txt, how: '' }] };
-      return { list: [
-        { kind: 'swim', what: '100 m souple', how: 'échauffement' },
-        { kind: 'swim', what: `${m[1]} m d'un seul bloc`, how: "très lent, respiration tous les 2 mouvements. Si tu t'arrêtes, c'est que tu vas trop vite" },
-        { kind: 'swim', what: '4 × 50 m sans pull buoy', how: 'repos 30 s' + (/4 × 25 m/.test(txt) ? ', puis 4 × 25 m regard devant' : '') },
-        { kind: 'swim', what: '100 m dos crawlé', how: 'retour au calme' } ] };
+      if (!m) return { list: [{ kind: 'swim', what: txt, how: '' }], meters: 400 };
+      const look = /4 × 25 m/.test(txt);
+      return { meters: +m[1] + 400 + (look ? 100 : 0), list: [
+        { kind: 'swim', what: 'Nage 100 m souple', how: 'échauffement' },
+        { kind: 'swim', what: `Nage ${m[1]} m sans t'arrêter`, how: "très lent, respiration tous les 2 mouvements. Si tu t'arrêtes, c'est que tu vas trop vite" },
+        { kind: 'swim', what: 'Nage 4 fois 50 m sans pull buoy', how: 'repos 30 s' + (look ? ', puis 4 fois 25 m regard devant' : '') },
+        { kind: 'swim', what: 'Nage 100 m dos crawlé', how: 'retour au calme' } ] };
     }
     return null;
   }
-  function _intervals(total, m, easy, PACE, rec, sport) {
-    const warm = +m[1], n = +m[2], d = +m[3], r = +m[5];
-    const main = n * d + (n - 1) * r;
-    return { list: [
-      { min: warm, kind: 'easy', what: 'Échauffement facile', how: easy },
-      { min: main, kind: 'hard', rep: n, run: d, walk: r, what: `${n} fois : ${d} min ${m[4]}, ${r} min ${rec}`, how: PACE[m[4]] },
-      { min: Math.max(1, total - warm - main), kind: 'easy', what: 'Retour au calme', how: 'très facile' } ].filter(x => x.min > 0) };
+  function _sum(list) { return { list, km: list.reduce((a, x) => a + (x.km || 0), 0) }; }
+  function _poolAMeters(it) { return /^600 m/.test(it.txt) ? 600 : [900, 1500, 1700, 1900, 1350][getSwimIndex()]; }
+  function _metersOf(it) { const st = getSteps(it); return it.type !== 'piscine' ? 0 : it.id === 'pool' ? _poolAMeters(it) : it.id === 'pool_c' ? (/^500/.test(it.txt) ? 500 : 750) : (st && st.meters) || 400; }
+  function _dist(it) {   // « ≈ 3,6 km » / « 700 m »
+    if (it.type === 'piscine') return `${_metersOf(it)} m`;
+    if (it.id === 'race') return '';
+    const st = getSteps(it);
+    return st && st.km ? `≈ ${st.km >= 10 ? Math.round(st.km) : _n(st.km)} km` : '';
+  }
+  function weekDistances(days) {
+    const t = { course: 0, velo: 0, piscine: 0 };
+    days.flatMap(d => d.items).forEach(it => {
+      if (it.type === 'piscine') t.piscine += _metersOf(it);
+      else if (t[it.type] != null && it.id !== 'race') t[it.type] += (getSteps(it) || {}).km || 0;
+    });
+    return t;
   }
 
   // « Refaire cette semaine » : décale le départ de 7 jours, le plan se recale
@@ -610,7 +639,7 @@ const MuscuTriathlon = (() => {
     const steps = getSteps(it);
     const tot = steps ? Math.round(steps.list.reduce((a, x) => a + (x.min || 0), 0)) : it.min;
     const ses = done && it.type !== 'muscu' ? MuscuStorage.getSessions().find(x => x.id === log[it.id]) : null;
-    const stepHtml = steps ? `<ol class="tri-steps2">${steps.list.map(x => `<li><b>${x.what}</b>${x.min && steps.list.length > 1 ? `<em>${Math.round(x.min)} min</em>` : ''}${x.how ? `<small>${x.how}</small>` : ''}</li>`).join('')}</ol>` : '';
+    const stepHtml = steps ? `<ol class="tri-steps2">${steps.list.map(x => `<li><b>${x.what}</b>${x.min && steps.list.length > 1 ? `<em>${Math.round(x.min)} min${x.km ? ` · ${_n(x.km)} km` : ''}</em>` : ''}${x.how ? `<small>${x.how}</small>` : ''}</li>`).join('')}</ol>` : '';
     let body = '';
     if (it.type === 'muscu') {
       const ex = planOk && plan.days[it.planIdx] ? plan.days[it.planIdx].exercises : [];
@@ -624,7 +653,7 @@ const MuscuTriathlon = (() => {
     const formHtml = form === 'log' ? `
       <div class="tri-form">
         <label>Minutes<input id="tri-f-min" type="number" inputmode="numeric" min="1" max="400" value="${tot || ''}"></label>
-        <label>${it.type === 'piscine' ? 'Mètres' : 'Km'}<input id="tri-f-km" type="number" inputmode="decimal" step="any" min="0" placeholder="facultatif"></label>
+        <label>${it.type === 'piscine' ? 'Mètres' : 'Km'}<input id="tri-f-km" type="number" inputmode="decimal" step="any" min="0" placeholder="${it.type === 'piscine' ? _metersOf(it) : _dist(it).replace(/[^0-9,]/g, '') || 'facultatif'}"></label>
         <label>Effort /10<input id="tri-f-rpe" type="number" inputmode="numeric" min="1" max="10" placeholder="facultatif"></label>
         <button class="tri-btn on" onclick="MuscuTriathlon.submitForm('${ctx.key}','${it.id}')">Enregistrer</button>
       </div>` : form === 'slot' ? `
@@ -646,9 +675,9 @@ const MuscuTriathlon = (() => {
         ${it.id === 'pool' && planOk ? `<button class="tri-btn" onclick="MuscuApp.showDayDetail(${it.planIdx})">Voir la nage</button>` : ''}
         ${canSlot ? `<button class="tri-btn" onclick="MuscuTriathlon.openForm('slot','${ctx.key}','${it.id}')">🕐 ${it.time || 'Créneau'}</button>` : ''}
       </div>`;
-    const res = ses ? `<div class="tri-res">${[ses.durationMin ? ses.durationMin + ' min' : '', ses.distanceKm ? (it.type === 'piscine' ? Math.round(ses.distanceKm * 1000) + ' m' : ses.distanceKm + ' km') : '', ses.distanceKm && ses.durationMin && it.type === 'course' ? _pace(ses.distanceKm / ses.durationMin * 60) : '', ses.globalRpe ? 'effort ' + ses.globalRpe + '/10' : ''].filter(Boolean).join(' · ')}</div>` : '';
+    const res = ses ? `<div class="tri-res">${[ses.durationMin ? ses.durationMin + ' min' : '', ses.distanceKm ? (it.type === 'piscine' ? Math.round(ses.distanceKm * 1000) + ' m' : _n(ses.distanceKm) + ' km') : '', ses.distanceKm && ses.durationMin && it.type === 'course' ? _pace(ses.distanceKm / ses.durationMin * 60) : '', ses.globalRpe ? 'effort ' + ses.globalRpe + '/10' : ''].filter(Boolean).join(' · ')}</div>` : '';
     return `<div class="tri-card2 t-${it.type} ${done ? 'done' : ''}">
-      <div class="tri-c-head"><span class="tri-ico">${it.icon}</span><b>${it.title}</b>${it.hard ? '<i class="tri-hard">soutenu</i>' : ''}${it.where ? `<i class="tri-where">${it.where}</i>` : ''}${tot ? `<em>${tot} min</em>` : ''}</div>
+      <div class="tri-c-head"><span class="tri-ico">${it.icon}</span><b>${it.title}</b>${it.hard ? '<i class="tri-hard">soutenu</i>' : ''}${it.where ? `<i class="tri-where">${it.where}</i>` : ''}${tot ? `<em>${_dist(it) ? _dist(it) + ' · ' : ''}${tot} min</em>` : ''}</div>
       ${steps ? _segbar(steps.list) : ''}${stepHtml}${body}${res}${actions}${formHtml}</div>`;
   }
 
@@ -688,7 +717,7 @@ const MuscuTriathlon = (() => {
     const rows = days.map((d, i) => {
       if (i === ti) return `<div class="tri-row is-today"><span class="tri-dow">${d.d}<small>${d.date.getDate()}</small></span><span class="tri-chips"><span class="tri-chip">Aujourd'hui, détail ci-dessus</span></span></div>`;
       const open = _open === i;
-      const chips = d.items.map(it => `<span class="tri-chip t-${it.type} ${isDone(it) ? 'done' : ''}">${isDone(it) ? '✓ ' : ''}${it.icon} ${it.title}${it.time ? ` <em>${it.time}</em>` : ''}</span>`).join('');
+      const chips = d.items.map(it => `<span class="tri-chip t-${it.type} ${isDone(it) ? 'done' : ''}">${isDone(it) ? '✓ ' : ''}${it.icon} ${it.title}${_dist(it) && ['course', 'velo', 'piscine'].includes(it.type) ? ` <em class="d">${_dist(it)}</em>` : ''}${it.time ? ` <em>${it.time}</em>` : ''}</span>`).join('');
       return `<div class="tri-row ${open ? 'open' : ''}">
         <button class="tri-rowbtn" aria-expanded="${open}" onclick="MuscuTriathlon.toggleDay(${i})"><span class="tri-dow">${d.d}<small>${d.date.getDate()}</small></span><span class="tri-chips">${chips}</span><span class="tri-caret">${open ? '▴' : '▾'}</span></button>
         ${open ? d.items.map(it => _item(it, Object.assign({ di: i }, o))).join('') : ''}</div>`;
@@ -720,6 +749,7 @@ const MuscuTriathlon = (() => {
         <span>${cur ? `Ma semaine · ${nDone}/${real.length} faites` : `${_fr(ctx.monday)} au ${_fr(_add(ctx.monday, 6))} · <a href="#" onclick="MuscuTriathlon.navHome();return false">revenir</a>`}</span>
         <button class="btn btn-sm btn-ghost" aria-label="Semaine suivante" ${vi === st.total - 1 ? 'disabled' : ''} onclick="MuscuTriathlon.nav(1)">›</button>
       </div>
+      <div class="text-muted text-sm" style="margin:0 0 6px">${(w => w.course || w.velo || w.piscine ? `Total prévu : course ≈ ${_n(w.course)} km · vélo ≈ ${Math.round(w.velo)} km · nage ${w.piscine} m` : '')(weekDistances(days))}</div>
       <div class="tri-rows">${rows}</div>
       <div class="text-muted text-sm" style="margin:8px 0">🎾 ${tennisDay(ctx) ? `Tennis possible cette semaine : <b>${tennisDay(ctx)}</b>. ${tennisDay(ctx) === 'samedi' ? 'Le vélo long passe au dimanche, après la piscine, sans enchaînement.' : 'Il remplace le vélo.'}` : 'Pas de tennis cette semaine.'}</div>
       <div class="tri-key">🎯 ${ctx.phase.key2}</div>
@@ -756,6 +786,6 @@ const MuscuTriathlon = (() => {
   }
   function goto(i) { const st = getState(); _view = i === st.index ? null : i; _open = null; _form = null; render(); }
 
-  return { DEFAULT_START, DEFAULT_RACE, TEMPLATE, getState, getWeek, getDays, buildSequence, runMinutes, bikeMinutes, cardioMinutes, isCutWeek, plannedIdx, getSwimIndex, swimStatus, setSwimLevel, set5k, tennisDay, logDone, undo, submitForm, openForm, toggleDay, saveSlot, resetSlot, getScheduledDays, getSteps, todayHasPool, shift, nav, navHome, goto, render, _phaseOf };
+  return { DEFAULT_START, DEFAULT_RACE, TEMPLATE, getState, getWeek, getDays, buildSequence, runMinutes, bikeMinutes, cardioMinutes, isCutWeek, plannedIdx, getSwimIndex, swimStatus, setSwimLevel, set5k, tennisDay, logDone, undo, submitForm, openForm, toggleDay, saveSlot, resetSlot, getScheduledDays, getSteps, weekDistances, todayHasPool, shift, nav, navHome, goto, render, _phaseOf };
 })();
 if (typeof module !== 'undefined') module.exports = MuscuTriathlon;
