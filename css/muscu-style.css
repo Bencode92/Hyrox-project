@@ -2432,3 +2432,49 @@ textarea { resize: vertical; min-height: 60px; }
 .tri-rules li { margin-bottom: 6px; }
 .tri-rules b { color: #fff; }
 .tri-shift { margin-top: 10px; }
+
+/* Triathlon v6 : aujourd'hui en grand, semaine repliée */
+.tri-today-title { margin: 14px 0 8px; font-size: 15px; font-weight: 800; color: #fff; }
+.tri-card2 { border: 1px solid rgba(255,255,255,0.09); border-left: 4px solid var(--accent-2); border-radius: 12px; padding: 12px; margin-bottom: 10px; background: rgba(255,255,255,0.03); }
+.tri-card2.t-velo { border-left-color: var(--accent-amber); }
+.tri-card2.t-piscine { border-left-color: #38bdf8; }
+.tri-card2.t-muscu { border-left-color: var(--accent-purple); }
+.tri-card2.t-repos { border-left-color: #4a5470; }
+.tri-card2.done { background: rgba(0,212,170,0.07); }
+.tri-c-head { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; font-size: 15px; color: #fff; }
+.tri-c-head em { margin-left: auto; font-style: normal; font-weight: 800; color: #fff; white-space: nowrap; }
+.tri-c-head i { font-style: normal; font-size: 11px; padding: 1px 6px; border-radius: 6px; background: rgba(255,255,255,0.07); color: var(--text-2); }
+.tri-c-head i.tri-hard { background: rgba(240,160,48,0.15); color: var(--accent-amber); }
+.tri-card2 small { display: block; font-size: 13px; line-height: 1.4; color: #a3adc2; }
+.tri-card2 > small { margin-top: 6px; }
+.tri-seg { display: flex; gap: 1px; height: 16px; margin: 10px 0 4px; border-radius: 5px; overflow: hidden; }
+.tri-seg i { display: block; min-width: 2px; }
+.tri-seg .k-walk { background: #39445f; } .tri-seg .k-easy { background: var(--accent-2); } .tri-seg .k-hard { background: var(--accent-amber); }
+.tri-steps2 { margin: 8px 0 0; padding-left: 22px; color: var(--accent-2); font-size: 14px; }
+.tri-steps2 li { margin-bottom: 7px; padding-left: 2px; }
+.tri-steps2 li b { color: #fff; font-weight: 600; }
+.tri-steps2 li em { font-style: normal; font-weight: 700; color: #a3adc2; margin-left: 8px; white-space: nowrap; }
+.tri-ex { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.tri-ex span { font-size: 12px; color: #fff; padding: 3px 8px; border-radius: 7px; background: rgba(139,92,246,0.14); }
+.tri-ex em { font-style: normal; color: #a3adc2; }
+.tri-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.tri-actions .tri-btn { min-height: 42px; padding: 0 12px; font-size: 13px; }
+.tri-actions .tri-btn.big { flex: 1 1 150px; }
+.tri-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.15); }
+.tri-form label { flex: 1 1 90px; font-size: 12px; color: #a3adc2; }
+.tri-form input:not([type=checkbox]), .tri-form select { display: block; width: 100%; box-sizing: border-box; min-height: 42px; margin-top: 3px; padding: 0 8px; font-size: 16px; color: #fff; background: var(--bg-input); border: 1px solid #2c3858; border-radius: 8px; color-scheme: dark; }
+.tri-form .tri-check { flex: 1 1 100%; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #fff; min-height: 32px; }
+.tri-form .tri-btn { min-height: 42px; padding: 0 12px; flex: 1 1 110px; }
+.tri-res { margin-top: 8px; font-size: 13px; font-weight: 700; color: var(--accent-2); }
+.tri-row { border-top: 1px solid rgba(255,255,255,0.07); }
+.tri-row.open { padding-bottom: 4px; }
+.tri-row.is-today, .tri-rowbtn { display: grid; grid-template-columns: 38px 1fr 18px; gap: 10px; align-items: center; width: 100%; min-height: 52px; padding: 7px 0; text-align: left; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; }
+.tri-row.is-today { cursor: default; }
+.tri-row.is-today .tri-chip { background: rgba(0,212,170,0.16); color: var(--accent-2); }
+.tri-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.tri-chip { font-size: 13px; color: #fff; padding: 3px 8px; border-radius: 8px; background: rgba(255,255,255,0.07); }
+.tri-chip em { font-style: normal; font-weight: 700; color: var(--accent-2); }
+.tri-chip.t-repos { color: #a3adc2; background: none; padding-left: 0; }
+.tri-chip.done { opacity: 0.55; }
+.tri-caret { color: #a3adc2; text-align: right; }
+.tri-rowbtn:focus-visible, .tri-btn:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }

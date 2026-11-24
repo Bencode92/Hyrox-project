@@ -12,7 +12,7 @@
    Le plan fait 29 semaines ; il s'étire ou se compresse (23 min) selon la date.
    ════════════════════════════════════════════════════════════ */
 const MuscuTriathlon = (() => {
-  const PLAN_VERSION = 'v5 · 23 nov 2026';   // affichée en bas de la carte : à changer à chaque évolution du plan
+  const PLAN_VERSION = 'v6 · 24 nov 2026';   // affichée en bas de la carte : à changer à chaque évolution du plan
   const DEFAULT_START = '2026-11-23';
   const DEFAULT_RACE  = '2027-06-15';
   const LOG_KEY = 'mf_triathlon_log';
@@ -226,8 +226,8 @@ const MuscuTriathlon = (() => {
         strength('haut_a', 1, 'Muscu pec + triceps', rTue.min ? 'Après la course' : 'Léger'),
       ] },
       { d: 'Mer', items: [
-        { id: 'pool', type: 'piscine', icon: '🏊', title: 'Piscine A, technique', planIdx: 2, min: short ? 25 : 40, txt: short ? '600 m facile dont 4 × 25 m vite' : COACH[w.id] && !w.ext ? `Avec un coach (${COACH[w.id]} sur 3) : regard extérieur sur le geste` : 'Séance détaillée plus bas (carte piscine)' },
         { id: 'velo_1', type: 'velo', icon: '🚴', title: w.b1.hard ? 'Vélo qualité' : 'Vélo facile', min: w.b1.min, txt: w.b1.txt, hard: w.b1.hard, where: indoor ? 'salle' : 'salle ou dehors' },
+        { id: 'pool', type: 'piscine', icon: '🏊', title: 'Piscine A, technique', planIdx: 2, min: short ? 25 : 40, txt: short ? '600 m facile dont 4 × 25 m vite' : COACH[w.id] && !w.ext ? `Avec un coach (${COACH[w.id]} sur 3) : regard extérieur sur le geste` : 'Séance détaillée plus bas (carte piscine)' },
       ] },
       { d: 'Jeu', items: [off('off_jeu', w.cut ? 'Semaine allégée : vrai jour sans sport' : 'Le repos de la semaine')] },
       { d: 'Ven', items: short ? [off('off_ven', w.race ? 'Retrait du dossard, vélo vérifié' : 'Marche et mobilité')]
@@ -354,39 +354,189 @@ const MuscuTriathlon = (() => {
   function _log() { try { return JSON.parse(localStorage.getItem(LOG_KEY)) || {}; } catch { return {}; } }
   function _saveLog(l) { localStorage.setItem(LOG_KEY, JSON.stringify(l)); }
 
-  function toggle(weekKey, itemId) {
+  function _find(weekKey, itemId) {
     const st = getState();
     const i = st.weeks.findIndex((_, j) => getWeek(st, j).key === weekKey);
-    if (i < 0) return;
+    if (i < 0) return null;
     const ctx = getWeek(st, i);
-    let item = null, day = null;
-    getDays(ctx).forEach(d => d.items.forEach(it => { if (it.id === itemId) { item = it; day = d; } }));
-    if (!item) return;
+    let hit = null;
+    getScheduledDays(ctx).forEach(d => d.items.forEach(it => { if (it.id === itemId) hit = { st, ctx, item: it, day: d }; }));
+    return hit;
+  }
+
+  function _syncPool(weekKey, item, done, st) {
+    if (item.planIdx == null || item.type !== 'piscine' || weekKey !== st.key) return;
+    const plan = MuscuStorage.getWeekPlan();
+    if (plan && plan.triathlonKey === weekKey && plan.days[item.planIdx]) {
+      plan.days[item.planIdx].status = done ? 'done' : 'pending';
+      MuscuStorage.saveWeekPlan(plan);
+    }
+  }
+
+  // Enregistre une séance faite (minutes, distance, effort : tout est facultatif)
+  function logDone(weekKey, itemId, data) {
+    const f = _find(weekKey, itemId);
+    if (!f || f.item.type === 'repos' || f.item.type === 'muscu') return;
+    const { st, item, day } = f;
     const log = _log();
     const wk = log[weekKey] || (log[weekKey] = {});
-    const done = !wk[itemId];
-    if (!done) {
-      MuscuStorage.deleteSession(wk[itemId]);
-      delete wk[itemId];
-    } else if (item.type === 'repos') {
-      wk[itemId] = 'repos';
-    } else {
-      const saved = MuscuStorage.saveSession({
-        date: _iso(day.date > st.today ? st.today : day.date),
-        type: item.type, theme: item.title, durationMin: item.min || null,
-        exercises: [], notes: item.txt,
-      });
-      wk[itemId] = saved.id;
-    }
+    if (wk[itemId]) MuscuStorage.deleteSession(wk[itemId]);
+    const d = data || {};
+    const saved = MuscuStorage.saveSession({
+      date: _iso(day.date > st.today ? st.today : day.date),
+      type: item.type, theme: item.title, durationMin: d.min || item.min || null,
+      distanceKm: d.km || null, globalRpe: d.rpe || null, exercises: [], notes: item.txt,
+    });
+    wk[itemId] = saved.id;
     _saveLog(log);
-    if (item.type === 'piscine' && weekKey === st.key) {
-      const plan = MuscuStorage.getWeekPlan();
-      if (plan && plan.triathlonKey === weekKey && plan.days[item.planIdx]) {
-        plan.days[item.planIdx].status = done ? 'done' : 'pending';
-        MuscuStorage.saveWeekPlan(plan);
-      }
-    }
+    _syncPool(weekKey, item, true, st);
+    _form = null;
     MuscuApp.renderDashboard();
+  }
+
+  function undo(weekKey, itemId) {
+    const log = _log();
+    if (!log[weekKey] || !log[weekKey][itemId]) return;
+    if (!confirm('Annuler cette séance enregistrée ?')) return;
+    MuscuStorage.deleteSession(log[weekKey][itemId]);
+    delete log[weekKey][itemId];
+    _saveLog(log);
+    const f = _find(weekKey, itemId);
+    if (f) _syncPool(weekKey, f.item, false, f.st);
+    MuscuApp.renderDashboard();
+  }
+
+  function submitForm(weekKey, itemId) {
+    const num = id => { const e = document.getElementById(id); const v = e ? parseFloat(String(e.value).replace(',', '.')) : NaN; return v > 0 ? v : null; };
+    const f = _find(weekKey, itemId);
+    let km = num('tri-f-km');
+    if (km && f && f.item.type === 'piscine') km = km / 1000;   // saisi en mètres
+    const rpe = num('tri-f-rpe');
+    logDone(weekKey, itemId, { min: num('tri-f-min'), km, rpe: rpe ? Math.min(10, Math.max(1, Math.round(rpe))) : null });
+  }
+
+  // ── Créneaux : jour et heure de chaque séance (toutes les semaines ou une seule) ──
+  function _slots() { const s = _settings().triSlots || {}; return { all: s.all || {}, weeks: s.weeks || {} }; }
+  function _slotOf(key, id) { const s = _slots(); return Object.assign({}, s.all[id], (s.weeks[key] || {})[id]); }
+
+  // Jours de la semaine avec les créneaux de l'athlète appliqués
+  function getScheduledDays(ctx) {
+    const days = getDays(ctx).map(d => Object.assign({}, d, { items: d.items.slice() }));
+    const moved = [];
+    days.forEach((d, di) => {
+      d.items = d.items.filter(it => {
+        const sl = _slotOf(ctx.key, it.id);
+        if (it.type === 'repos' || it.id === 'race' || ctx.week.race) return true;
+        it.time = sl.t || '';
+        // l'enchaînement suit toujours le vélo long
+        const ref = it.id === 'brick' ? _slotOf(ctx.key, 'velo_l') : sl;
+        const to = ref.d != null ? ref.d : di;
+        if (it.id === 'brick') it.time = '';
+        if (to !== di) { moved.push({ it, to }); return false; }
+        return true;
+      });
+    });
+    moved.forEach(m => days[m.to].items.push(m.it));
+    days.forEach((d, di) => {
+      const real = d.items.filter(it => it.type !== 'repos');
+      const rdv = d.items.filter(it => it.id === 'rdv');
+      if (real.length) d.items = real.concat(rdv);
+      else if (!d.items.length) d.items = [{ id: 'off_mv_' + di, type: 'repos', icon: '🛌', title: 'Repos complet', txt: 'Séance déplacée' }];
+      // tri par heure ; l'enchaînement reste collé au vélo long
+      const ord = d.items.map((it, n) => ({ it, n, t: (it.id === 'brick' ? (d.items.find(x => x.id === 'velo_l') || {}).time : it.time) || '' }));
+      ord.sort((a, b) => (a.t && b.t ? a.t.localeCompare(b.t) : 0) || a.n - b.n);
+      d.items = ord.map(o => o.it);
+    });
+    return days;
+  }
+
+  function saveSlot(weekKey, itemId) {
+    const day = Number(document.getElementById('tri-s-day').value);
+    const time = document.getElementById('tri-s-time').value || '';
+    const always = document.getElementById('tri-s-all').checked;
+    const s = _settings();
+    const sl = _slots();
+    const val = { d: day, t: time };
+    if (always) {
+      sl.all[itemId] = val;
+      Object.values(sl.weeks).forEach(w => { delete w[itemId]; });
+    } else {
+      (sl.weeks[weekKey] || (sl.weeks[weekKey] = {}))[itemId] = val;
+    }
+    s.triSlots = sl;
+    MuscuStorage.saveSettings(s);
+    _form = null;
+    render();
+  }
+  function resetSlot(weekKey, itemId) {
+    const s = _settings();
+    const sl = _slots();
+    delete sl.all[itemId];
+    Object.values(sl.weeks).forEach(w => { delete w[itemId]; });
+    s.triSlots = sl;
+    MuscuStorage.saveSettings(s);
+    _form = null;
+    render();
+  }
+
+  // ── Déroulé d'une séance, étape par étape ──
+  // kind : walk | easy | hard | swim
+  function getSteps(it) {
+    const t5 = _settings().tri5k, v5 = t5 ? 18000 / t5 : 0;
+    const sp = (lo, hi) => `${(v5 * lo).toFixed(1)} à ${(v5 * hi).toFixed(1)} km/h`;
+    const easyRun = v5 ? sp(0.70, 0.80) : 'environ 8 à 9 km/h, tu dois pouvoir parler en phrases';
+    const PACE = {
+      'soutenu': v5 ? sp(0.89, 0.95) : 'effort 6-7/10, quelques mots seulement',
+      'allure 5 km': v5 ? sp(0.98, 1.02) : 'effort 7-8/10',
+      'allure course': 'effort 6-7/10, tenable 40 min',
+    };
+    const txt = it.txt || '';
+    if (it.type === 'course' && it.id !== 'race') {
+      let m = txt.match(/^(\d+) × \((\d+)'(\d*) course \/ (\d+)' marche\)/);
+      if (m) {
+        const n = +m[1], run = +m[2] + (m[3] ? +m[3] / 60 : 0), walk = +m[4];
+        const rl = m[3] ? `${m[2]} min ${m[3]}` : `${m[2]} min`;
+        return { list: [
+          { min: 5, kind: 'walk', what: 'Marche rapide', how: '5 à 5,5 km/h, pente 1 %' },
+          { min: n * (run + walk), kind: 'easy', rep: n, run, walk, what: `${n} fois : ${rl} de course, ${walk} min de marche`, how: `course ${easyRun}, marche à 5 km/h` },
+          { min: 3, kind: 'walk', what: 'Marche pour finir', how: 'puis mollets, 2 min' } ] };
+      }
+      if (/^TEST/.test(txt)) return { list: [
+        { min: 15, kind: 'easy', what: 'Échauffement facile', how: easyRun },
+        { min: Math.max(1, it.min - 23), kind: 'hard', what: '5 km chrono', how: 'allure régulière, pas de départ rapide' },
+        { min: 8, kind: 'easy', what: 'Retour au calme', how: 'trot ou marche' } ] };
+      m = txt.match(/^(\d+)' facile, (\d+) × (\d+)' (soutenu|allure 5 km) \(récup (\d+)' trot\)/);
+      if (m) return _intervals(it.min, m, easyRun, PACE, 'trot', 'de course');
+      if (it.id === 'brick') return { list: [{ min: it.min, kind: 'easy', what: `${it.min} min de course, juste après le vélo`, how: 'pars lentement, les jambes lourdes passent en 5 min' }] };
+      return { list: [
+        { min: 5, kind: 'walk', what: 'Marche rapide', how: '5 à 5,5 km/h' },
+        { min: it.min, kind: 'easy', what: `${it.min} min de course facile, en continu`, how: easyRun },
+        { min: 3, kind: 'walk', what: 'Marche pour finir', how: 'puis mollets, 2 min' } ] };
+    }
+    if (it.type === 'velo') {
+      const m = txt.match(/^(\d+)' facile, (\d+) × (\d+)' (soutenu|allure course) \(récup (\d+)'\)/);
+      if (m) return _intervals(it.min, m, 'buste relevé, 85-95 tours/min', PACE, 'souple', 'à vélo');
+      if (it.hard || it.tag) return { list: [{ min: it.min, kind: 'easy', what: txt, how: '' }] };
+      return { list: [{ min: it.min, kind: 'easy', what: txt.startsWith('Première') || txt.includes('dont') ? txt : `${it.min} min faciles`, how: 'buste relevé, 85-95 tours/min, debout sur les pédales toutes les 10 min' }] };
+    }
+    if (it.id === 'pool_b') {
+      const m = txt.match(/(\d+) m d'un bloc/);
+      if (!m) return { list: [{ kind: 'swim', what: txt, how: '' }] };
+      return { list: [
+        { kind: 'swim', what: '100 m souple', how: 'échauffement' },
+        { kind: 'swim', what: `${m[1]} m d'un seul bloc`, how: "très lent, respiration tous les 2 mouvements. Si tu t'arrêtes, c'est que tu vas trop vite" },
+        { kind: 'swim', what: '4 × 50 m sans pull buoy', how: 'repos 30 s' + (/4 × 25 m/.test(txt) ? ', puis 4 × 25 m regard devant' : '') },
+        { kind: 'swim', what: '100 m dos crawlé', how: 'retour au calme' } ] };
+    }
+    return null;
+  }
+  function _intervals(total, m, easy, PACE, rec, sport) {
+    const warm = +m[1], n = +m[2], d = +m[3], r = +m[5];
+    const main = n * d + (n - 1) * r;
+    return { list: [
+      { min: warm, kind: 'easy', what: 'Échauffement facile', how: easy },
+      { min: main, kind: 'hard', rep: n, run: d, walk: r, what: `${n} fois : ${d} min ${m[4]}, ${r} min ${rec}`, how: PACE[m[4]] },
+      { min: Math.max(1, total - warm - main), kind: 'easy', what: 'Retour au calme', how: 'très facile' } ].filter(x => x.min > 0) };
   }
 
   // « Refaire cette semaine » : décale le départ de 7 jours, le plan se recale
@@ -425,13 +575,81 @@ const MuscuTriathlon = (() => {
 
   // ── Rendu ───────────────────────────────────────────────────
   let _view = null;   // index de semaine affiché (null = semaine en cours)
-  function nav(delta) { const st = getState(); const cur = _view == null ? st.index : _view; const n = Math.max(0, Math.min(st.total - 1, cur + delta)); _view = n === st.index ? null : n; render(); }
-  function navHome() { _view = null; render(); }
+  let _open = null;   // jours dépliés (null = aucun)
+  let _form = null;   // { kind: 'log' | 'slot', key, id }
+  function nav(delta) { const st = getState(); const cur = _view == null ? st.index : _view; const n = Math.max(0, Math.min(st.total - 1, cur + delta)); _view = n === st.index ? null : n; _open = null; _form = null; render(); }
+  function navHome() { _view = null; _open = null; _form = null; render(); }
+  function toggleDay(i) { _open = _open === i ? null : i; _form = null; render(); }
+  function openForm(kind, key, id) { _form = _form && _form.kind === kind && _form.id === id ? null : { kind, key, id }; render(); }
+  function todayHasPool() { const st = getState(); return getScheduledDays(getWeek(st, st.index)).some(d => _iso(d.date) === _iso(st.today) && d.items.some(it => it.id === 'pool')); }
 
   function _pace(kmh) { const s = Math.round(3600 / kmh); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}/km`; }
   function _zones(v5) {   // v5 = vitesse du test 5 km (km/h)
     const z = (lab, lo, hi) => `<div class="tri-zone"><b>${lab}</b><span>${(v5 * lo).toFixed(1)} à ${(v5 * hi).toFixed(1)} km/h</span><small>${_pace(v5 * hi)} à ${_pace(v5 * lo)}</small></div>`;
     return z('Facile', 0.70, 0.80) + z('Soutenu', 0.89, 0.95) + z('Allure 5 km', 0.98, 1.02);
+  }
+
+  // Barre visuelle d'une séance : largeur = minutes, couleur = intensité
+  function _segbar(steps) {
+    const seg = [];
+    steps.forEach(x => {
+      if (!x.min) return;
+      if (!x.rep) { seg.push([x.min, x.kind]); return; }
+      for (let i = 0; i < x.rep; i++) {
+        seg.push([x.run, x.kind]);
+        if (x.kind !== 'hard' || i < x.rep - 1) seg.push([x.walk, x.kind === 'hard' ? 'easy' : 'walk']);
+      }
+    });
+    if (seg.length < 2) return '';
+    return `<div class="tri-seg" aria-hidden="true">${seg.map(([m, k]) => `<i class="k-${k}" style="flex:${m}"></i>`).join('')}</div>`;
+  }
+
+  function _item(it, o) {
+    const { ctx, plan, planOk, log, st, di } = o;
+    const done = it.type === 'muscu' ? !!(planOk && plan.days[it.planIdx] && plan.days[it.planIdx].status === 'done') : !!log[it.id];
+    const steps = getSteps(it);
+    const tot = steps ? Math.round(steps.list.reduce((a, x) => a + (x.min || 0), 0)) : it.min;
+    const ses = done && it.type !== 'muscu' ? MuscuStorage.getSessions().find(x => x.id === log[it.id]) : null;
+    const stepHtml = steps ? `<ol class="tri-steps2">${steps.list.map(x => `<li><b>${x.what}</b>${x.min && steps.list.length > 1 ? `<em>${Math.round(x.min)} min</em>` : ''}${x.how ? `<small>${x.how}</small>` : ''}</li>`).join('')}</ol>` : '';
+    let body = '';
+    if (it.type === 'muscu') {
+      const ex = planOk && plan.days[it.planIdx] ? plan.days[it.planIdx].exercises : [];
+      body = ex.length ? `<div class="tri-ex">${ex.map(e => `<span>${e.name} <em>${e.sets}×${e.reps}</em></span>`).join('')}</div>` : `<small>${it.txt || ''}</small>`;
+    } else if (it.id === 'pool') {
+      body = `<small>${it.txt.startsWith('Séance détaillée') ? 'Le déroulé complet est dans la carte « Plan piscine » plus bas.' : it.txt}</small>`;
+    } else body = steps ? '' : `<small>${it.txt || ''}</small>`;
+
+    const form = _form && _form.key === ctx.key && _form.id === it.id ? _form.kind : '';
+    const D = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+    const formHtml = form === 'log' ? `
+      <div class="tri-form">
+        <label>Minutes<input id="tri-f-min" type="number" inputmode="numeric" min="1" max="400" value="${tot || ''}"></label>
+        <label>${it.type === 'piscine' ? 'Mètres' : 'Km'}<input id="tri-f-km" type="number" inputmode="decimal" step="any" min="0" placeholder="facultatif"></label>
+        <label>Effort /10<input id="tri-f-rpe" type="number" inputmode="numeric" min="1" max="10" placeholder="facultatif"></label>
+        <button class="tri-btn on" onclick="MuscuTriathlon.submitForm('${ctx.key}','${it.id}')">Enregistrer</button>
+      </div>` : form === 'slot' ? `
+      <div class="tri-form">
+        <label>Jour<select id="tri-s-day">${D.map((n, k) => `<option value="${k}" ${k === di ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+        <label>Heure<input id="tri-s-time" type="time" value="${it.time || ''}"></label>
+        <label class="tri-check"><input id="tri-s-all" type="checkbox" checked> Toutes les semaines</label>
+        <button class="tri-btn on" onclick="MuscuTriathlon.saveSlot('${ctx.key}','${it.id}')">Valider</button>
+        <button class="tri-btn" onclick="MuscuTriathlon.resetSlot('${ctx.key}','${it.id}')">Revenir au plan</button>
+      </div>` : '';
+    const future = ctx.monday > st.today;
+    const canSlot = it.type !== 'repos' && it.id !== 'race' && it.id !== 'brick' && !ctx.week.race;
+    const actions = it.type === 'repos' ? '' : `<div class="tri-actions">
+        ${it.type === 'muscu'
+          ? (planOk ? `<button class="tri-btn big ${done ? 'on' : ''}" onclick="MuscuApp.showDayDetail(${it.planIdx})">${done ? '✓ Faite' : 'Ouvrir la séance'}</button>` : '')
+          : done
+            ? `<button class="tri-btn big on" onclick="MuscuTriathlon.undo('${ctx.key}','${it.id}')">✓ Faite</button>`
+            : `<button class="tri-btn big" ${future ? 'disabled' : ''} onclick="MuscuTriathlon.openForm('log','${ctx.key}','${it.id}')">J'ai fait la séance</button>`}
+        ${it.id === 'pool' && planOk ? `<button class="tri-btn" onclick="MuscuApp.showDayDetail(${it.planIdx})">Voir la nage</button>` : ''}
+        ${canSlot ? `<button class="tri-btn" onclick="MuscuTriathlon.openForm('slot','${ctx.key}','${it.id}')">🕐 ${it.time || 'Créneau'}</button>` : ''}
+      </div>`;
+    const res = ses ? `<div class="tri-res">${[ses.durationMin ? ses.durationMin + ' min' : '', ses.distanceKm ? (it.type === 'piscine' ? Math.round(ses.distanceKm * 1000) + ' m' : ses.distanceKm + ' km') : '', ses.distanceKm && ses.durationMin && it.type === 'course' ? _pace(ses.distanceKm / ses.durationMin * 60) : '', ses.globalRpe ? 'effort ' + ses.globalRpe + '/10' : ''].filter(Boolean).join(' · ')}</div>` : '';
+    return `<div class="tri-card2 t-${it.type} ${done ? 'done' : ''}">
+      <div class="tri-c-head"><span class="tri-ico">${it.icon}</span><b>${it.title}</b>${it.hard ? '<i class="tri-hard">soutenu</i>' : ''}${it.where ? `<i class="tri-where">${it.where}</i>` : ''}${tot ? `<em>${tot} min</em>` : ''}</div>
+      ${steps ? _segbar(steps.list) : ''}${stepHtml}${body}${res}${actions}${formHtml}</div>`;
   }
 
   function render() {
@@ -440,79 +658,83 @@ const MuscuTriathlon = (() => {
     if (!el || !card) return;
     const active = (MuscuStorage.getProfile().goal === 'triathlon');
     card.style.display = active ? '' : 'none';
+    const planCard = document.getElementById('dash-plan-card');
+    if (planCard) planCard.style.display = active ? 'none' : '';   // doublon de la carte triathlon
     if (!active) return;
 
     const st = getState();
     const vi = _view == null ? st.index : Math.min(_view, st.total - 1);
     const ctx = getWeek(st, vi);
     const cur = vi === st.index;
-    const days = getDays(ctx);
+    const days = getScheduledDays(ctx);
     const log = _log()[ctx.key] || {};
     const plan = MuscuStorage.getWeekPlan();
     const planOk = plan && plan.triathlonKey === ctx.key;
     const todayIso = _iso(st.today);
     const t5 = _settings().tri5k;
-
+    const o = { ctx, plan, planOk, log, st };
     const isDone = it => it.type === 'muscu'
       ? !!(planOk && plan.days[it.planIdx] && plan.days[it.planIdx].status === 'done')
       : !!log[it.id];
     const real = days.flatMap(d => d.items).filter(it => it.type !== 'repos');
     const nDone = real.filter(isDone).length;
 
-    const steps = PHASES.map(p => {
+    const ti = cur ? days.findIndex(d => _iso(d.date) === todayIso) : -1;
+    const FULL = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+    const todayHtml = ti >= 0 ? `
+      <div class="tri-today-title">Aujourd'hui, ${FULL[ti]} ${_fr(days[ti].date)}</div>
+      ${days[ti].items.map(it => _item(it, Object.assign({ di: ti }, o))).join('')}` : '';
+
+    const rows = days.map((d, i) => {
+      if (i === ti) return `<div class="tri-row is-today"><span class="tri-dow">${d.d}<small>${d.date.getDate()}</small></span><span class="tri-chips"><span class="tri-chip">Aujourd'hui, détail ci-dessus</span></span></div>`;
+      const open = _open === i;
+      const chips = d.items.map(it => `<span class="tri-chip t-${it.type} ${isDone(it) ? 'done' : ''}">${isDone(it) ? '✓ ' : ''}${it.icon} ${it.title}${it.time ? ` <em>${it.time}</em>` : ''}</span>`).join('');
+      return `<div class="tri-row ${open ? 'open' : ''}">
+        <button class="tri-rowbtn" aria-expanded="${open}" onclick="MuscuTriathlon.toggleDay(${i})"><span class="tri-dow">${d.d}<small>${d.date.getDate()}</small></span><span class="tri-chips">${chips}</span><span class="tri-caret">${open ? '▴' : '▾'}</span></button>
+        ${open ? d.items.map(it => _item(it, Object.assign({ di: i }, o))).join('') : ''}</div>`;
+    }).join('');
+
+    const maxMin = Math.max(...st.weeks.map(cardioMinutes));
+    const bars = st.weeks.map((w, i) => {
+      const lab = `Semaine ${i + 1} : ${w.race ? 'triathlon' : runMinutes(w) + ' min de course, ' + bikeMinutes(w) + ' min de vélo'}`;
+      return `<button class="tri-bar ${w.cut ? 'cut' : ''} ${i === vi ? 'sel' : ''} ${w.race ? 'race' : ''}" title="${lab}" aria-label="${lab}" onclick="MuscuTriathlon.goto(${i})"><span style="height:${w.race ? 100 : Math.round(cardioMinutes(w) / maxMin * 100)}%"></span></button>`;
+    }).join('');
+    const phases = PHASES.map(p => {
       const c = PHASES.indexOf(p), a = PHASES.indexOf(ctx.phase);
       const first = st.weeks.findIndex(w => _phaseOf(w) === p);
       return `<div class="tri-step ${c === a ? 'active' : c < a ? 'done' : ''}">${p.label}<small>${first >= 0 ? 'dès le ' + _fr(_add(st.start, first * 7)) : 'non atteint'}</small></div>`;
     }).join('');
 
-    const rows = days.map(d => {
-      const isToday = _iso(d.date) === todayIso;
-      const items = d.items.map(it => {
-        const done = isDone(it);
-        const btn = it.type === 'muscu'
-          ? (planOk ? `<button class="tri-btn ${done ? 'on' : ''}" aria-label="Ouvrir ${it.title}" onclick="MuscuApp.showDayDetail(${it.planIdx})">${done ? '✓' : 'Ouvrir'}</button>` : '')
-          : (it.type === 'repos' ? '' : `<button class="tri-btn ${done ? 'on' : ''}" aria-label="${done ? 'Annuler' : 'Marquer fait'} : ${it.title}" ${ctx.monday > st.today ? 'disabled' : ''} onclick="MuscuTriathlon.toggle('${ctx.key}','${it.id}')">${done ? '✓' : 'Fait'}</button>`);
-        return `<div class="tri-item ${done ? 'done' : ''}">
-          <span class="tri-ico">${it.icon}</span>
-          <div class="tri-what"><b>${it.title}</b>${it.min ? `<em>${it.min} min</em>` : ''}${it.hard ? '<i class="tri-hard">soutenu</i>' : ''}${it.where ? `<i class="tri-where">${it.where}</i>` : ''}<small>${it.txt || ''}</small></div>${btn}</div>`;
-      }).join('');
-      return `<div class="tri-day ${isToday ? 'today' : ''}"><div class="tri-dow">${d.d}<small>${d.date.getDate()}</small></div><div class="tri-items">${items}</div></div>`;
-    }).join('');
-
-    const maxMin = Math.max(...st.weeks.map(cardioMinutes));
-    const bars = st.weeks.map((w, i) => {
-      const tot = cardioMinutes(w);
-      const lab = `Semaine ${i + 1} : ${w.race ? 'triathlon' : runMinutes(w) + ' min de course, ' + bikeMinutes(w) + ' min de vélo'}`;
-      return `<button class="tri-bar ${w.cut ? 'cut' : ''} ${i === vi ? 'sel' : ''} ${w.race ? 'race' : ''}" title="${lab}" aria-label="${lab}" onclick="MuscuTriathlon.goto(${i})"><span style="height:${w.race ? 100 : Math.round(tot / maxMin * 100)}%"></span></button>`;
-    }).join('');
-
     el.innerHTML = `
       <div class="tri-head">
         <div>
-          <div class="tri-title">🏊🚴🏃 Plan triathlon sprint</div>
-          <div class="tri-sub">Semaine ${vi + 1} sur ${st.total} · ${ctx.phase.label}${ctx.week.cut && !ctx.week.race ? (ctx.phase.key === 'taper' ? '' : ' · semaine allégée') : ''}</div>
-          <div class="text-muted text-sm">${_fr(ctx.monday)} au ${_fr(_add(ctx.monday, 6))} · course ${runMinutes(ctx.week)} min, vélo ${bikeMinutes(ctx.week)} min${ctx.week.race ? ' + la course' : ', nage 2 séances'}</div>
+          <div class="tri-title">Plan triathlon sprint</div>
+          <div class="tri-sub">Semaine ${vi + 1} sur ${st.total} · ${ctx.phase.label}${ctx.week.cut && !ctx.week.race && ctx.phase.key !== 'taper' ? ' · semaine allégée' : ''}</div>
         </div>
         <span class="tri-count">${st.after ? 'course passée' : 'J-' + st.daysToRace}</span>
       </div>
       ${st.tooShort ? `<div class="tri-warn">La course du ${_fr(st.race)} est à moins de ${MIN_WEEKS} semaines du départ du plan. La phase spécifique est tronquée : recule la date dans ⚙️ si tu peux.</div>` : ''}
-      <div class="tri-steps">${steps}</div>
-      <div class="tri-why">${ctx.phase.why}</div>
+      ${todayHtml}
       <div class="tri-nav">
         <button class="btn btn-sm btn-ghost" aria-label="Semaine précédente" ${vi === 0 ? 'disabled' : ''} onclick="MuscuTriathlon.nav(-1)">‹</button>
-        <span>${cur ? `Cette semaine · ${nDone}/${real.length} faites` : `<a href="#" onclick="MuscuTriathlon.navHome();return false">Revenir à cette semaine</a>`}</span>
+        <span>${cur ? `Ma semaine · ${nDone}/${real.length} faites` : `${_fr(ctx.monday)} au ${_fr(_add(ctx.monday, 6))} · <a href="#" onclick="MuscuTriathlon.navHome();return false">revenir</a>`}</span>
         <button class="btn btn-sm btn-ghost" aria-label="Semaine suivante" ${vi === st.total - 1 ? 'disabled' : ''} onclick="MuscuTriathlon.nav(1)">›</button>
       </div>
-      <div class="tri-days">${rows}</div>
-      <div class="text-muted text-sm" style="margin:6px 0">🎾 ${tennisDay(ctx) ? `Tennis possible cette semaine : <b>${tennisDay(ctx)}</b>. ${tennisDay(ctx) === 'samedi' ? 'Le vélo long passe au dimanche, après la piscine, sans enchaînement.' : 'Il remplace le vélo.'}` : 'Pas de tennis cette semaine.'}</div>
+      <div class="tri-rows">${rows}</div>
+      <div class="text-muted text-sm" style="margin:8px 0">🎾 ${tennisDay(ctx) ? `Tennis possible cette semaine : <b>${tennisDay(ctx)}</b>. ${tennisDay(ctx) === 'samedi' ? 'Le vélo long passe au dimanche, après la piscine, sans enchaînement.' : 'Il remplace le vélo.'}` : 'Pas de tennis cette semaine.'}</div>
       <div class="tri-key">🎯 ${ctx.phase.key2}</div>
-      <div class="tri-bars">${bars}</div>
-      <div class="text-muted text-sm tri-legend">Minutes de course et de vélo par semaine. Pâle = semaine allégée. Touche une barre pour voir la semaine.</div>
-      <div class="tri-pace">
-        <div class="tri-pace-head"><b>Vitesses</b><button class="btn btn-sm btn-ghost" onclick="MuscuTriathlon.set5k()">${t5 ? '5 km en ' + Math.floor(t5 / 60) + ':' + String(t5 % 60).padStart(2, '0') : 'Saisir mon 5 km'}</button></div>
-        ${t5 ? `<div class="tri-zones">${_zones(18000 / t5)}</div>` : `<div class="text-muted text-sm">Jusqu'au test 5 km de la semaine 20, cours à l'effort : <b>facile</b> = phrases complètes (3-4/10), <b>soutenu</b> = quelques mots (6-7/10). Tapis à 1 % de pente, marche entre 5 et 5,5 km/h.</div>`}
-      </div>
-      <div class="text-muted text-sm" style="margin-top:8px">Version du plan : ${PLAN_VERSION}</div>
+      <details class="tri-rules"><summary>Les ${st.total} semaines et les phases</summary>
+        <div class="tri-steps">${phases}</div>
+        <div class="tri-why">${ctx.phase.why}</div>
+        <div class="tri-bars">${bars}</div>
+        <div class="text-muted text-sm tri-legend">Minutes de course et de vélo par semaine. Pâle = semaine allégée. Touche une barre pour voir la semaine.</div>
+      </details>
+      <details class="tri-rules"><summary>Mes vitesses</summary>
+        <div class="tri-pace">
+          <div class="tri-pace-head"><b>Vitesses</b><button class="btn btn-sm btn-ghost" onclick="MuscuTriathlon.set5k()">${t5 ? '5 km en ' + Math.floor(t5 / 60) + ':' + String(t5 % 60).padStart(2, '0') : 'Saisir mon 5 km'}</button></div>
+          ${t5 ? `<div class="tri-zones">${_zones(18000 / t5)}</div>` : `<div class="text-muted text-sm">Jusqu'au test 5 km de la semaine 20, cours à l'effort : <b>facile</b> = phrases complètes (3-4/10), <b>soutenu</b> = quelques mots (6-7/10). Tapis à 1 % de pente, marche entre 5 et 5,5 km/h.</div>`}
+        </div>
+      </details>
       <details class="tri-rules"><summary>Règles et substitutions</summary>
         <ul>
           <li><b>Douleur au tibia, au tendon d'Achille ou au genou au-dessus de 3/10</b> (pendant, ou le lendemain) : remplace la course par le même nombre de minutes de vélo ou de nage.</li>
@@ -529,10 +751,11 @@ const MuscuTriathlon = (() => {
         </ul>
       </details>
       ${cur && !st.before && !st.after && st.index > 0 ? `<button class="btn btn-sm btn-ghost tri-shift" onclick="MuscuTriathlon.shift()">↺ Semaine ratée : décaler le plan d'une semaine</button>` : ''}
+      <div class="text-muted text-sm" style="margin-top:10px">Version du plan : ${PLAN_VERSION}</div>
     `;
   }
-  function goto(i) { const st = getState(); _view = i === st.index ? null : i; render(); }
+  function goto(i) { const st = getState(); _view = i === st.index ? null : i; _open = null; _form = null; render(); }
 
-  return { DEFAULT_START, DEFAULT_RACE, TEMPLATE, getState, getWeek, getDays, buildSequence, runMinutes, bikeMinutes, cardioMinutes, isCutWeek, plannedIdx, getSwimIndex, swimStatus, setSwimLevel, set5k, tennisDay, toggle, shift, nav, navHome, goto, render, _phaseOf };
+  return { DEFAULT_START, DEFAULT_RACE, TEMPLATE, getState, getWeek, getDays, buildSequence, runMinutes, bikeMinutes, cardioMinutes, isCutWeek, plannedIdx, getSwimIndex, swimStatus, setSwimLevel, set5k, tennisDay, logDone, undo, submitForm, openForm, toggleDay, saveSlot, resetSlot, getScheduledDays, getSteps, todayHasPool, shift, nav, navHome, goto, render, _phaseOf };
 })();
 if (typeof module !== 'undefined') module.exports = MuscuTriathlon;

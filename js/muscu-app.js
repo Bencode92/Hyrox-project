@@ -408,7 +408,7 @@ const MuscuApp = (() => {
       sheetHtml += `<div class="swim-row swim-row-total"><span class="swim-dist">≈ ${total} m</span><span class="swim-what">Total séance (+ 100 m retour au calme)</span></div>`;
     }
 
-    container.innerHTML = `
+    const swimHtml = `
       <div class="swim-card-header">
         <div>
           <div class="swim-card-title">🏊 Plan piscine</div>
@@ -429,6 +429,10 @@ const MuscuApp = (() => {
         🛟 Pull buoy sur la 1ʳᵉ moitié du bloc continu seulement : le transfert sans aide est le but.</div>`}
       ${dayIdx >= 0 ? `<button class="btn btn-swim" onclick="MuscuApp.showDayDetail(${dayIdx})">🏊 Ouvrir la séance piscine (consignes complètes)</button>` : ''}
     `;
+    // Triathlon : carte repliée les jours sans piscine A
+    container.innerHTML = isTriathlon
+      ? `<details class="tri-rules" ${MuscuTriathlon.todayHasPool() ? 'open' : ''}><summary>🏊 Plan piscine · phase ${activeIdx + 1}, ${active.label}</summary>${swimHtml}</details>`
+      : swimHtml;
   }
 
   function _renderAbsCard(weekNum) {
@@ -1177,7 +1181,7 @@ const MuscuApp = (() => {
             </div>
             <div class="history-exercises text-sm">${exNames || s.theme || ''}</div>
             <div class="history-stats text-muted text-sm">
-              ${(s.exercises || []).length ? `${s.exercises.length} exercices · ${totalVolume}kg volume` : (s.durationMin ? s.durationMin + ' min' : '')}
+              ${(s.exercises || []).length ? `${s.exercises.length} exercices · ${totalVolume}kg volume` : [s.durationMin ? s.durationMin + ' min' : '', s.distanceKm ? (s.type === 'piscine' ? Math.round(s.distanceKm * 1000) + ' m' : s.distanceKm + ' km') : ''].filter(Boolean).join(' · ')}
               ${s.painNotes ? ' · ⚠️ ' + s.painNotes : ''}
             </div>
           </div>`;
